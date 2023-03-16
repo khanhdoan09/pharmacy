@@ -46,7 +46,7 @@ function SliderImageDetail() {
 
     return (
         
-        <div className="img px-1 ">
+        <div className="img px-1 animate-fadeBottomMobile">
             <Slider {...settings}>
                 <div
                     className="select-none outline-none h-[476px] cursor-pointer"

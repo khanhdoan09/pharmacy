@@ -20,14 +20,14 @@ import { useEffect } from 'react';
 import * as medicineServices from '~/services/medicineServices';
 
 function Home() {
-    useEffect(() => {
-        const fetchApi = async () => {
-            const result = await medicineServices.getAllMedicines();
-            console.log(result);
-        };
+    // useEffect(() => {
+    //     const fetchApi = async () => {
+    //         const result = await medicineServices.getAllMedicines();
+    //         console.log(result);
+    //     };
 
-        fetchApi();
-    }, []);
+    //     fetchApi();
+    // }, []);
 
     return (
         <div className="app overflow-hidden">
@@ -36,18 +36,18 @@ function Home() {
             <SearchHome />
 
             {/* easy buy  */}
-            <Fade bottom >
+            <Fade bottom>
                 <EasyBuy />
             </Fade>
 
             {/* banner ads */}
             <Fade bottom duration={1500}>
-                <div className="max-w-[1200px] mx-auto my-0 2xl:px-1 xl:px-1 lg:px-2 md:px-2 sm:px-4 xs:px-4">
+                <div className="mx-auto my-0 max-w-[1200px] xs:px-4 sm:px-4 md:px-2 lg:px-2 xl:px-1 2xl:px-1">
                     <NavLink to="">
                         <img
                             src="https://nhathuoclongchau.com.vn/frontend_v3/images/chuyen-trang-ung-thu/banner-home.png"
                             alt="banner"
-                            className="rounded-lg w-full"
+                            className="w-full rounded-lg"
                         />
                     </NavLink>
                 </div>
@@ -55,7 +55,7 @@ function Home() {
 
             {/* famous */}
 
-            <Fade bottom duration={1500} >
+            <Fade bottom duration={1500}>
                 <Famous />
             </Fade>
 

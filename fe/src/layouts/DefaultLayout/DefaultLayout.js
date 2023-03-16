@@ -1,8 +1,12 @@
 import Header from '~/layouts/components/Header';
 import Footer from '~/layouts/components/Footer';
 import Navigation from '~/layouts/components/Navigation';
+import { useEffect } from 'react';
 
 function DefaultLayout({ children }) {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     return (
         <div className="wrapper">
             <div className="header">
@@ -15,12 +19,9 @@ function DefaultLayout({ children }) {
                 </div>
             </div>
             <div className="mb-auto h-full ">{children}</div>
-            <div className="h-full mt-10 ">
+            <div className="mt-10 h-full ">
                 <Footer />
             </div>
-            {/* button scroll to top  */}
-            {/* <ScrollToTop /> */}
-            {/* button scroll to top  */}
         </div>
     );
 }
