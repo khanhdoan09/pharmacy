@@ -1,42 +1,29 @@
 import { NavLink } from 'react-router-dom';
+import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
 
-function ProductSeller({
-    to,
-    img,
-    name,
-    newPrice,
-    unit,
-    oldPrice,
-    backgroundColor,
-    px,
-    py,
-    borderRadius,
-}) {
+function ProductSeller({ to, img, name, newPrice, unit, oldPrice, backgroundColor, px, py, borderRadius }) {
     return (
-        <div
-            className={`product ${
-                backgroundColor + ' ' + px + ' ' + py + ' ' + borderRadius
-            }`}
-        >
+        <div className={`product ${backgroundColor + ' ' + px + ' ' + py + ' ' + borderRadius}`}>
             <NavLink to={to || ''} className="flex justify-center">
                 <img
                     src={img}
                     alt="product-img"
-                    className="px-2 py-2 bg-[#fff] rounded-md border-[#d8e0e8] border w-[155px] h-[157px] object-cover hover:border-[#072d94] transition-all ease-linear"
+                    className="h-[157px] w-[155px] rounded-md border border-[#d8e0e8] bg-[#fff] object-cover px-2 py-2 transition-all ease-linear hover:border-[#072d94]"
+                    onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src = placehoder600;
+                    }}
                 />
             </NavLink>
-            <NavLink
-                to={to || ''}
-                className="text-[#334155] line-clamp-2 text-base hover:text-[#072d94]"
-            >
+            <NavLink to={to || ''} className="text-base text-[#334155] line-clamp-2 hover:text-[#072d94]">
                 {name}
             </NavLink>
             <p className="price">
-                <span className="text-[#072d94] font-bold">{newPrice}</span>
+                <span className="font-bold text-[#072d94]">{newPrice}</span>
                 &#8260;
                 <span className="unit text-[#334155]">{unit}</span>
             </p>
-            <p className="old-price line-through text-[#718198]">{oldPrice}</p>
+            <p className="old-price text-[#718198] line-through">{oldPrice}</p>
         </div>
     );
 }

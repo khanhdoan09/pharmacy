@@ -91,8 +91,8 @@ function Review() {
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            <div class="w-full bg-gray-200 rounded-full h-2 mr-1 ">
-                                <div class="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
+                            <div className="w-full bg-gray-200 rounded-full h-2 mr-1 ">
+                                <div className="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
                             </div>
                             <span className="text-[#718198]">3</span>
                         </div>
@@ -110,8 +110,8 @@ function Review() {
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            <div class="w-full bg-gray-200 rounded-full h-2 mr-1 ">
-                                <div class="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
+                            <div className="w-full bg-gray-200 rounded-full h-2 mr-1 ">
+                                <div className="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
                             </div>
                             <span className="text-[#718198]">3</span>
                         </div>
@@ -129,8 +129,8 @@ function Review() {
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            <div class="w-full bg-gray-200 rounded-full h-2 mr-1 ">
-                                <div class="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
+                            <div className="w-full bg-gray-200 rounded-full h-2 mr-1 ">
+                                <div className="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
                             </div>
                             <span className="text-[#718198]">3</span>
                         </div>
@@ -148,8 +148,8 @@ function Review() {
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            <div class="w-full bg-gray-200 rounded-full h-2 mr-1 ">
-                                <div class="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
+                            <div className="w-full bg-gray-200 rounded-full h-2 mr-1 ">
+                                <div className="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
                             </div>
                             <span className="text-[#718198]">3</span>
                         </div>
@@ -167,8 +167,8 @@ function Review() {
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            <div class="w-full bg-gray-200 rounded-full h-2 mr-1 ">
-                                <div class="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
+                            <div className="w-full bg-gray-200 rounded-full h-2 mr-1 ">
+                                <div className="bg-[#4cb816] h-2 rounded-full" style={{ width: '75%' }}></div>
                             </div>
                             <span className="text-[#718198]">3</span>
                         </div>

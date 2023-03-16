@@ -11,21 +11,22 @@ import Filter from '~/pages/Filter';
 import User from '~/pages/User';
 import ServerError from '~/pages/Error/ServerError/ServerError';
 import NotFound from '~/pages/Error/NotFound';
+import { HeaderSearchLayout } from '~/layouts';
 
 const publicRoutes = [
     { path: config.routes.home, component: Home },
-    { path: config.routes.detail, component: Detail },
-    { path: config.routes.cart, component: Cart },
-    { path: config.routes.order, component: Order },
-    { path: config.routes.signIn, component: SignIn },
-    { path: config.routes.signUp, component: SignUp },
-    { path: config.routes.confirmEmail, component: ConfirmEmail },
-    { path: config.routes.forgotPassword, component: ForgotPassword },
-    { path: config.routes.filter, component: Filter },
-    { path: config.routes.user, component: User },
-    { path: config.routes.filter, component: Filter },
-    { path: config.routes.serverError, component: ServerError },
-    { path: config.routes.notFound, component: NotFound },
+    { path: config.routes.detail, component: Detail, layout: HeaderSearchLayout },
+    { path: config.routes.cart, component: Cart, layout: HeaderSearchLayout },
+    { path: config.routes.order, component: Order, layout: HeaderSearchLayout },
+    { path: config.routes.signIn, component: SignIn, layout: HeaderSearchLayout },
+    { path: config.routes.signUp, component: SignUp, layout: HeaderSearchLayout },
+    { path: config.routes.confirmEmail, component: ConfirmEmail, layout: HeaderSearchLayout },
+    { path: config.routes.forgotPassword, component: ForgotPassword, layout: HeaderSearchLayout },
+    { path: config.routes.filter, component: Filter, layout: HeaderSearchLayout },
+    { path: config.routes.user, component: User, layout: HeaderSearchLayout },
+    { path: config.routes.filter, component: Filter, layout: HeaderSearchLayout },
+    { path: config.routes.serverError, component: ServerError, layout: HeaderSearchLayout },
+    { path: config.routes.notFound, component: NotFound, layout: HeaderSearchLayout },
 ];
 const privateRoutes = [];
 export { publicRoutes, privateRoutes };
