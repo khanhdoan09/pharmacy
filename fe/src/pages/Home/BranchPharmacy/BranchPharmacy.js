@@ -1,31 +1,29 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 
 function BranchPharmacy() {
     return (
-        <div className="bg-[#072d94] max-w-full">
-            <div className="max-w-[1200px] mx-auto my-0 ">
-                <div className="grid 2xl:grid-cols-2 xl:grid-cols-2 lg::grid-cols-1 md:grid-cols-2 sm:grid-cols-2 gap-4 py-3  2xl:px-1 xl:px-1 lg:px-2 md:px-2 sm:px-4 xs:px-4 cs:px-4">
-                    <NavLink to="" className="text-[#fff]  flex items-center">
+        <div className="max-w-full bg-[#072d94]">
+            <div className="mx-auto my-0 max-w-[1200px] ">
+                <div className="lg::grid-cols-1 grid gap-4 py-3 cs:px-4 xs:px-4 sm:grid-cols-2 sm:px-4  md:grid-cols-2 md:px-2 lg:px-2 xl:grid-cols-2 xl:px-1 2xl:grid-cols-2 2xl:px-1">
+                    <NavLink to="" className="flex  items-center text-[#fff]">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
                             viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-8 h-8 mr-[14px]"
+                            fill="currentColor"
+                            className="mr-[14px] h-8 w-8"
                         >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                                fillRule="evenodd"
+                                d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
+                                clipRule="evenodd"
                             />
                         </svg>
+
                         <p className="text-2xl line-clamp-1">Xem hệ thống nhà thuốc toàn quốc</p>
                     </NavLink>
                     <NavLink
                         to=""
-                        className="text-[#fff] font-bold bg-[#597db9] px-8 rounded-3xl h-[36px] flex items-center mx-auto justify-end"
+                        className="mx-auto flex h-[36px] items-center justify-end rounded-3xl bg-[#597db9] px-8 font-bold text-[#fff]"
                     >
                         <p className="line-clamp-1">Xem danh sách nhà thuốc</p>
                     </NavLink>

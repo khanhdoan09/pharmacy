@@ -1,5 +1,15 @@
-import TrendItem from '~/components/TrendItem';
 import FamousItem from './FamousItem';
+import f1 from '~/assets/img/famous/vitamin.png';
+import f2 from '~/assets/img/famous/sexual.png';
+import f3 from '~/assets/img/famous/skincare.png';
+import f4 from '~/assets/img/famous/tooth.png';
+import f5 from '~/assets/img/famous/shampoo.png';
+import f6 from '~/assets/img/famous/digest.png';
+import f7 from '~/assets/img/famous/personal hygiene.png';
+import f8 from '~/assets/img/famous/heart.png';
+import f9 from '~/assets/img/famous/brain nerve.png';
+import f10 from '~/assets/img/famous/medical.png';
+import f11 from '~/assets/img/famous/function.png';
 
 function Famous() {
     const blue =
@@ -7,84 +17,24 @@ function Famous() {
     const orange =
         'flex items-center flex-col mx-auto bg-[#fef7dc] rounded-lg py-3  min-w-[150px] 2xl:w-[176px] xl:w-[176px] lg::w-[176px] md::w-[176px] sm:w-[176px] xs:w-full  cs:w-full   h-[204px] mb-4 hover:border border-[#016cc9] transition ease-in-out delay-75';
     return (
-        <div className="max-w-[1200px] mx-auto my-0 pt-8 ">
-            <div className="flex flex-wrap -mx-1 ">
-                <div className="flex mx-auto">
-                    <h3 className=" text-[28px] text-center font-bold mb-4">Danh Mục Nổi Bật</h3>
+        <div className="mx-auto my-0 max-w-[1200px] pt-8 ">
+            <div className="-mx-1 flex flex-wrap ">
+                <div className="mx-auto flex">
+                    <h3 className=" mb-4 text-center text-[28px] font-bold">Danh Mục Nổi Bật</h3>
                 </div>
             </div>
-            <div className="grid 2xl:grid-cols-7 xl:grid-cols-7 lg:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 cs:grid-cols-1 2xl:px-1 xl:px-1 lg:px-2 md:px-2 sm:px-4 xs:px-4 cs:px-4  gap-4 mb-8">
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/2209/2209673.png"
-                    title="Cải thiện tăng cường chức năng"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/2927/2927436.png"
-                    title="Vitamin"
-                />
-                <FamousItem
-                    to=""
-                    img="https://themebeyond.com/html/yed/img/products/categories_06.png"
-                    title="Dụng cụ y tế"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/3673/3673582.png"
-                    title="Hỗ trợ tình dục"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/2652/2652533.png"
-                    title="Chăm sóc tóc - da đầu"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/1386/1386873.png"
-                    title="Chăm sóc răng miệng"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/2491/2491314.png"
-                    title="Thần kinh não"
-                />
-                 <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/2209/2209673.png"
-                    title="Cải thiện tăng cường chức năng"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/2927/2927436.png"
-                    title="Vitamin"
-                />
-                <FamousItem
-                    to=""
-                    img="https://themebeyond.com/html/yed/img/products/categories_06.png"
-                    title="Dụng cụ y tế"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/3673/3673582.png"
-                    title="Hỗ trợ tình dục"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/2652/2652533.png"
-                    title="Chăm sóc tóc - da đầu"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/1386/1386873.png"
-                    title="Chăm sóc răng miệng"
-                />
-                <FamousItem
-                    to=""
-                    img="https://cdn-icons-png.flaticon.com/512/2491/2491314.png"
-                    title="Thần kinh não"
-                />
-                
+            <div className="mb-8 grid gap-4 cs:grid-cols-1 cs:px-4 xs:grid-cols-2 xs:px-4 sm:grid-cols-3 sm:px-4 md:grid-cols-4 md:px-2 lg:grid-cols-6 lg:px-2 xl:grid-cols-7 xl:px-1  2xl:grid-cols-7 2xl:px-1">
+                <FamousItem to="" img={f1} title="Vitamin" />
+                <FamousItem to="" img={f2} title="Hỗ trợ tình dục" />
+                <FamousItem to="" img={f3} title="Chăm sóc da mặt" />
+                <FamousItem to="" img={f4} title="Chăm sóc răng miệng" />
+                <FamousItem to="" img={f5} title="Chăm sóc tóc - da đầu" />
+                <FamousItem to="" img={f6} title="Hỗ trợ tiêu hóa" />
+                <FamousItem to="" img={f7} title="Vệ sinh cá nhân" />
+                <FamousItem to="" img={f8} title="Sức khỏe tim mạch" />
+                <FamousItem to="" img={f9} title="Thần kinh não" />
+                <FamousItem to="" img={f10} title="Dụng cụ y tế" />
+                <FamousItem to="" img={f11} title="Cải thiện tăng cường chức năng" />
             </div>
         </div>
     );

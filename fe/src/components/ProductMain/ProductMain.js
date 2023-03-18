@@ -1,20 +1,29 @@
 import { NavLink } from 'react-router-dom';
+import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
 
 function ProductMain({ to, label, img, title, newPrice, oldPrice, unit }) {
     return (
-        <div className="product-main rounded-md hover:border-[#4f71d0] border px-3 py-3 relative mb-4 bg-[#fff] h-full transition-basic">
-            <NavLink to={to || ''}>
-                <div className="product-label absolute top-3 right-3 py-1 px-2 bg-[#4f71d0] text-[#fff] rounded-3xl">
+        <div className="transition-basic relative mb-4 h-full rounded-md border bg-[#fff] px-3 pt-3 pb-2 hover:border-[#4f71d0]">
+            <NavLink to={to || '/detail'}>
+                <div className="absolute top-3 right-3 rounded-3xl bg-[#4f71d0] py-1 px-2 text-[#fff]">
                     <p className="text-xs capitalize">{label}</p>
                 </div>
-                <img src={img} alt="main-img" className="object-cover px-2 py-2 mb-3 max-w-full" />
-                <p className="text-[#334155] line-clamp-2 text-base hover:text-[#072d94] mb-2">{title}</p>
+                <img
+                    src={img}
+                    alt="main-img"
+                    className="mb-3 max-w-full object-cover px-2 py-2"
+                    onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src = placehoder600;
+                    }}
+                />
+                <p className="mb-2 text-base text-[#334155] line-clamp-2 hover:text-[#072d94]">{title}</p>
                 <p className="price">
-                    <span className="text-[#072d94] font-bold">{newPrice}</span>
+                    <span className="font-bold text-[#072d94]">{newPrice}</span>
                     &#8260;
-                    <span className="unit text-[#334155] capitalize">{unit}</span>
+                    <span className="unit capitalize text-[#334155]">{unit}</span>
                 </p>
-                <p className="old-price line-through text-[#718198]">{oldPrice} </p>
+                <p className="old-price left-6 h-6 text-[#718198]">{oldPrice || ' '} </p>
             </NavLink>
         </div>
     );

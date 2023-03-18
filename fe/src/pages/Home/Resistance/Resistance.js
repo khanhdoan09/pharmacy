@@ -8,6 +8,7 @@ function Resistance() {
         speed: 500,
         slidesToShow: 6,
         slidesToScroll: 1,
+        autoplay: true,
         responsive: [
             {
                 breakpoint: 1536,
@@ -57,25 +58,23 @@ function Resistance() {
         ],
     };
     return (
-        <div className="bg-[#4e70d0] max-w-full">
-            <div className="max-w-[1200px] mx-auto my-0 py-8">
-                <div className="flex flex-wrap -mx-1 2xl:px-1 xl:px-1 lg:px-2 md:px-2 sm:px-4 xs:px-4 cs:px-4">
-                    <div className="flex-[0_0_100%] max-w-full flex items-center">
+        <div className="max-w-full bg-[#4e70d0]">
+            <div className="mx-auto my-0 max-w-[1200px] py-8">
+                <div className="-mx-1 flex flex-wrap cs:px-4 xs:px-4 sm:px-4 md:px-2 lg:px-2 xl:px-1 2xl:px-1">
+                    <div className="flex max-w-full flex-[0_0_100%] items-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
                             viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6 text-[#fff] mr-2"
+                            fill="currentColor"
+                            className="mr-2 h-6 w-6 text-[#fff]"
                         >
                             <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
+                                fillRule="evenodd"
+                                d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                clipRule="evenodd"
                             />
                         </svg>
-                        <h3 className="px-1  text-[20px] text-[#fff] font-bold capitalize line-clamp-1">
+                        <h3 className="px-1  text-[20px] font-bold capitalize text-[#fff] line-clamp-1">
                             Sản Phẩm Tăng Sức Đề Kháng
                         </h3>
                     </div>
