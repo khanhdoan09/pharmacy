@@ -36,15 +36,10 @@ public class UserController {
             @ApiResponse(responseCode  = "404", description = "not found user by id", content = @Content(schema = @Schema(implementation = ResponseHandler.class)))
     })
     @GetMapping("/findUser/{userId}")
-    public ResponseEntity<ResponseHandler<UserDto>> findUserById(@PathVariable int userId) throws CustomException {
+    public ResponseHandler<UserDto> findUserById(@PathVariable int userId) throws CustomException {
         User user = userService.findById(userId);
         UserDto userDto = mapper.map(user, UserDto.class);
         ResponseHandler<UserDto> responseHandler = new ResponseHandler<UserDto>("successfully found user", HttpStatus.OK.value(), userDto);
-        return ResponseEntity.ok(responseHandler);
-    }
-
-    @GetMapping("/saveANewUser")
-    public void save() {
-        userService.save();
+        return responseHandler;
     }
 }

@@ -1,24 +1,53 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 // import CartEmpty from './CartEmpty';
 import CartItem from './CartItem';
 import Slider from 'react-slick';
 import ProductSeller from '~/components/ProductSeller';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import CartEmpty from './CartEmpty';
-
-
+import Voucher from '~/components/Voucher';
+import { getAllMedicinesInCart } from '~/services/cartService';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
 
 function Cart() {
     const voucherRef = useRef();
+    const [totalPrice, setTotalPrice] = useState(0);
     const [showModal, setShowModal] = useState(false);
     const [checkAll, setCheckAll] = useState(true);
     const [showVouchers, setShowVouchers] = useState(false);
+    const [data, setData] = useState({});
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const load = getAllMedicinesInCart();
+        load.then(
+            (e) => {
+                if (e.status == 200) {
+                    setData(e?.data);
+                    let tmpTotalPrice = 0;
+                    e?.data?.data?.map((e2) => {
+                        if (e2.medicine.active == 1) {
+                            tmpTotalPrice += e2?.unit?.price * e2?.quantity;
+                        }
+                    });
+                    setTotalPrice(convertNumberToPrice(tmpTotalPrice));
+                }
+            },
+            (e) => {
+                navigate('/server_error');
+            },
+        );
+    }, []);
 
     function outOfStock() {
-
-        return <p className="px-3 py-3 flex items-center text-[#ff4742] text-xs font-bold">Sản phẩm đang tạm hết hàng</p>;
-
+        return (
+            <div>
+                <div>
+                    <div className="mb-3 flex items-center text-orange-400 text-xs">Sản phẩm đang tạm hết hàng</div>
+                </div>
+            </div>
+        );
     }
 
     function SamplePrevArrow(props) {
@@ -83,68 +112,150 @@ function Cart() {
         ],
     };
 
+    function setCheckAllCartItem() {
+        let tmpTotalPrice = 0;
+        if (checkAll) {
+            tmpTotalPrice = 0;
+        } else {
+            data?.data?.map((e) => {
+                tmpTotalPrice += convertPriceToNumber(e?.unit?.price) * e?.quantity;
+            });
+        }
+        setTotalPrice(convertNumberToPrice(tmpTotalPrice));
+        setCheckAll(!checkAll);
+    }
+
     return (
-
-        <div className="bg-[rgb(237,240,243)] py-5">
-            <div className="max-w-[1200px] mx-auto grid 2xl:grid-cols-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 xs:grid-cols-1 cs:grid-cols-1 gap-4 padding-responsive ">
+        <div className="bg-[rgb(237,240,243)] py-5" id="num">
+            <div className="w-full sm:flex flex-wrap justify-evenly max-sm:justify-start ">
                 {/* <CartEmpty></CartEmpty> */}
-                <div className="px-1 pb-3 rounded-xl 2xl:col-span-3 xl:col-span-3 lg:col-span-2 md:col-span-2 sm:col-span-1 xs:col-span-1 cs:col-span-1 ">
-                    <div className="bg-white sm:mr-3 rounded-xl ">
-                        <div className="px-3 ">
-                            <div className="flex items-center my-auto">
-                                <div className="flex text-sm py-3 w-80 font-bold">
+                <div className="px-1 pb-3 rounded-xl">
+                    <div className="mb-5 sm:mr-3 px-3 flex items-center justify-between px-4 bg-contain bg-[url(https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/voucher%2Fbg-voucher.png?alt=media&token=24592f56-63b9-4e23-8006-a639ca5b8028)]">
+                        <div className="flex items-center">
+                            <img
+                                width={40}
+                                src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/voucher%2Fvoucher.png?alt=media&token=44249f28-5df6-435f-81a5-1f7544564e19"
+                            ></img>
+                            <p className="text-[#1250dc] text-[14px] flex flex-wrap">
+                                <span className="mr-1 font-semibold">Khuyến mại </span>
+                                <span>dành riêng cho bạn</span>
+                            </p>
+                        </div>
+                        <div
+                            className="flex items-center cursor-pointer"
+                            onClick={() => {
+                                document.body.style.overflow = 'hidden';
 
+                                setShowVouchers(true);
+                            }}
+                        >
+                            <span className="whitespace-nowrap text-[#1250dc] bg-[#eaeffa] text-[14px] font-[500] tracking-[.01em] rounded-full py-1 px-5">
+                                Chọn ngay
+                            </span>
+                            <span className="text-[#728091] max-sm:hidden">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="w-6 h-6"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div className="bg-white sm:mr-3 px-3 rounded-xl ">
+                        <div>
+                            <div className="flex items-center">
+                                <div className="flex text-sm my-3 w-80 font-[500]">
                                     <span
-                                        onClick={() => setCheckAll(!checkAll)}
+                                        onClick={setCheckAllCartItem}
                                         className={`rounded-full p-1 mr-3 w-5 h-5 flex items-center justify-center text-white cursor-pointer ${
                                             checkAll ? 'bg-sky-700 border border-sky-700' : 'border border-black'
                                         }`}
                                     >
                                         {checkAll ? <i className="fa-solid fa-check"></i> : null}
                                     </span>
-
-                                    <p>Chọn tất cả (3)</p>
+                                    Chọn tất cả (3)
                                 </div>
-                                <div className="text-sm w-32 text-center max-sm:hidden font-bold">Giá thành</div>
-                                <div className="text-sm w-20 text-center max-sm:hidden font-bold">Số lượng</div>
-                                <div className="text-sm w-32 text-center max-sm:hidden font-bold">Đơn vị</div>
-
+                                <div className="text-sm w-36 text-center max-sm:hidden font-[500]">Giá thành</div>
+                                <div className="text-sm w-20 text-center max-sm:hidden font-[500]">Số lượng</div>
+                                <div className="text-sm w-32 text-center max-sm:hidden font-[500]">Đơn vị</div>
                             </div>
                         </div>
                         <div>
-                            {<CartItem checkAll={checkAll}></CartItem>}
-                            {outOfStock()}
-                            {<CartItem checkAll={checkAll}></CartItem>}
-                            {<CartItem checkAll={checkAll}></CartItem>}
+                            {data?.data?.map((e, i) => {
+                                return e?.medicine?.active == 0 ? (
+                                    <div key={i}>
+                                        <CartItem
+                                            key={i}
+                                            checkAll={checkAll}
+                                            data={e}
+                                            totalPrice={totalPrice}
+                                            setTotalPrice={setTotalPrice}
+                                        ></CartItem>
+                                        {outOfStock()}
+                                    </div>
+                                ) : (
+                                    <CartItem
+                                        key={i}
+                                        checkAll={checkAll}
+                                        data={e}
+                                        totalPrice={totalPrice}
+                                        setTotalPrice={setTotalPrice}
+                                    ></CartItem>
+                                );
+                            })}
                         </div>
                     </div>
-
+                    <div className="sm:w-[700px] my-3">
+                        <h2 className="font-[500] tracking-[.0025em] text-[#020b27] text-[18px]">Sản phẩm vừa xem</h2>
+                        <Slider {...settings} className="m-0 p-0 relative">
+                            {Array.from({ length: 6 }, (v, i) => (
+                                <div key={i} className="">
+                                    <div className="max-sm:px-1 sm:px-3 py-5">
+                                        <ProductSeller
+                                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00500184-sua-nutren-junior-nestle-health-science-hop-850g-2256-62a8_large.jpg"
+                                            name="Sữa bột Nestlé Nutren Junior hỗ trợ hệ tiêu hóa giúp trẻ hấp thu dinh dưỡng (850g)"
+                                            newPrice="591.000đ"
+                                            unit="Hộp"
+                                            oldPrice=""
+                                            backgroundColor="bg-white"
+                                            py="sm:py-5 max-sm:py-4"
+                                            px="max-sm:px-2 sm:px-5"
+                                            borderRadius="rounded-xl"
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </Slider>
+                    </div>
                 </div>
-                <div className="sticky h-fit top-0 flex">
-                    <div className="z-50 w-72 border left-0 bottom-0 bg-[#ffff] h-fit py-4 px-3 sm:rounded-3xl max-sm:rounded-t-3xl max-sm:w-screen max-sm:fixed  transition-all">
-                        <div className={`${showModal ? 'block' : 'hidden'} sm:block  animate-fadeBottomMobile`}>
+                <div className="sticky h-fit top-0 flex z-20">
+                    <div className="z-10 w-96 border-2 bottom-0 bg-white h-fit py-4 px-3 sm:rounded-3xl max-sm:rounded-t-3xl max-sm:w-screen max-sm:fixed">
+                        <div className={`${showModal ? 'block' : 'hidden'} sm:block sm:text-[16px] max-sm:text-sm`}>
                             <div className="flex justify-between my-2">
-                                <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">Tổng tiền</h5>
-                                <h5 className="sm:text-[15px] max-sm:text-sm">824.400đ</h5>
+                                <h5 className="text-slate-600">Tổng tiền</h5>
+                                <h5>{totalPrice}đ</h5>
                             </div>
                             <div className="flex justify-between my-2">
-                                <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">Giảm giá trực tiếp</h5>
-                                <h5 className="sm:text-[15px] max-sm:text-sm">0đ</h5>
+                                <h5 className="text-slate-600">Giảm giá trực tiếp</h5>
+                                <h5>0đ</h5>
                             </div>
                             <div className="flex justify-between my-2">
-                                <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">Giảm giá điểm thưởng</h5>
-                                <h5 className="sm:text-[15px] max-sm:text-sm">824.400đ</h5>
+                                <h5 className="text-slate-600">Giảm giá voucher</h5>
+                                <h5>824.400đ</h5>
                             </div>
                             <div className="flex justify-between my-2">
-                                <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">Tiết kiệm được</h5>
-                                <h5 className="sm:text-[15px] max-sm:text-sm">0đ</h5>
+                                <h5 className="text-slate-600">Tiết kiệm được</h5>
+                                <h5>0đ</h5>
                             </div>
                         </div>
                         <div className="max-sm:flex justify-between items-center">
-                            <div className="flex max-sm:flex-col justify-between sm:border-t mt-3 py-3 ">
-                                <h4 className="text-ms font-semibold">Tạm tính</h4>
-
-
+                            <div className="flex max-sm:flex-col justify-between sm:border-t mt-3 py-3">
+                                <h4 className="text-[16px] font-semibold">Tạm tính</h4>
                                 <h4
                                     className="text-[20px] text-[#1250dc] font-[600] tracking-[.005em] flex items-center"
                                     onClick={() => setShowModal(!showModal)}
@@ -161,7 +272,7 @@ function Cart() {
                                             viewBox="0 0 24 24"
                                             strokeWidth={2}
                                             stroke="black"
-                                            className="w-5 h-5 cursor-pointer"
+                                            className="w-5 h-5"
                                         >
                                             <path
                                                 strokeLinecap="round"
@@ -176,11 +287,9 @@ function Cart() {
                                 Đặt hàng (2)
                             </button>
                         </div>
-
-                        <div className="text-center mt-5 max-sm:hidden">
-                            <h6 className="text-xs text-slate-400">Nếu tiến hành đặt hàng, bạn đồng ý</h6>
-                            <h6 className="decoration-solid	text-xs font-semibold underline text-slate-600">
-
+                        <div className="text-center mt-4 max-sm:hidden">
+                            <h6 className="text-xs text-[#020b27] font-[400px]">Nếu tiến hành đặt hàng, bạn đồng ý</h6>
+                            <h6 className="mt-3 decoration-solid cursor-pointer text-xs font-semibold underline text-slate-600">
                                 Điều khoản của nhà thuốc
                             </h6>
                         </div>

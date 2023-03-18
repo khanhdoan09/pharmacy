@@ -1,19 +1,147 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { deleteAMedicineInCart, updateMedicineQuantityInCart, updateUnitMedicineInCart } from '~/services/cartService';
+import { useNavigate } from 'react-router-dom';
+import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
+import { getImageFromFirebase } from '~/utils/firebase';
+import { getAllUnitsInAMedicine } from '~/services/unitService';
 
-function CartItem(props) {
-    const [quantity, setQuantity] = useState(1);
-    const [check, setCheck] = useState(true);
+function CartItem({ checkAll, data, totalPrice, setTotalPrice }) {
+    const [price, setPrice] = useState(convertNumberToPrice(data?.unit?.price * data?.quantity));
+    const [quantity, setQuantity] = useState(data?.quantity);
+    const [check, setCheck] = useState(data?.medicine?.active == 1);
     const [showUnit, setShowUnit] = useState(false);
+    const [image, setImage] = useState('');
+    const [active, setActive] = useState(data?.medicine?.active == 1);
+    const [units, setUnits] = useState({});
+    const [currentUnit, setCurrentUnit] = useState(data?.unit);
+    const navigate = useNavigate();
+    const medicineInCartRef = useRef({});
+
     useEffect(() => {
-        setCheck(props.checkAll);
-    }, [props.checkAll]);
+        if (!active) {
+            return;
+        }
+        setCheck(checkAll);
+    }, [checkAll]);
+
+    useEffect(() => {
+        const imagePromise = getImageFromFirebase(`product/${data?.medicine?.id}`, `${data?.medicine?.avatar}`);
+        imagePromise
+            .then((url) => {
+                setImage(url);
+                return url;
+            })
+            .catch((error) => {
+                setImage(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlBWOxDZ6-zuaW-Bp6x8aw3FNAdI_x90UpUNJhSrd1&s',
+                );
+            });
+    }, []);
+
+    useEffect(() => {
+        const load = getAllUnitsInAMedicine(data?.medicine?.id);
+        load.then(
+            (e) => {
+                if (e.status == 200) {
+                    setUnits(e?.data);
+                }
+            },
+            (e) => {
+                navigate('/server_error');
+            },
+        );
+    }, []);
+
+    function handlerDeleteThisMedicineInCart() {
+        deleteAMedicineInCart(data?.id).then(
+            () => {
+                medicineInCartRef.current.remove();
+            },
+            () => {
+                navigate('/server_error');
+            },
+        );
+    }
+
+    function updateQuantity(quantity) {
+        if (!active) {
+            return;
+        }
+        updateMedicineQuantityInCart(data?.id, quantity, currentUnit?.level).then(
+            () => {
+                let newPrice = convertPriceToNumber(currentUnit?.price) * quantity;
+                let newTotalPrice =
+                    convertPriceToNumber(totalPrice?.replace('.', '')) -
+                    convertPriceToNumber(price?.replace('.', '')) +
+                    newPrice;
+                setPrice(convertNumberToPrice(newPrice));
+                setTotalPrice(convertNumberToPrice(newTotalPrice));
+                setQuantity(quantity);
+            },
+            (err) => {
+                const statusCode = err?.status;
+                if (statusCode === 413) {
+                    alert('not enough');
+                } else if (statusCode === 410) {
+                    alert('not active');
+                } else {
+                    navigate('/server_error');
+                }
+            },
+        );
+    }
+
+    function chooseUnit(level) {
+        for (let i = 0; i < units?.data?.length; i++) {
+            let e = units?.data[i];
+            if (e?.level === level) {
+                updateUnitMedicineInCart(data?.id, e?.id).then(
+                    () => {
+                        setCurrentUnit(e);
+                        setPrice(convertNumberToPrice(e?.price * quantity));
+                        let newPrice = convertPriceToNumber(e?.price) * quantity;
+                        let newTotalPrice =
+                            convertPriceToNumber(totalPrice?.replace('.', '')) -
+                            convertPriceToNumber(e?.price) +
+                            newPrice;
+                        setPrice(convertNumberToPrice(newPrice));
+                        setTotalPrice(convertNumberToPrice(newTotalPrice));
+                    },
+                    (err) => {
+                        const statusCode = err?.status;
+                        if (statusCode === 413) {
+                            alert('not enough');
+                        } else if (statusCode === 410) {
+                            alert('not active');
+                        } else {
+                            navigate('/server_error');
+                        }
+                    },
+                );
+                break;
+            }
+        }
+        setShowUnit(false);
+    }
+
+    function setCheckCartItem() {
+        if (!active) {
+            return;
+        }
+        let newTotalPrice = 0;
+        let totalPriceTmp = convertPriceToNumber(totalPrice?.replace('.', ''));
+        let priceTmp = convertPriceToNumber(price?.replace('.', ''));
+        newTotalPrice = check ? totalPriceTmp - priceTmp : totalPriceTmp + priceTmp;
+        setTotalPrice(convertNumberToPrice(newTotalPrice));
+        setCheck(!check);
+    }
 
     return (
-        <div className="border-t flex items-center  py-3 px-3 hover:bg-[#f5f5f5] transition-all">
+        <div ref={medicineInCartRef} className="border-t flex items-center py-3 px-2 hover:bg-[#f5f5f5] transition-all">
             <div className="flex mr-1">
                 <div className="flex items-center text-sm my-3">
                     <span
-                        onClick={() => setCheck(!check)}
+                        onClick={setCheckCartItem}
                         className={`rounded-full p-1 mr-3 w-5 h-5 flex items-center justify-center text-white cursor-pointer ${
                             check ? 'bg-sky-700 border border-sky-700' : 'border border-black'
                         }`}
@@ -22,25 +150,22 @@ function CartItem(props) {
                     </span>
                 </div>
                 <div className="border border-gray-100 p-1 rounded-md mr-2 max-w-sm	 w-12 h-fit">
-                    <img
-                        src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2023/01/00005713-panadol-extra-do-500mg-180v-sanofi-3541-63d7_large.jpg"
-                        alt=""
-                    />
+                    <img src={image} alt="" />
                 </div>
             </div>
             <div className="flex flex-wrap items-center">
                 <div className="flex flex-wrap items-center justify-between">
-                    <span className="text-xs w-56 sm:mr-10">
-                        Thuốc Panadol Exdiva đỏ GSK giúp giảm đau, hạ sốt (15 vỉ x 12 viên)
-                    </span>
-                    <span className="text-blue-900 text-base font-bold w-24 my-2">6.400đ</span>
+                    <span className="text-xs w-56 sm:mr-10">{data?.medicine?.name}</span>
+                    <span className="text-blue-900 text-base font-bold w-24 my-2">{price}đ</span>
                 </div>
                 <div className="flex justify-between max-sm:justify-start w-44">
                     <div className="text-center p-0 mr-2">
                         <button
                             className="border px-1 rounded-l-full text-sm text-gray-500 cursor-pointer"
                             onClick={() => {
-                                if (quantity > 1) setQuantity(Number(quantity) - 1);
+                                if (quantity > 1) {
+                                    updateQuantity(Number(quantity) - 1);
+                                }
                             }}
                         >
                             <i className="fa-solid fa-minus"></i>
@@ -49,6 +174,9 @@ function CartItem(props) {
                             className="text-sm w-6 border-t border-b text-center outline-0 border-border-slate-100 text-gray-500"
                             type="text"
                             value={quantity}
+                            onBlur={(e) => {
+                                updateQuantity(e.target.value);
+                            }}
                             onChange={(e) => {
                                 setQuantity(e.target.value);
                             }}
@@ -56,7 +184,7 @@ function CartItem(props) {
                         <button
                             className="border px-1 rounded-r-full text-sm cursor-pointer"
                             onClick={() => {
-                                setQuantity(Number(quantity) + 1);
+                                updateQuantity(Number(quantity) + 1);
                             }}
                         >
                             <i className="fa-solid fa-plus  text-gray-500"></i>
@@ -64,7 +192,7 @@ function CartItem(props) {
                     </div>
                     <div className="px-2 py-1 w-16 rounded-full  border text-sm cursor-pointer relative">
                         <div className="flex justify-between items-center" onClick={() => setShowUnit(!showUnit)}>
-                            <span className="text-xs">Hộp</span>
+                            <span className="text-xs">{currentUnit?.name}</span>
                             <span>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -87,39 +215,32 @@ function CartItem(props) {
                                 showUnit ? 'block' : 'hidden'
                             } ease-in-out duration-300 px-1 text-sm rounded-lg cursor-pointer w-56 border py-2 bg-white absolute z-20 right-0 top-8`}
                         >
-                            <div className="flex justify-between px-2 border-b py-2">
-                                <div className="flex">
-                                    <button className="rounded-full w-5 h-5 flex items-center justify-center mr-2 bg-sky-700 text-white">
-                                        <i className="fa-solid fa-check"></i>
-                                    </button>
-                                    <span>Hộp</span>
-                                </div>
-                                <span>280.000đ</span>
-                            </div>
-                            <div className="flex justify-between px-2 border-b-2 py-2">
-                                <div className="flex">
-                                    <button className="rounded-full w-5 h-5 flex items-center justify-center mr-2 bg-sky-700 text-white">
-                                        <i className="fa-solid fa-check"></i>
-                                    </button>
-                                    <span>Hộp</span>
-                                </div>
-                                <span>280.000đ</span>
-                            </div>
-                            <div className="flex justify-between px-2 border-b-2 py-2">
-                                <div className="flex">
-                                    <button className="rounded-full w-5 h-5 flex items-center justify-center mr-2 bg-sky-700 text-white">
-                                        <i className="fa-solid fa-check"></i>
-                                    </button>
-                                    <span>Hộp</span>
-                                </div>
-                                <span>280.000đ</span>
-                            </div>
+                            {units?.data?.map((e, i) => {
+                                return (
+                                    <div key={i} className="flex justify-between px-2 border-b py-2">
+                                        <div className="flex">
+                                            <span
+                                                onClick={() => chooseUnit(e?.level)}
+                                                className={`rounded-full w-5 h-5 flex items-center justify-center mr-2 ${
+                                                    currentUnit?.id == e?.id ? 'bg-sky-700' : 'border border-black'
+                                                } text-white`}
+                                            >
+                                                {currentUnit?.id == e?.id ? (
+                                                    <i className="fa-solid fa-check"></i>
+                                                ) : null}
+                                            </span>
+                                            <span className="capitalize">{e?.name}</span>
+                                        </div>
+                                        <span>{convertNumberToPrice(quantity * e?.price)}đ</span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="pt-1 ml-3 max-sm:self-start">
-                <button>
+            <div className="pt-1 sm:ml-3 max-sm:mr-1 max-sm:self-start">
+                <button onClick={handlerDeleteThisMedicineInCart}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
