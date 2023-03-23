@@ -1,19 +1,49 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import ResultSearchItem from '~/components/ResultSearchItem';
+import * as searchService from '~/services/searchServices';
 
 function HeaderSearch() {
+    const navigate = useNavigate();
+
     const [showItemMobile, setShowItemMobile] = useState(false);
     const [showMenuMobiles, setShowMenuMobiles] = useState(false);
+    const [user, setUser] = useState(false);
+    const [isHovering, setIsHovering] = useState(false);
     const [lock, toogle] = useBodyScrollLock();
+
+    //search logic
+    const [keyword, setKeyword] = useState('');
+    const [resultSearch, setResultSearch] = useState([]);
+    const inputRef = useRef();
+    const [page, setPage] = useState(0);
+    const [pageSize] = useState(3); // total product appear one page
+
     const toogleLock = () => {
         setShowMenuMobiles(!showMenuMobiles);
         toogle();
     };
-    const [user, setUser] = useState(false);
-    const [isHovering, setIsHovering] = useState(false);
-    const [showHintSearch, setShowHintSearch] = useState('');
+
+    useEffect(() => {
+        const fetchApi = async () => {
+            if (keyword?.length > 0) {
+                const result = await searchService.search(keyword, page, pageSize);
+                setResultSearch(result?.data);
+            }
+        };
+
+        fetchApi();
+    }, [keyword, page]);
+
+    //set page 0 when keyword change
+    useEffect(() => {
+        setPage(0);
+    }, [keyword]);
+
+    const handleNewPrice = (price, discount) => {
+        return parseInt(price) - (parseInt(price) * discount) / 100;
+    };
 
     return (
         <div className="wrapper h-20 bg-[#072d94]">
@@ -24,19 +54,33 @@ function HeaderSearch() {
 
                 <div className="relative flex w-1/2 items-center">
                     <input
+                        ref={inputRef}
                         placeholder="Nhập tìm thuốc..."
                         name="search"
                         id="search"
-                        value={showHintSearch}
+                        value={keyword}
                         onChange={(e) => {
-                            setShowHintSearch(e.target.value);
+                            if (e.target.value?.length > 0) {
+                                setKeyword(e.target.value);
+                            } else {
+                                setKeyword('');
+                            }
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                navigate(`/search/keyword=${keyword}/page=1`);
+                                setResultSearch([]);
+                            }
                         }}
                         className="h-10 w-full rounded-l-3xl pl-4 pr-8 outline-none"
                     />
-                    {showHintSearch.length !== 0 && (
+                    {keyword?.length !== 0 && (
                         <button
                             className="top-3/2 absolute right-16 z-10 bg-[#fff] px-1"
-                            onClick={(e) => setShowHintSearch('')}
+                            onClick={() => {
+                                setKeyword('');
+                                inputRef.current.focus();
+                            }}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -52,72 +96,70 @@ function HeaderSearch() {
                             </svg>
                         </button>
                     )}
-                    {showHintSearch.length !== 0 && (
-                        <div className="absolute top-11 left-0 z-10 w-full rounded-lg bg-[#ffffff] shadow-2xl">
-                            <ResultSearchItem
-                                to=""
-                                img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-7608-6226_large.jpg"
-                                name="Kẹo dẻo Vita Gummies Vitamin D3 Nature's Way hỗ trợ xương khớp (120 viên)"
-                                title="Thuốc"
-                                oldPrice="123.000đ"
-                                newPrice="12.123đ"
-                                unit="Hộp"
-                            />
-                            <ResultSearchItem
-                                to=""
-                                img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-7608-6226_large.jpg"
-                                name="Kẹo dẻo Vita Gummies Vitamin D3 Nature's Way hỗ trợ xương khớp (120 viên)"
-                                title="Thuốc"
-                                oldPrice="123.000đ"
-                                newPrice="12.123đ"
-                                unit="Hộp"
-                            />
-                            <ResultSearchItem
-                                to=""
-                                img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-7608-6226_large.jpg"
-                                name="Kẹo dẻo Vita Gummies Vitamin D3 Nature's Way hỗ trợ xương khớp (120 viên)"
-                                title="Thuốc"
-                                oldPrice="123.000đ"
-                                newPrice="12.123đ"
-                                unit="Hộp"
-                            />
-                            <ResultSearchItem
-                                to=""
-                                img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-7608-6226_large.jpg"
-                                name="Kẹo dẻo Vita Gummies Vitamin D3 Nature's Way hỗ trợ xương khớp (120 viên)"
-                                title="Thuốc"
-                                oldPrice="123.000đ"
-                                newPrice="12.123đ"
-                                unit="Hộp"
-                            />
+                    {resultSearch?.content?.content?.length !== 0 && keyword?.length !== 0 && (
+                        <div className="absolute top-11 left-0 z-20 w-full rounded-lg bg-[#ffffff] shadow-2xl">
+                            {resultSearch?.content?.map((e) => (
+                                <ResultSearchItem
+                                    key={e.id}
+                                    to={`detail/${e.slug}`}
+                                    img="https://cdn.nhathuoclongchau.scom.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-s7608-6226_large.jpg"
+                                    name={e.name}
+                                    title={e.category}
+                                    oldPrice={`${e.discount !== 0 ? `${e.price.toString().replace(',', '.')}đ` : ''}`}
+                                    newPrice={`${
+                                        e.discount !== 0
+                                            ? `${handleNewPrice(e.price, e.discount).toFixed(3)}đ`
+                                            : `${e.price.toString().replace(',', '.')}đ`
+                                    }`}
+                                    unit="Hộp"
+                                    onClick={() => {
+                                        setKeyword('');
+                                    }}
+                                />
+                            ))}
 
-                            <NavLink
-                                to=""
-                                className="flex items-center justify-center py-2 text-sm text-[#1d48ba] hover:underline"
-                            >
-                                Xem tất cả
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="h-4 w-4"
+                            {resultSearch?.content?.length > 0 && (
+                                <NavLink
+                                    to={resultSearch?.content?.length > 0 ? `/search/keyword=${keyword}/page=1` : ''}
+                                    className="flex items-center justify-center py-2 text-sm text-[#1d48ba] hover:underline"
+                                    onClick={() => {
+                                        setResultSearch([]);
+                                    }}
                                 >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                </svg>
-                            </NavLink>
+                                    Xem tất cả
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="h-4 w-4"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                                        />
+                                    </svg>
+                                </NavLink>
+                            )}
                         </div>
                     )}
 
-                    <button className="h-10 rounded-r-3xl border border-[#f59e0b] bg-[#f59e0b] px-4 leading-9 outline-none">
+                    <NavLink
+                        to={`/search/keyword=${keyword}/page=1`}
+                        className="h-10 rounded-r-3xl border border-[#f59e0b] bg-[#f59e0b] px-4 leading-9 outline-none"
+                        onClick={() => {
+                            setResultSearch([]);
+                        }}
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="h-6 w-6 text-[#fff]"
+                            className="h-10 w-6 text-[#fff]"
                         >
                             <path
                                 strokeLinecap="round"
@@ -125,7 +167,7 @@ function HeaderSearch() {
                                 d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
                             />
                         </svg>
-                    </button>
+                    </NavLink>
                 </div>
 
                 <div className="right flex  text-white">
@@ -330,16 +372,27 @@ function HeaderSearch() {
                                             placeholder="Nhập tìm thuốc..."
                                             name="search"
                                             id="search"
-                                            value={showHintSearch}
+                                            value={keyword}
                                             onChange={(e) => {
-                                                setShowHintSearch(e.target.value);
+                                                if (e.target.value?.length > 0) {
+                                                    setKeyword(e.target.value);
+                                                } else {
+                                                    setKeyword('');
+                                                }
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    navigate(`/search/keyword=${keyword}/page=1`);
+                                                    setResultSearch([]);
+                                                    setShowMenuMobiles(!showMenuMobiles);
+                                                }
                                             }}
                                             className="h-10 w-full rounded-l-3xl border border-[#bebebe] pl-4 pr-8 outline-none"
                                         />
-                                        {showHintSearch.length !== 0 && (
+                                        {keyword.length !== 0 && (
                                             <button
                                                 className="top-3/2 absolute right-16 z-10 bg-[#fff] px-1"
-                                                onClick={(e) => setShowHintSearch('')}
+                                                onClick={() => setKeyword('')}
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -356,22 +409,30 @@ function HeaderSearch() {
                                             </button>
                                         )}
 
-                                        <button className="h-10 rounded-r-3xl border border-[#f59e0b] bg-[#f59e0b] px-4 leading-9 outline-none">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth={1.5}
-                                                stroke="currentColor"
-                                                className="h-6 w-6 text-[#fff]"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                                                />
-                                            </svg>
-                                        </button>
+                                        <NavLink
+                                            to={`/search/keyword=${keyword}/page=1`}
+                                            onClick={() => {
+                                                setResultSearch([]);
+                                                toogleLock();
+                                            }}
+                                        >
+                                            <button className="h-10 rounded-r-3xl border border-[#f59e0b] bg-[#f59e0b] px-4 leading-9 outline-none">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    strokeWidth={1.5}
+                                                    stroke="currentColor"
+                                                    className="h-6 w-6 text-[#fff]"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        </NavLink>
                                     </div>
                                     <div className="menu-item flex items-center justify-between border-b border-[#e4eaf1] py-[14px] pl-3 text-sm">
                                         <NavLink to="">Trang chủ</NavLink>

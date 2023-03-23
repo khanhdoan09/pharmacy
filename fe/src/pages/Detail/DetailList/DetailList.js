@@ -10,8 +10,7 @@ function DetailList() {
     const refScrollPreserve = useRef(null);
     return (
         <div className=" grid gap-6 px-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  xl:grid-cols-4 2xl:grid-cols-4">
-            {/* cs:hidden xs:hidden sm:hidden md:hidden lg:block xl:block 2xl:flex */}
-            <div className="detail-list !sticky !top-0 left-0 h-fit rounded-lg border-b bg-[#edf2f8] ">
+            <div className="detail-list !sticky !top-0 left-0 h-fit rounded-lg border-b bg-[#edf2f8] cs:hidden xs:hidden sm:hidden md:hidden lg:block xl:block 2xl:flex">
                 <div className="flex cursor-pointer items-center border-b border-[#d8e0e8] px-4 py-3">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

@@ -1,12 +1,19 @@
 package com.project.pharmacy.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 import javax.persistence.*;
 
 @Entity
+@Table(name = "medicine")
 @Data
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +23,7 @@ public class Medicine {
     private String brand;
     private String country;
     private String category;
+    private String itemForm;
     private String categoryDetailId;
     private String specification;
     private String price;
