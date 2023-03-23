@@ -38,16 +38,16 @@ function MainDetail() {
                         </h3>
                     </div>
                     <div className="mt-4 flex items-center">
-                        <p className="mr-2">Đơn vị bán: </p>
+                        <p className="mr-2 line-clamp-1">Đơn vị bán: </p>
 
                         <div className="select-unit">
-                            <div className="unit-item flex items-center ">
+                            <div className="unit-item flex items-center flex-wrap">
                                 <div
                                     onClick={() => toggleTab(1)}
                                     className={
                                         toggleState === 1
-                                            ? ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1'
-                                            : ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1'
+                                            ? ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1 mb-1'
+                                            : ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1 mb-1'
                                     }
                                 >
                                     <img
@@ -61,8 +61,8 @@ function MainDetail() {
                                     onClick={() => toggleTab(2)}
                                     className={
                                         toggleState === 2
-                                            ? ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1'
-                                            : ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1'
+                                            ? ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1 mb-1'
+                                            : ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1 mb-1'
                                     }
                                 >
                                     <img
@@ -76,8 +76,8 @@ function MainDetail() {
                                     onClick={() => toggleTab(3)}
                                     className={
                                         toggleState === 3
-                                            ? ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1'
-                                            : ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1'
+                                            ? ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1 mb-1'
+                                            : ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1 mb-1'
                                     }
                                 >
                                     <img
@@ -176,8 +176,8 @@ function MainDetail() {
                                         d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
                                     />
                                 </svg>
-                                <p className="font-bold">Đổi trả trong 30 ngày</p>
-                                <p>kể từ ngày mua hàng</p>
+                                <p className="font-bold line-clamp-1">Đổi trả trong 30 ngày</p>
+                                <p className='line-clamp-1'>kể từ ngày mua hàng</p>
                             </div>
                             <div className="commit-item flex flex-col items-center">
                                 <svg
@@ -195,8 +195,8 @@ function MainDetail() {
                                     />
                                 </svg>
 
-                                <p className="font-bold">Miễn phí 100%</p>
-                                <p>đổi thuốc</p>
+                                <p className="font-bold line-clamp-1">Miễn phí 100%</p>
+                                <p className='line-clamp-1'>đổi thuốc</p>
                             </div>
                             <div className="commit-item flex flex-col items-center">
                                 <svg
@@ -214,8 +214,8 @@ function MainDetail() {
                                     />
                                 </svg>
 
-                                <p className="font-bold">Miễn phí vận chuyển</p>
-                                <p>theo chính sách giao hàng</p>
+                                <p className="font-bold line-clamp-1">Miễn phí vận chuyển</p>
+                                <p className='line-clamp-1'>theo chính sách giao hàng</p>
                             </div>
                         </div>
                     </div>

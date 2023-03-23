@@ -8,6 +8,7 @@ const routes = {
     confirmEmail: '/confirmEmail', // đã kiểm tra
     forgotPassword: '/forgotPassword', // đã kiểm tra
     filter: '/filter', // đã kiểm tra
+    search: '/search/:keyword/:page',
     user: '/user', // đã kiểm tra
     not_found: '*',
     serverError: 'server_error',

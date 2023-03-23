@@ -1,15 +1,17 @@
 import * as request from '~/utils/request';
 
-export const search = async (q, type = 'less') => {
+export const search = async (keyword, page, pageSize) => {
     try {
-        const res = await request.get('users/search', {
+        const res = await request.get('search', {
             params: {
-                q,
-                type,
+                keyword,
+                page,
+                pageSize,
             },
         });
-        return res.data;
+        return res;
     } catch (error) {
-        console.log(error);
+        console.log('this alert will detlete when deploy (alert search 404)');
+        console.log(error.response.data); // delete when deploy
     }
 };

@@ -5,7 +5,7 @@ import com.project.pharmacy.entity.Medicine;
 import com.project.pharmacy.entity.Unit;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.repository.CartRepository;
-import com.project.pharmacy.repository.MedicineRepository;
+import com.project.pharmacy.repository.MedicineRepostory;
 import com.project.pharmacy.repository.UnitRepository;
 import com.project.pharmacy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class CartService {
     private UnitRepository unitRepository;
 
     @Autowired
-    private MedicineRepository medicineRepository;
+    private MedicineRepostory MedicineRepostory;
 
     @Autowired
     private UnitService unitService;
@@ -61,7 +61,7 @@ public class CartService {
                     HttpStatus.NOT_FOUND,
                     "server cannot add a medicine to cart because of user id is not found");
         }
-        Optional<Medicine> medicine = medicineRepository.findById(medicineId);
+        Optional<Medicine> medicine = MedicineRepostory.findById(medicineId);
         if (!medicine.isPresent()) {
             throw new CustomException(
                     HttpStatus.NOT_FOUND,

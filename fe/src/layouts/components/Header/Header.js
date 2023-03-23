@@ -165,9 +165,7 @@ function Header() {
                         strokeWidth={1.5}
                         stroke="currentColor"
                         className="h-6 w-6 text-[#fff]"
-                        onClick={() => {
-                            setShowMenuMobiles(!showMenuMobiles);
-                        }}
+                        onClick={toogleLock}
                     >
                         <path
                             strokeLinecap="round"
