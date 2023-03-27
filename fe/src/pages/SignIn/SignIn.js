@@ -1,11 +1,21 @@
 import { useFormik, Field, Formik, Form } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { Animation } from 'react-animate-style';
 import { NavLink } from 'react-router-dom';
 import * as Yup from 'yup';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useMsal } from '@azure/msal-react';
+import { loginRequest } from '~/config/authConfig';
+import { checkUserExistOtherwiseAddNewUser } from '~/services/userServices';
+import { loginSuccess } from '~/redux/authSlice';
 
 function SignIn() {
+    const user = useSelector((state) => state.authentication.login.currentUser);
+    const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
+
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -17,6 +27,34 @@ function SignIn() {
         }),
         onSubmit: (values) => {},
     });
+
+    const { instance } = useMsal();
+
+    const handleLoginWithMicrosoft = () => {
+        instance
+            .loginPopup(loginRequest)
+            .then((e) => {
+                console.log(e);
+                const name = e?.account?.name;
+                const email = e?.account?.username;
+                const accessToken = e?.accessToken;
+                const idToken = e?.idToken;
+                dispatch(
+                    loginSuccess({
+                        username: name,
+                        email: email,
+                        accessToken: accessToken,
+                        idToken: idToken,
+                        account: 'Microsoft',
+                    }),
+                );
+                navigate('/');
+            })
+            .catch(() => {
+                navigate('/server_error');
+            });
+    };
+
     return (
         <div className="max-w-full py-10">
             <div className="max-w-[1200px] mx-auto grid 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-1  sm:grid-cols-1 xs:grid-cols-1 cs:grid-cols-1  gap-4 padding-responsive ">
@@ -177,7 +215,9 @@ function SignIn() {
                             src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png"
                             alt=""
                         />
+
                         <img
+                            onClick={handleLoginWithMicrosoft}
                             className="cursor-pointer hover:border-4 border-sky-300 duration-300 hover:ease-in p-2 rounded-full"
                             width={58}
                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE8ig7Ys914TypBbWofcsBDRQe9Ha2jIa2z4PEyPHVPw&s"

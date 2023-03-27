@@ -6,12 +6,14 @@ import lombok.Data;
 public class MedicineDto {
     private int id;
     private String name;
-    private int producer;
-    private int brand;
+    private String producer;
+    private String brand;
+    private String country;
     private String category;
-    private String itemForm;
-    private int categoryDetailId;
+    private String categoryDetailId;
+    private String specification;
     private String price;
-    private double discount;
+    private String discount;
     private String slug;
+    private int active;
 }

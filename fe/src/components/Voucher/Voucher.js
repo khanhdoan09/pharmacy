@@ -1,4 +1,4 @@
-function Voucher() {
+function Voucher(props) {
     return (
         <div className="my-5">
             <div className="flex items-center bg-[#e4e8ed] rounded-t-full">
@@ -13,12 +13,12 @@ function Voucher() {
                     <div className="transform -rotate-90 absolute w-14 -top-5 -left-7 text-[#edf0f3]">- - - - -</div>
                     <div className="absolute w-3 h-3 bg-[#edf0f3] rounded-full -top-11 -left-[6px]"></div>
                 </div>
-                <p
-                    className="line-clamp-3 w-72 rounded-xl bg-white text-[#718198] font-[600] h-20 flex items-center px-3 py-1"
-                    title="QUÀ TẾT NHÂN VIÊN FRT 2023 - PMH 300,000Đ (KHÔNG ÁP DỤNG THUỐC)"
+                <div
+                    className="line-clamp-3 w-72 rounded-xl bg-white text-[#718198] font-[600] h-20 flex items-center justify-center px-3 py-1"
+                    title={props.name}
                 >
-                    QUÀ TẾT NHÂN VIÊN FRT 2023 - PMH 300,000Đ (KHÔNG ÁP DỤNG THUỐC)
-                </p>
+                    <p className="h-full flex items-center">{props.name}</p>
+                </div>
             </div>
             <div className="flex items-center bg-[#e4e8ed] py-3 px-3 rounded-b-2xl z-20 relative">
                 <span className="text-[#718198]">

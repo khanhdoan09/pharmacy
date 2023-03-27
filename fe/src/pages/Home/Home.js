@@ -1,6 +1,6 @@
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { NavLink } from 'react-router-dom';
+import { Navigate, NavLink } from 'react-router-dom';
 
 import Famous from './Famous';
 import Seller from './Seller';
@@ -36,7 +36,7 @@ function Home() {
             <SearchHome />
 
             {/* easy buy  */}
-            <Fade bottom >
+            <Fade bottom>
                 <EasyBuy />
             </Fade>
 
@@ -55,7 +55,7 @@ function Home() {
 
             {/* famous */}
 
-            <Fade bottom duration={1500} >
+            <Fade bottom duration={1500}>
                 <Famous />
             </Fade>
 

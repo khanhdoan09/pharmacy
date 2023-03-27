@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormik, Field, Formik, Form } from 'formik';
 import OrderItem from './OrderItem';
 import address from '~/data/data';
@@ -51,18 +51,24 @@ function Order() {
         },
     });
 
+    useEffect(() => {}, []);
+
     return (
         <div className="bg-[rgb(237,240,243)] py-5">
+            <div className="w-full sm:mx-14 sm:flex justify-between">
+                <p className="my-3 font-[500] text-[#020b27] leading-[2rem] text-[1.1rem]">Chọn địa chỉ giao hàng</p>
+            </div>
             <Formik className="w-full" initialValues={formik.initialValues} onSubmit={formik.handleSubmit}>
                 <Form className="sm:mx-14 sm:flex justify-between">
-                    <div className="sm:w-2/3">
-                        <p className="my-3 font-bold">Chọn địa chỉ giao hàng</p>
+                    <div className="">
                         <div className="rounded-xl px-3 py-5 bg-white">
                             <div className="flex items-center">
                                 <span>
                                     <img width={25} src="https://nhathuoclongchau.com.vn/estore-images/user.png"></img>
                                 </span>
-                                <span className="ml-3 text-sm font-bold">Thông tin người nhận</span>
+                                <span className="ml-3 text-sm font-[500] text-[#020b27] leading-[2rem]">
+                                    Thông tin người nhận
+                                </span>
                             </div>
                             <div className="flex flex-wrap justify-between mt-5">
                                 <div className="sm:w-[49%] max-sm:w-full">
@@ -136,7 +142,9 @@ function Order() {
                                 <span>
                                     <img width={25} src="https://nhathuoclongchau.com.vn/estore-images/pin.png"></img>
                                 </span>
-                                <span className="ml-3 text-sm font-bold">Địa chỉ nhận hàng</span>
+                                <span className="ml-3 text-sm font-[500] text-[#020b27] leading-[2rem]">
+                                    Địa chỉ nhận hàng
+                                </span>
                             </div>
                             <div className="mb-1">
                                 {formik.touched.city &&
@@ -268,7 +276,9 @@ function Order() {
                                 ) : null}
                             </div>
                         </div>
-                        <p className="my-3 font-bold">Danh sách sản phẩm (3)</p>
+                        <p className="my-3 font-[500] text-[#020b27] leading-[2rem] text-[1.1rem]">
+                            Danh sách sản phẩm (3)
+                        </p>
                         <div className="rounded-xl px-3 py-5 bg-white">
                             {Array.from({ length: 3 }, (e, i) => {
                                 return (
@@ -278,7 +288,9 @@ function Order() {
                                 );
                             })}
                         </div>
-                        <p className="my-3 font-bold">Chọn hình thức thanh toán</p>
+                        <p className="my-3 font-[500] text-[#020b27] leading-[2rem] text-[1.1rem]">
+                            Chọn hình thức thanh toán
+                        </p>
                         <div className="rounded-xl px-3 py-5 bg-white">
                             <div
                                 className="flex items-center p-3 cursor-pointer"
@@ -388,8 +400,8 @@ function Order() {
                             </div>
                         </div>
                     </div>
-                    <div className="sticky h-fit top-0 flex">
-                        <div className="z-10 bg-white border-2 h-fit py-4 px-3 sm:rounded-3xl max-sm:rounded-t-3xl max-sm:w-screen sm:w-72 max-sm:fixed left-0 bottom-0">
+                    <div className="sticky h-fit top-0 flex mx-2">
+                        <div className="z-10 bg-white border-2 h-fit py-4 px-3 sm:rounded-3xl max-sm:rounded-t-3xl max-sm:w-screen sm:w-96 max-sm:fixed left-0 bottom-0">
                             <div className={`${showModal ? 'block' : 'hidden'} sm:block`}>
                                 <div className="flex justify-between my-2">
                                     <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">Tổng tiền</h5>

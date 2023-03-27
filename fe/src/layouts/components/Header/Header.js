@@ -1,17 +1,42 @@
 import { useState } from 'react';
+import { useMsal } from '@azure/msal-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
+import { logoutSuccess } from '~/redux/authSlice';
+import { logOut } from '~/services/userServices';
 
 function Header() {
     const [showItemMobile, setShowItemMobile] = useState(false);
     const [showMenuMobiles, setShowMenuMobiles] = useState(false);
     const [lock, toogle] = useBodyScrollLock();
+    const { instance } = useMsal();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const toogleLock = () => {
         setShowMenuMobiles(!showMenuMobiles);
         toogle();
     };
-    const [user, setUser] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
+    const user = useSelector((state) => state.authentication.login.currentUser);
+
+    function handleSignOutWithMicrosoft() {
+        instance
+            .logoutPopup({
+                postLogoutPopupUri: '/signIn',
+            })
+            .then(
+                () => {
+                    dispatch(logoutSuccess(null));
+                    logOut();
+                },
+                (err) => {
+                    navigate('/server_error');
+                },
+            );
+    }
 
     return (
         <div className="wrapper bg-[#072d94] h-20">
@@ -20,7 +45,7 @@ function Header() {
                     <img src="https://nhathuoclongchau.com.vn/frontend_v3/images/longchau-logo.svg" alt="logo" />
                 </NavLink>
                 <div className="right flex text-white ">
-                    {user ? (
+                    {!user ? (
                         <NavLink to="" className="track flex items-center mr-3">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -53,9 +78,7 @@ function Header() {
                             />
                             <div className="flex flex-col">
                                 <p>Tài khoản</p>
-                                <p className="line-clamp-1 w-32">
-                                    Tên nên người dùngên người dùngên người dùnggười dùng
-                                </p>
+                                <p className="line-clamp-1 w-32">{user?.username}</p>
                             </div>
                             {isHovering && (
                                 <div className="fucn-user absolute top-11 right-0 bg-[#ffffff] z-10 animate-fadeBottomMobile border border-[#ccc] rounded-lg w-60">
@@ -92,7 +115,20 @@ function Header() {
                                             />
                                         </svg>
 
-                                        <p className="ml-1 select-none">Thoát tài khoản</p>
+                                        <p
+                                            className="ml-1 select-none"
+                                            onClick={() => {
+                                                switch (user?.account) {
+                                                    case 'Microsoft':
+                                                        handleSignOutWithMicrosoft();
+                                                        break;
+                                                    default:
+                                                        navigate('/server_error');
+                                                }
+                                            }}
+                                        >
+                                            Thoát tài khoản
+                                        </p>
                                     </div>
                                 </div>
                             )}

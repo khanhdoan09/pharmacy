@@ -1,8 +1,12 @@
 package com.project.pharmacy.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
     // do không trả về password field cho client nên cần phải tạo UserDto
     private int id;

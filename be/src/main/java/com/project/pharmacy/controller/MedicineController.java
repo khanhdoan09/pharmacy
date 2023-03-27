@@ -24,11 +24,11 @@ public class MedicineController {
     @Autowired
     private ModelMapper mapper;
 
-    @GetMapping("/medicines")
-    public ResponseHandler<List<Medicine>> getAllMedicine() {
-        List<Medicine> listM = medicineService.getAllMedicine();
-
-        ResponseHandler<List<Medicine>> responseHandler = new ResponseHandler<List<Medicine>>("ok", HttpStatus.OK.value(), listM);
-        return responseHandler;
-    }
+//    @GetMapping("/medicines")
+//    public ResponseHandler<List<Medicine>> getAllMedicine() {
+//        List<Medicine> listM = medicineService.getAllMedicine();
+//
+//        ResponseHandler<List<Medicine>> responseHandler = new ResponseHandler<List<Medicine>>("ok", HttpStatus.OK.value(), listM);
+//        return responseHandler;
+//    }
 }
