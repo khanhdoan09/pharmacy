@@ -1,17 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useMsal } from '@azure/msal-react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import ResultSearchItem from '~/components/ResultSearchItem';
 import * as searchService from '~/services/searchServices';
+import { logoutSuccess } from '~/redux/authSlice';
+import { logOut } from '~/services/userServices';
 
 function HeaderSearch() {
     const navigate = useNavigate();
-
+    const user = useSelector((state) => state.authentication.login.currentUser);
+    const dispatch = useDispatch();
     const [showItemMobile, setShowItemMobile] = useState(false);
     const [showMenuMobiles, setShowMenuMobiles] = useState(false);
-    const [user, setUser] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [lock, toogle] = useBodyScrollLock();
+    const { instance } = useMsal();
 
     //search logic
     const [keyword, setKeyword] = useState('');
@@ -44,6 +49,22 @@ function HeaderSearch() {
     const handleNewPrice = (price, discount) => {
         return parseInt(price) - (parseInt(price) * discount) / 100;
     };
+
+    function handleSignOutWithMicrosoft() {
+        instance
+            .logoutPopup({
+                postLogoutPopupUri: '/signIn',
+            })
+            .then(
+                () => {
+                    dispatch(logoutSuccess(null));
+                    logOut();
+                },
+                (err) => {
+                    navigate('/server_error');
+                },
+            );
+    }
 
     return (
         <div className="wrapper h-20 bg-[#072d94]">
@@ -171,7 +192,7 @@ function HeaderSearch() {
                 </div>
 
                 <div className="right flex  text-white">
-                    {user ? (
+                    {!user ? (
                         <NavLink to="/signin" className="track mr-3 flex items-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -204,7 +225,7 @@ function HeaderSearch() {
                             />
                             <div className="flex flex-col">
                                 <p>Tài khoản</p>
-                                <p className="w-32 line-clamp-1">MinhChanh</p>
+                                <p className="w-32 line-clamp-1">{user?.username}</p>
                             </div>
                             {isHovering && (
                                 <div className="fucn-user absolute top-11 right-0 z-10 w-60 animate-fadeBottomMobile rounded-lg border border-[#ccc] bg-[#ffffff]">
@@ -277,7 +298,20 @@ function HeaderSearch() {
                                             />
                                         </svg>
 
-                                        <p className="ml-1 select-none text-[#7c808e]">Thoát tài khoản</p>
+                                        <p
+                                            className="ml-1 select-none text-[#7c808e]"
+                                            onClick={() => {
+                                                switch (user?.account) {
+                                                    case 'Microsoft':
+                                                        handleSignOutWithMicrosoft();
+                                                        break;
+                                                    default:
+                                                        navigate('/server_error');
+                                                }
+                                            }}
+                                        >
+                                            Thoát tài khoản
+                                        </p>
                                     </div>
                                 </div>
                             )}
