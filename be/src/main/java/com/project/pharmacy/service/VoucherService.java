@@ -18,7 +18,7 @@ public class VoucherService {
         List<Voucher> vouchers = voucherRepository.findAllByBeginningDateLessThanEqualAndExpirationDateGreaterThanEqual(beginningDate, expirationDate);
         if (vouchers.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND,
-                    "vouchers from " + beginningDate + " to " + expirationDate + " are not existed");
+                                      "vouchers from " + beginningDate + " to " + expirationDate + " are not existed");
         }
         return vouchers;
     }

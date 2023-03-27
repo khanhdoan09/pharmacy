@@ -1,8 +1,6 @@
-import Slider from 'react-slick';
+
 import Breadcrumb from '~/components/Breadcrumb';
-
 import BestSeller from './BestSeller';
-
 import View from '../Home/View';
 import FilterCategories from './FilterCategories';
 import FamousProducts from './FamousProducts';

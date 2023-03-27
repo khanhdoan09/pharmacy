@@ -1,4 +1,10 @@
 import Slider from 'react-slick';
+import s1 from '~/assets/img/slider/s1.png';
+import s2 from '~/assets/img/slider/s2.png';
+import s3 from '~/assets/img/slider/s3.png';
+import s4 from '~/assets/img/slider/s4.png';
+import s5 from '~/assets/img/slider/s5.png';
+import s6 from '~/assets/img/slider/s6.png';
 
 function SliderHome() {
     const settings = {
@@ -10,44 +16,26 @@ function SliderHome() {
         slidesToScroll: 1,
     };
     return (
-        <div className="2xl:block xl:block lg:block md:block sm:hidden xs:hidden cs:hidden ">
+        // cs:hidden xs:hidden sm:hidden md:block lg:block xl:block 2xl:block
+        <div className=" ">
             <Slider {...settings}>
-                {/* <div className="max-w-full mx-auto bg-banner h-[700px] ">
-                    <div className="max-w-[1200px] mx-auto flex justify-center items-center h-full">
-                        <div>
-                            <h2 className="uppercase font-bold text-[#f04578] text-7xl mb-2">hãy đánh răng mỗi ngày</h2>
-                            <h2 className="uppercase font-bold text-[#016cc9] text-5xl">để răng chắc khỏe</h2>
-                        </div>
-
-                        <div className="bg-[#ccc] rounded-full before:w-[500px] before:h-[500px] before:rounded-full before:bg-[#bd6868]">
-                            <img
-                                src={require(`../../assets/img/bn.png`)}
-                                alt="img"
-                                className=" object-cover object-center h"
-                            />
-                        </div>
-                    </div>
-                </div> */}
-                <div>
-                    <img
-                        src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677150972-hsMN-cam-cum.png"
-                        alt="img"
-                        className="w-full h-[475px] object-cover"
-                    />
+                <div className="outline-none">
+                    <img src={s1} alt="s1img" className="2xl:h-[475px] xl:h-[475px] lg:h-[400px] w-full object-cover outline-none" />
                 </div>
-                <div>
-                    <img
-                        src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677654059-RTP9-chuyen-trang-sanofi.png"
-                        alt="img"
-                        className="w-full h-[475px] object-cover"
-                    />
+                <div className="outline-none">
+                    <img src={s2} alt="s2img" className="2xl:h-[475px] xl:h-[475px] lg:h-[400px] w-full object-cover outline-none" />
                 </div>
-                <div>
-                    <img
-                        src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1676971969-r79p-co-qua-anh-duoc-ve-nha-8-3.png"
-                        alt="img"
-                        className="w-full h-[475px] object-cover"
-                    />
+                <div className="outline-none">
+                    <img src={s3} alt="s3img" className="2xl:h-[475px] xl:h-[475px] lg:h-[400px] w-full object-cover outline-none" />
+                </div>
+                <div className="outline-none">
+                    <img src={s4} alt="s4img" className="2xl:h-[475px] xl:h-[475px] lg:h-[400px] w-full object-cover outline-none" />
+                </div>
+                <div className="outline-none">
+                    <img src={s5} alt="s5img" className="2xl:h-[475px] xl:h-[475px] lg:h-[400px] w-full object-cover outline-none" />
+                </div>
+                <div className="outline-none">
+                    <img src={s6} alt="s6img" className="2xl:h-[475px] xl:h-[475px] lg:h-[400px] w-full object-cover outline-none" />
                 </div>
             </Slider>
         </div>

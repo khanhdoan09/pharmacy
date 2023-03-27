@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     // important: true,
+    tailwindConfig: './styles/tailwind.config.js',
     content: ['./src/**/*.{js,jsx,ts,tsx}'],
     theme: {
         extend: {
@@ -9,7 +10,6 @@ module.exports = {
             },
             borderRadius: {
                 customeR1: '44% 56% 58% 42% / 30% 57% 43% 70%',
-               
             },
             margin: {
                 '16.66667%': '16.66667%',
@@ -47,5 +47,8 @@ module.exports = {
             },
         },
     },
-    plugins: [require('@tailwindcss/line-clamp')],
+    plugins: [
+        require('@tailwindcss/line-clamp'),
+        require('prettier-plugin-tailwindcss'),
+    ],
 };

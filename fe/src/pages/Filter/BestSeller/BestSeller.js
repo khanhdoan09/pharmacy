@@ -50,7 +50,7 @@ function BestSeller() {
         ],
     };
     return (
-        <div className="bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg px-4 py-4 mb-8">
+        <div className="mb-8 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-4">
             <div className="flex items-center ">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +58,7 @@ function BestSeller() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="w-6 h-6 text-[#fff] mr-1 px-1 py-1 bg-[#ef4444] rounded-full"
+                    className="mr-1 h-6 w-6 rounded-full bg-[#ef4444] px-1 py-1 text-[#fff]"
                 >
                     <path
                         strokeLinecap="round"
@@ -72,35 +72,35 @@ function BestSeller() {
                     />
                 </svg>
 
-                <h3 className="text-[#fff] font-bold text-[20px] select-none">Bán Chạy Nhất</h3>
+                <h3 className="select-none text-[20px] font-bold text-[#fff]">Bán Chạy Nhất</h3>
             </div>
             <Slider {...settings2}>
                 <div className=" px-1 ">
                     <ProductAds
                         label="chai"
-                        img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2018/11/00008138-xisat-kid-75ml-8547-5bf4_large.JPG"
-                        title="Nước biển sâu sạch thông mũi dành cho trẻ em Xisat (75ml)"
-                        newPrice="30.000đ"
+                        img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00032125-tinh-dau-khu-khuan-chong-virus-sa-chanh-thao-nguyen-500ml-3465-62af_large.jpg"
+                        title="Tinh dầu đuổi muỗi và côn trùng, khử khuẩn Thảo Nguyên hương sả chanh (500ml)"
+                        newPrice="169.000đ"
                         oldPrice=""
                         unit="Chai"
                     />
                 </div>
                 <div className=" max-w-ful px-1 ">
                     <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
-                        oldPrice=""
+                        label="1 Chai x 1 Chai"
+                        img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2019/06/00018206-bepanthen-balm-bayer-30g-3395-5d10_large.JPG"
+                        title="Kem Bepanthen Balm Bayer hỗ trợ phòng ngừa hăm tã cho bé (30g)"
+                        newPrice="64.800đ"
+                        oldPrice="72.000đ"
                         unit="Hộp"
                     />
                 </div>
                 <div className=" max-w-ful px-1 ">
                     <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
+                        label="Hộp"
+                        img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032941-dung-cu-hut-mui-cho-tre-em-pa-8747-61a9_large.jpg"
+                        title="Dụng cụ hút mũi cho trẻ PA không độc hại, an toàn tuyệt đối, dễ sử dụng"
+                        newPrice="12.000đ "
                         oldPrice=""
                         unit="Hộp"
                     />
@@ -118,11 +118,11 @@ function BestSeller() {
                 <div className=" max-w-ful px-1 ">
                     <ProductAds
                         label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
+                        img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2018/11/00018765-dau-mu-u-plus-thien-khanh-12ml-3289-5bf0_large.JPG"
+                        title="Dầu Mù U Plus Thiên Khánh hỗ trợ làm mềm mượt, mau liền da, giảm khô da (12ml)"
+                        newPrice="6.500đ"
                         oldPrice=""
-                        unit="Hộp"
+                        unit="Chai"
                     />
                 </div>
                 <div className=" max-w-ful px-1 ">

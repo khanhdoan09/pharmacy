@@ -16,7 +16,7 @@ public class Voucher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    private double discount;
+    private int discount;
     private String createDate;
     private String beginningDate;
     private String expirationDate;

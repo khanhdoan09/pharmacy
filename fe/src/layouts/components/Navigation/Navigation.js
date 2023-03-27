@@ -6,87 +6,95 @@ function Navigation() {
     const [isHovering, setIsHovering] = useState(false);
 
     return (
-        <div className="nav max-w-[1200px] relative 2xl:flex xl:flex lg:flex md:hidden sm:hidden xs:hidden cs:hidden m-auto items-center justify-between bg-[#ff] grid grid-cols-42 padding-responsive">
+        <div className="nav grid-cols-42 padding-responsive relative m-auto grid max-w-[1200px] items-center justify-between bg-[#ff] cs:hidden xs:hidden sm:hidden md:hidden lg:flex xl:flex 2xl:flex">
             <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
                 <NavItem>
-                    <p className="font-bold text-xs uppercase">THỰC PHẨM CHỨC NĂNG</p>
+                    <p className="text-xs font-bold uppercase">THỰC PHẨM CHỨC NĂNG</p>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="w-4 h-4 ml-1"
+                        className="ml-1 h-4 w-4"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </NavItem>
+            </div>
+            <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+                <NavItem>
+                    <p className="text-xs font-bold uppercase">DƯỢC MỸ PHẨM</p>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="ml-1 h-4 w-4"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </NavItem>
+            </div>
+            <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+                <NavItem>
+                    <p className="text-xs font-bold uppercase">CHĂM SÓC CÁ NHÂN</p>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="ml-1 h-4 w-4"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </NavItem>
+            </div>
+            <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+                <NavItem>
+                    <p className="text-xs font-bold uppercase">THUỐC</p>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="ml-1 h-4 w-4"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </NavItem>
+            </div>
+            <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+                <NavItem>
+                    <p className="text-xs font-bold uppercase">THIẾT BỊ Y TẾ</p>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="ml-1 h-4 w-4"
                     >
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                     </svg>
                 </NavItem>
             </div>
             <NavItem>
-                <p className="font-bold text-xs uppercase">DƯỢC MỸ PHẨM</p>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-4 h-4 ml-1"
-                >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
+                <p className="text-xs font-bold uppercase">BỆNH</p>
             </NavItem>
             <NavItem>
-                <p className="font-bold text-xs uppercase">CHĂM SÓC CÁ NHÂN</p>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-4 h-4 ml-1"
-                >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
+                <p className="text-xs font-bold uppercase">GÓC SỨC KHỎE</p>
             </NavItem>
             <NavItem>
-                <p className="font-bold text-xs uppercase">THUỐC</p>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-4 h-4 ml-1"
-                >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
-            </NavItem>
-            <NavItem>
-                <p className="font-bold text-xs uppercase">THIẾT BỊ Y TẾ</p>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-4 h-4 ml-1"
-                >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
-            </NavItem>
-            <NavItem>
-                <p className="font-bold text-xs uppercase">BỆNH</p>
-            </NavItem>
-            <NavItem>
-                <p className="font-bold text-xs uppercase">GÓC SỨC KHỎE</p>
-            </NavItem>
-            <NavItem>
-                <p className="font-bold text-xs uppercase">HỆ THỐNG NHÀ THUỐC</p>
+                <p className="text-xs font-bold uppercase">HỆ THỐNG NHÀ THUỐC</p>
             </NavItem>
 
             {isHovering && (
                 <div
-                    className="nav-content absolute top-10 left-0 bg-[#edf2f8]  rounded-md z-10 animate-fadeBottomMobile"
+                    className="nav-content absolute top-10 left-0 z-10  animate-fadeBottomMobile rounded-md bg-[#edf2f8]"
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                 >

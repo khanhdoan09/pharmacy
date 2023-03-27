@@ -256,7 +256,7 @@ function Comment() {
                         </div>
                     </Reply>
 
-                    <button class="flex items-center justify-center rounded-lg border border-[#d8e0e8] w-[192px] mx-auto mt-8 hover:text-[#fff] hover:bg-[#777272] h-8">
+                    <button className="flex items-center justify-center rounded-lg border border-[#d8e0e8] w-[192px] mx-auto mt-8 hover:text-[#fff] hover:bg-[#777272] h-8">
                         <p className="mr-1 font-bold"> Xem thêm bình luận</p>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

@@ -1,32 +1,30 @@
 import { NavLink } from 'react-router-dom';
+import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
 
-function ResultSearchItem({ to, img, name, title, oldPrice, newPrice, unit }) {
+function ResultSearchItem({ to, img, name, title, oldPrice, newPrice, unit, onClick }) {
     return (
-        <NavLink
-            to={to || ''}
-            className="result-item flex items-center py-2 px-6 border-[] border-b-2"
-        >
-            <img
-                src={img}
-                alt="result-img"
-                className="w-[64px] h-[64px] object-cover mr-2"
-            />
-            <div className="result-item__info">
-                <p className="text-sm text-[#334155] line-clamp-2">{name}</p>
-                <span className="px-2 bg-[#edf2f8] text-[#334155] rounded-sm text-sm h-6 mt-1 ">
-                    {title}
-                </span>
-                <div className="price">
-                    <span className="old-price line-through text-sm mr-1">
-                        {oldPrice}
-                    </span>
-                    <span className="new-price text-base text-[#072d94] font-bold">
-                        {newPrice} &#8260;
-                    </span>
-                    <span className="unit text-sm">{unit}</span>
+       <NavLink to={to || ''}>
+            <div  className="result-item flex items-center border-b-2 py-2 px-6" onClick={onClick}>
+                <img
+                    src={img}
+                    alt="result-img"
+                    className="mr-2 h-[64px] w-[64px] object-cover"
+                    onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src = placehoder600;
+                    }}
+                />
+                <div className="result-item__info">
+                    <p className="text-sm text-[#334155] line-clamp-2">{name}</p>
+                    <span className="mt-1 h-6 rounded-sm bg-[#edf2f8] px-2 text-sm text-[#334155] ">{title}</span>
+                    <div className="price">
+                        <span className="old-price mr-1 text-sm line-through">{oldPrice}</span>
+                        <span className="new-price text-base font-bold text-[#072d94]">{newPrice} &#8260;</span>
+                        <span className="unit text-sm">{unit}</span>
+                    </div>
                 </div>
             </div>
-        </NavLink>
+       </NavLink>
     );
 }
 

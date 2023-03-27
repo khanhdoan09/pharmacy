@@ -44,55 +44,6 @@ public class UserController {
         return responseHandler;
     }
 
-
-//    @GetMapping("/login/microsoft")
-//    public String loginWithMicrosoft() throws CustomException {
-//        System.out.println(123);
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        OidcUser user = ((OidcUser) authentication.getPrincipal());
-//        if (user == null) {
-//            System.out.println("err");
-//            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "error in server");
-//        }
-//        String jwt = user.getIdToken().getTokenValue();
-//        String email = user.getPreferredUsername();
-//        String password = "";
-//        try {
-//            userService.findByEmailAndPassword(email, password);
-//        } catch (CustomException e) {
-//            if (e.getStatus().value() == HttpStatus.NOT_FOUND.value()) {
-//                String name = user.getFullName();
-//                String phoneNumber = user.getPhoneNumber();
-//                userService.saveNewClientUser(name, email, password, phoneNumber, "microsoft", null);
-//            } else {
-//                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "error in server");
-//            }
-//        }
-//        return jwt;
-//    }
-
-    @Operation(description = "check user exist otherwise add new user")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "check successfully"),
-            @ApiResponse(responseCode = "500", description = "error in server", content = @Content(schema =
-            @Schema(implementation = ResponseHandler.class)))
-    })
-    @PostMapping("/check/login/exist")
-    public ResponseHandler checkUserExistOtherwiseAddNewUser(@Valid @ModelAttribute User user) throws CustomException {
-        try {
-            userService.findByEmailAndPassword(user.getEmail(), user.getPassword());
-        } catch (CustomException e) {
-            if (e.getStatus().value() == HttpStatus.NOT_FOUND.value()) {
-                userService.saveNewClientUser(user.getName(), user.getEmail(), user.getPassword(), "", "microsoft",
-                                              null);
-            } else {
-                throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "error in server");
-            }
-        }
-        ResponseHandler responseHandler = new ResponseHandler("check successfully", HttpStatus.OK.value(), null);
-        return responseHandler;
-    }
-
     @Operation(description = "logout server")
     @ApiResponses({
             @ApiResponse(responseCode = "", description = "logout successfully", content = @Content(schema =

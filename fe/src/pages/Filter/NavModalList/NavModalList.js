@@ -24,44 +24,40 @@ function NavModalList() {
             <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2 xs:grid-cols-1 gap-4 mb-8">
                 <ContentNavModalItem
                     to=""
-                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/images/category/20221012091059-9023.png"
-                    title=" Vi sinh - Probiotic"
+                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/upload/images/filtercate/than-tien-liet-tuyen.png"
+                    title="Thận, tiền liệt tuyến"
                 />
                 <ContentNavModalItem
                     to=""
-                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/images/category/20221012091059-9023.png"
-                    title=" Vi sinh - Probiotic"
+                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/upload/images/filtercate/xuong-khop.png"
+                    title="Cơ sương khớp"
                 />
                 <ContentNavModalItem
                     to=""
-                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/images/category/20221012091059-9023.png"
-                    title=" Vi sinh - Probiotic"
+                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/upload/images/filtercate/gout.png"
+                    title="Hỗ trợ điều trị gout"
                 />
                 <ContentNavModalItem
                     to=""
-                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/images/category/20221012091059-9023.png"
-                    title=" Vi sinh - Probiotic"
+                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/images/category/20220329230330-2043.png"
+                    title="Hô hấp, ho, xoang"
                 />
                 <ContentNavModalItem
                     to=""
-                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/images/category/20221012091059-9023.png"
-                    title=" Vi sinh - Probiotic"
+                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/upload/images/filtercate/tri.png"
+                    title="Hỗ trợ điều trị trĩ"
                 />
                 <ContentNavModalItem
                     to=""
-                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/images/category/20221012091059-9023.png"
-                    title=" Vi sinh - Probiotic"
+                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/upload/images/filtercate/tieu-duong.png"
+                    title="Hỗ trợ điều trị tiểu đường"
                 />
                 <ContentNavModalItem
                     to=""
-                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/images/category/20221012091059-9023.png"
-                    title=" Vi sinh - Probiotic"
+                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/upload/images/filtercate/ung-thu.png"
+                    title="Hỗ trợ điều trị ung thư"
                 />
-                <ContentNavModalItem
-                    to=""
-                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/images/category/20221012091059-9023.png"
-                    title=" Vi sinh - Probiotic"
-                />
+               
             </div>
         </>
     );

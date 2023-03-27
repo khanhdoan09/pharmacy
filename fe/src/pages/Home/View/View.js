@@ -1,12 +1,18 @@
 import Slider from 'react-slick';
 import ProductMain from '~/components/ProductMain';
+import n1 from '~/assets/img/nav/n1.png';
+import n2 from '~/assets/img/nav/n2.png';
+import n3 from '~/assets/img/nav/n3.png';
+import n4 from '~/assets/img/nav/n4.png';
+import n5 from '~/assets/img/nav/n5.png';
 
 function View() {
     const settings3 = {
         infinite: true,
         speed: 500,
-        slidesToShow: 4,
+        slidesToShow: 5,
         slidesToScroll: 1,
+        autoplay: true,
         responsive: [
             {
                 breakpoint: 1536,
@@ -56,17 +62,17 @@ function View() {
         ],
     };
     return (
-        <div className="bg-[#edf2f8] max-w-full">
-            <div className="max-w-[1200px] mx-auto my-0 py-8">
-                <div className="flex flex-wrap -mx-1 2xl:px-1 xl:px-1 lg:px-2 md:px-2 sm:px-4 xs:px-4 cs:px-4 ">
-                    <div className="flex-[0_0_100%] max-w-full flex items-center mb-4">
+        <div className="max-w-full bg-[#edf2f8]">
+            <div className="mx-auto my-0 max-w-[1200px] py-8">
+                <div className="-mx-1 flex flex-wrap cs:px-4 xs:px-4 sm:px-4 md:px-2 lg:px-2 xl:px-1 2xl:px-1 ">
+                    <div className="mb-4 flex max-w-full flex-[0_0_100%] items-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6"
+                            className="mr-1 h-6 w-6 rounded-full bg-[#072d94] px-1 py-1 text-[#fff]"
                         >
                             <path
                                 strokeLinecap="round"
@@ -76,64 +82,68 @@ function View() {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
 
-                        <h3 className="px-1  text-[20px] text-[#000] font-bold capitalize">Vừa mới xem</h3>
+                        <h3 className="px-1  text-[20px] font-bold capitalize text-[#000]">Vừa mới xem</h3>
                     </div>
                 </div>
 
-                <Slider {...settings3} className="padding-respinsive">
-                    <div className="!w-11/12 !flex !mx-auto !justify-center !items-center">
+                <Slider {...settings3} className="padding-respinsive ">
+                    <div className="!mx-auto !flex !w-11/12 !items-center !justify-center h-full">
                         <ProductMain
                             to=""
-                            label="Hộp 2 Vỉ x 15 Viên"
-                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00028876-vien-sui-khong-duong-immune-60mg-tuyp-20-vien-2855-62ae_large.jpg"
-                            title="Viên uống Omexxel Ginkgo 120 Excelife hỗ trợ tăng cường tuần hoàn máu não, tốt cho tim mạch (30 viên)"
-                            newPrice="364.000đ"
+                            label="Hộp"
+                            img={n1}
+                            title="
+                    Viên uống Sâm Nhung Bổ Thận NV Dolexpharm giúp tráng dương, mạnh gân cốt (30 viên)"
+                            newPrice="591.000đ"
                             oldPrice=""
-                            unit="hộp"
+                            unit="Hộp"
                         />
                     </div>
-                    <div className="!w-11/12 !flex !mx-auto !justify-center !items-center">
+                    <div className="!mx-auto !flex !w-11/12 !items-center !justify-center">
                         <ProductMain
                             to=""
-                            label="Hộp 2 Vỉ x 15 Viên"
-                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00028876-vien-sui-khong-duong-immune-60mg-tuyp-20-vien-2855-62ae_large.jpg"
-                            title="Viên uống Omexxel Ginkgo 120 Excelife hỗ trợ tăng cường tuần hoàn máu não, tốt cho tim mạch (30 viên)"
-                            newPrice="364.000đ"
+                            label="Hộp"
+                            img={n2}
+                            title="
+                    Tinh chất hàu Best King JpanWell hỗ trợ tăng cường sinh lý và khả năng sinh sản ở nam giới (60 viên)"
+                            newPrice="1.300.000đ "
                             oldPrice=""
-                            unit="hộp"
+                            unit="Hộp"
                         />
                     </div>
-                    <div className="!w-11/12 !flex !mx-auto !justify-center !items-center">
+                    <div className="!mx-auto !flex !w-11/12 !items-center !justify-center">
                         <ProductMain
                             to=""
-                            label="Hộp 2 Vỉ x 15 Viên"
-                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00028876-vien-sui-khong-duong-immune-60mg-tuyp-20-vien-2855-62ae_large.jpg"
-                            title="Viên uống Omexxel Ginkgo 120 Excelife hỗ trợ tăng cường tuần hoàn máu não, tốt cho tim mạch (30 viên)"
-                            newPrice="364.000đ"
-                            oldPrice=""
-                            unit="hộp"
+                            label="Hộp"
+                            img={n3}
+                            title="
+                    Tinh chất hàu Best King JpanWell hỗ trợ tăng cường sinh lý và khả năng sinh sản ở nam giới (60 viên)"
+                            newPrice="879.000đ"
+                            unit="Hộp"
                         />
                     </div>
-                    <div className="!w-11/12 !flex !mx-auto !justify-center !items-center">
+                    <div className="!mx-auto !flex !w-11/12 !items-center !justify-center">
                         <ProductMain
                             to=""
-                            label="Hộp 2 Vỉ x 15 Viên"
-                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00028876-vien-sui-khong-duong-immune-60mg-tuyp-20-vien-2855-62ae_large.jpg"
-                            title="Viên uống Omexxel Ginkgo 120 Excelife hỗ trợ tăng cường tuần hoàn máu não, tốt cho tim mạch (30 viên)"
-                            newPrice="364.000đ"
+                            label="Hộp"
+                            img={n4}
+                            title="
+                    Viên uống Tố Nữ Vương Royal Care hỗ trợ cải thiện nội tiết tố nữ (30 viên)"
+                            newPrice="138.000đ"
                             oldPrice=""
-                            unit="hộp"
+                            unit="Hộp"
                         />
                     </div>
-                    <div className="!w-11/12 !flex !mx-auto !justify-center !items-center">
+                    <div className="!mx-auto !flex !w-11/12 !items-center !justify-center">
                         <ProductMain
                             to=""
-                            label="Hộp 2 Vỉ x 15 Viên"
-                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00028876-vien-sui-khong-duong-immune-60mg-tuyp-20-vien-2855-62ae_large.jpg"
-                            title="Viên uống Omexxel Ginkgo 120 Excelife hỗ trợ tăng cường tuần hoàn máu não, tốt cho tim mạch (30 viên)"
-                            newPrice="364.000đ"
-                            oldPrice=""
-                            unit="hộp"
+                            label="Hộp"
+                            img={n5}
+                            title="
+                    Viên uống Maca M Male Power Nature's Supplements bổ thận, tráng dương (60 viên)"
+                            newPrice="627.000đ"
+                            oldPrice="660.000đ"
+                            unit="Hộp"
                         />
                     </div>
                 </Slider>

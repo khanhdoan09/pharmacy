@@ -7,10 +7,10 @@ import ProductSeller from '~/components/ProductSeller';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Voucher from '~/components/Voucher';
-import { getAllMedicinesInCart } from '~/services/cartServices';
 import { useNavigate } from 'react-router-dom';
 import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
 import { getAllVouchersByToDay } from '~/services/voucherServices';
+import { getAllMedicinesInCart } from '~/services/cartService';
 
 function Cart() {
     const voucherRef = useRef();

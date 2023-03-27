@@ -37,23 +37,23 @@ function Header() {
                 },
             );
     }
-
+    const [showHintSearch, setShowHintSearch] = useState('');
     return (
-        <div className="wrapper bg-[#072d94] h-20">
-            <div className="2xl:flex xl:flex lg:flex m-auto items-center justify-between max-w-[1200px] h-20 md:hidden sm:hidden xs:hidden cs:hidden padding-responsive ">
-                <NavLink to="">
+        <div className="wrapper h-20 bg-[#072d94]">
+            <div className="padding-responsive m-auto h-20 max-w-[1200px] items-center justify-between cs:hidden xs:hidden sm:hidden md:hidden lg:flex xl:flex 2xl:flex ">
+                <NavLink to="/">
                     <img src="https://nhathuoclongchau.com.vn/frontend_v3/images/longchau-logo.svg" alt="logo" />
                 </NavLink>
                 <div className="right flex text-white ">
                     {!user ? (
-                        <NavLink to="" className="track flex items-center mr-3">
+                        <NavLink to="" className="track mr-3 flex items-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 strokeWidth={1.5}
                                 stroke="currentColor"
-                                className="w-10 h-10"
+                                className="h-10 w-10"
                             >
                                 <path
                                     strokeLinecap="round"
@@ -67,46 +67,82 @@ function Header() {
                         </NavLink>
                     ) : (
                         <div
-                            className="user-section flex items-center cursor-pointer relative"
+                            className="user-section relative flex cursor-pointer items-center"
                             onMouseEnter={() => setIsHovering(true)}
                             onMouseLeave={() => setIsHovering(false)}
                         >
                             <img
                                 src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png"
                                 alt="user-img"
-                                className="w-10 h-10 object-cover mr-1"
+                                className="mr-1 h-10 w-10 object-cover"
                             />
                             <div className="flex flex-col">
                                 <p>Tài khoản</p>
-                                <p className="line-clamp-1 w-32">{user?.username}</p>
+                                <p className="w-32 line-clamp-1">{user?.username}</p>
                             </div>
                             {isHovering && (
-                                <div className="fucn-user absolute top-11 right-0 bg-[#ffffff] z-10 animate-fadeBottomMobile border border-[#ccc] rounded-lg w-60">
-                                    <div className="flex items-center px-2  py-2 hover:bg-[#edf2f8] text-[#333] rounded-t-lg transition-basic ">
+                                <div className="fucn-user absolute top-11 right-0 z-10 w-60 animate-fadeBottomMobile rounded-lg border border-[#ccc] bg-[#ffffff]">
+                                    <NavLink
+                                        to="/user"
+                                        className="transition-basic flex items-center  rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "
+                                    >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
                                             viewBox="0 0 24 24"
-                                            strokeWidth={1.5}
-                                            stroke="currentColor"
-                                            className="w-6 h-6"
+                                            fill="currentColor"
+                                            className="h-6 w-6 text-[#7c808e]"
                                         >
                                             <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
+                                                fillRule="evenodd"
+                                                d="M4.5 3.75a3 3 0 00-3 3v10.5a3 3 0 003 3h15a3 3 0 003-3V6.75a3 3 0 00-3-3h-15zm4.125 3a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5zm-3.873 8.703a4.126 4.126 0 017.746 0 .75.75 0 01-.351.92 7.47 7.47 0 01-3.522.877 7.47 7.47 0 01-3.522-.877.75.75 0 01-.351-.92zM15 8.25a.75.75 0 000 1.5h3.75a.75.75 0 000-1.5H15zM14.25 12a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5H15a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5h3.75a.75.75 0 000-1.5H15z"
+                                                clipRule="evenodd"
                                             />
                                         </svg>
-                                        <p className="ml-1 select-none">Đơn hàng của tôi</p>
-                                    </div>
-                                    <div className="flex items-center px-2  py-2 hover:bg-[#edf2f8]  text-[#333] rounded-b-lg transition-basic">
+
+                                        <p className="ml-1 select-none text-[#333]">Thông tin cá nhân</p>
+                                    </NavLink>
+                                    <NavLink
+                                        to="/signin"
+                                        className="transition-basic flex items-center  rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                            className="h-6 w-6 text-[#7c808e]"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+
+                                        <p className="ml-1 select-none text-[#333]">Đăng nhập</p>
+                                    </NavLink>
+                                    <NavLink
+                                        to="/signup"
+                                        className="transition-basic flex items-center rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                            className="h-6 w-6 text-[#7c808e]"
+                                        >
+                                            <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z" />
+                                        </svg>
+
+                                        <p className="ml-1 select-none text-[#333]">Đăng ký tài khoản</p>
+                                    </NavLink>
+                                    <div className="transition-basic flex items-center  rounded-b-lg px-2  py-2 text-[#333] hover:bg-[#edf2f8]">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-6 h-6"
+                                            className="h-6 w-6 text-[#7c808e]"
                                         >
                                             <path
                                                 strokeLinecap="round"
@@ -116,7 +152,7 @@ function Header() {
                                         </svg>
 
                                         <p
-                                            className="ml-1 select-none"
+                                            className="ml-1 select-none text-[#7c808e]"
                                             onClick={() => {
                                                 switch (user?.account) {
                                                     case 'Microsoft':
@@ -135,14 +171,17 @@ function Header() {
                         </div>
                     )}
 
-                    <NavLink to="" className="cart flex items-center">
+                    <NavLink
+                        to="/cart"
+                        className="cart relative flex items-center before:absolute before:top-1 before:-right-1 before:flex before:h-5 before:w-5 before:items-center before:justify-center before:rounded-full before:bg-[#f59e0b] before:text-center before:text-[10px] before:content-['100']"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-10 h-10"
+                            className="h-10 w-10 "
                         >
                             <path
                                 strokeLinecap="round"
@@ -150,15 +189,11 @@ function Header() {
                                 d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
                             />
                         </svg>
-
-                        <div className="cart-title">
-                            <p>Giỏ hàng</p>
-                        </div>
                     </NavLink>
                 </div>
             </div>
 
-            <div className="2xl:hidden xl:hidden lg:hidden md:flex sm:flex xs:flex cs:flex justify-between items-center padding-responsive h-20 relative">
+            <div className="padding-responsive relative h-20 items-center justify-between cs:flex xs:flex sm:flex md:flex lg:hidden xl:hidden 2xl:hidden">
                 <div className="cursor-pointer">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -166,7 +201,7 @@ function Header() {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="w-6 h-6 text-[#fff]"
+                        className="h-6 w-6 text-[#fff]"
                         onClick={toogleLock}
                     >
                         <path
@@ -179,19 +214,19 @@ function Header() {
                     {showMenuMobiles && (
                         <>
                             <div
-                                className="fixed top-0 left-0 overflow-y-hidden w-full h-full bg-[rgb(24,24,24,0.6)] z-10"
+                                className="fixed top-0 left-0 z-10 h-full w-full overflow-y-hidden bg-[rgb(24,24,24,0.6)]"
                                 onClick={toogleLock}
                             ></div>
 
                             <div
                                 className={
                                     showMenuMobiles
-                                        ? ' menu-mobile fixed top-0 left-0 bg-[#e8f5fd] z-20 w-[89%] h-screen animate-fadeLeftMobile '
-                                        : ' menu-mobile fixed top-0 left-0 bg-[#e8f5fd] z-20 w-[89%] h-screen animate-fadeRightMobile '
+                                        ? ' menu-mobile fixed top-0 left-0 z-20 h-screen w-[89%] animate-fadeLeftMobile bg-[#e8f5fd] '
+                                        : ' menu-mobile fixed top-0 left-0 z-20 h-screen w-[89%] animate-fadeRightMobile bg-[#e8f5fd] '
                                 }
                             >
                                 <div
-                                    className="header-menu flex justify-between px-6 py-3 bg-[#072d94]  "
+                                    className="header-menu flex justify-between bg-[#072d94] px-6 py-3  "
                                     onClick={toogleLock}
                                 >
                                     <NavLink to="/" className="center">
@@ -207,7 +242,7 @@ function Header() {
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-6 h-6 text-[#fff]  "
+                                            className="h-6 w-6 text-[#fff]  "
                                         >
                                             <path
                                                 strokeLinecap="round"
@@ -217,16 +252,65 @@ function Header() {
                                         </svg>
                                     </button>
                                 </div>
-                                <div className="content-menu bg-[#fff] px-3">
-                                    <div className="menu-item py-[14px] pl-3 text-sm border-[#e4eaf1] border-b flex items-center justify-between">
+                                <div className="content-menu bg-[#fff] px-3 py-3">
+                                    {/* search mobile start */}
+                                    <div className="relative flex w-full items-center">
+                                        <input
+                                            placeholder="Nhập tìm thuốc..."
+                                            name="search"
+                                            id="search"
+                                            value={showHintSearch}
+                                            onChange={(e) => {
+                                                setShowHintSearch(e.target.value);
+                                            }}
+                                            className="h-10 w-full rounded-l-3xl border border-[#bebebe] pl-4 pr-8 outline-none"
+                                        />
+                                        {showHintSearch.length !== 0 && (
+                                            <button
+                                                className="top-3/2 absolute right-16 z-10 bg-[#fff] px-1"
+                                                onClick={(e) => setShowHintSearch('')}
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    fill="currentColor"
+                                                    className="h-5 w-5 text-[#bebebe] "
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        )}
+
+                                        <button className="h-10 rounded-r-3xl border border-[#f59e0b] bg-[#f59e0b] px-4 leading-9 outline-none">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                                className="h-6 w-6 text-[#fff]"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div className="menu-item flex items-center justify-between border-b border-[#e4eaf1] py-[14px] pl-3 text-sm">
                                         <NavLink to="">Trang chủ</NavLink>
                                     </div>
-                                    <div className="menu-item py-[14px] pl-3 text-sm border-[#e4eaf1] border-b ">
+                                    <div className="menu-item border-b border-[#e4eaf1] py-[14px] pl-3 text-sm ">
                                         <div
                                             className="flex items-center justify-between"
                                             onClick={() => setShowItemMobile(!showItemMobile)}
                                         >
-                                            <NavLink to="" className="select-none">
+                                            <NavLink to="/filter" className="select-none">
                                                 Thực phẩm chức năng
                                             </NavLink>
                                             <svg
@@ -235,7 +319,11 @@ function Header() {
                                                 viewBox="0 0 24 24"
                                                 strokeWidth={1.5}
                                                 stroke="currentColor"
-                                                className="w-6 h-6"
+                                                className={
+                                                    showItemMobile
+                                                        ? 'h-6 w-6 rotate-[180deg] transition-all'
+                                                        : 'h-6 w-6 rotate-[360deg] transition-all'
+                                                }
                                             >
                                                 <path
                                                     strokeLinecap="round"
@@ -245,18 +333,27 @@ function Header() {
                                             </svg>
                                         </div>
                                         {showItemMobile && (
-                                            <ul className="menu-item__childs mt-3 bg-[#e8f5fd] rounded-lg">
-                                                <li className="item px-3 py-3 text-sm select-none">
-                                                    <NavLink to="">Dinh dưỡng</NavLink>
+                                            <ul className="menu-item__childs mt-3 rounded-lg bg-[#e8f5fd] transition-opacity delay-1000">
+                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
+                                                    <NavLink to="/filter">Chức năng gan</NavLink>
                                                 </li>
-                                                <li className="item px-3 py-3 text-sm select-none">
-                                                    <NavLink to="">Dinh dưỡng</NavLink>
+                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
+                                                    <NavLink to="/filter">Hỗ trợ trao đổi chất</NavLink>
+                                                </li>
+                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
+                                                    <NavLink to="/filter">Giải rượu, cai rượu</NavLink>
+                                                </li>
+                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
+                                                    <NavLink to="/filter">Chống lão hóa</NavLink>
+                                                </li>
+                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
+                                                    <NavLink to="/filter">Bổ mắt, bảo vệ mắt</NavLink>
                                                 </li>
                                             </ul>
                                         )}
                                     </div>
 
-                                    <div className="menu-item py-[14px] pl-3 text-sm border-[#e4eaf1] border-b flex items-center justify-between">
+                                    <div className="menu-item flex items-center justify-between border-b border-[#e4eaf1] py-[14px] pl-3 text-sm">
                                         <NavLink to="" className="select-none">
                                             Dược mỹ phẩm
                                         </NavLink>
@@ -266,7 +363,7 @@ function Header() {
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-6 h-6"
+                                            className="h-6 w-6"
                                         >
                                             <path
                                                 strokeLinecap="round"
@@ -283,7 +380,7 @@ function Header() {
                                         viewBox="0 0 24 24"
                                         strokeWidth={1.5}
                                         stroke="currentColor"
-                                        className="w-7 h-7 text-[#072d94] mr-2"
+                                        className="mr-2 h-7 w-7 text-[#072d94]"
                                     >
                                         <path
                                             strokeLinecap="round"
@@ -292,7 +389,7 @@ function Header() {
                                         />
                                     </svg>
                                     <div className="info-contact">
-                                        <h3 className="font-bold text-base text-[#072d94]">1800 6928</h3>
+                                        <h3 className="text-base font-bold text-[#072d94]">1800 6928</h3>
                                         <p className="text-sm text-[#072d94]">Tư vấn miễn phí</p>
                                     </div>
                                 </div>
@@ -303,14 +400,17 @@ function Header() {
                 <NavLink to="/" className="center">
                     <img src="https://nhathuoclongchau.com.vn/frontend_v3/images/longchau-logo.svg" alt="img-logo" />
                 </NavLink>
-                <NavLink to="">
+                <NavLink
+                    to="/cart"
+                    className="cart relative flex items-center before:absolute before:-top-2 before:-right-2 before:flex before:h-5 before:w-5 before:items-center before:justify-center before:rounded-full before:bg-[#f59e0b] before:text-center before:text-[10px] before:text-[#fff] before:content-['100']"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="w-6 h-6 text-[#fff]"
+                        className="h-6 w-6 text-[#fff]"
                     >
                         <path
                             strokeLinecap="round"

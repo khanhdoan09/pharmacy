@@ -147,8 +147,4 @@ public class CartService {
             throw new CustomException(HttpStatus.NOT_FOUND, "medicine id was not found");
         }
     }
-
-    public List<Cart> getCartsByCardIds() {
-        return null;
-    }
 }

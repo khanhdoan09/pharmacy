@@ -46,13 +46,13 @@ public class VoucherControllerTest {
         List<Voucher> vouchers = new ArrayList<Voucher>();
         vouchers.add(new Voucher(1, "", 1, "", "2023-01-01", "2023-01-04"));
         Mockito.when(voucherService
-                        .findAllByBeginningDateLessThanEqualAndExpirationDateGreaterThanEqual(
-                                org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any()))
+                             .findAllByBeginningDateLessThanEqualAndExpirationDateGreaterThanEqual(
+                                     org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any()))
                 .thenReturn(vouchers);
         VoucherDto voucherDto = new VoucherDto(1, "", 20, "2023-01-01", "2023-01-04");
         Mockito.when(
                 mapper.map(org.mockito.ArgumentMatchers.any(),
-                        org.mockito.ArgumentMatchers.any())).thenReturn(voucherDto);
+                           org.mockito.ArgumentMatchers.any())).thenReturn(voucherDto);
     }
 
 
@@ -65,6 +65,6 @@ public class VoucherControllerTest {
                 .andExpect(jsonPath("$.data.[0].beginningDate", is(greaterThanOrEqualTo("2023-01-01"))))
                 .andExpect(jsonPath("$.data.[0].expirationDate", is(lessThanOrEqualTo("2023-01-04"))))
                 .andExpect(jsonPath("$.message",
-                        is("successfully found vouchers by beginning date between and expiration date")));
+                                    is("successfully found vouchers by beginning date between and expiration date")));
     }
 }
