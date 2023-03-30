@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '~/config/authConfig';
 import { loginSuccess } from '~/redux/authSlice';
+import FacebookLogin from 'react-facebook-login';
 
 function SignIn() {
     const user = useSelector((state) => state.authentication.login.currentUser);
@@ -38,13 +39,11 @@ function SignIn() {
                 const name = e?.account?.name;
                 const email = e?.account?.username;
                 const accessToken = e?.accessToken;
-                const idToken = e?.idToken;
                 dispatch(
                     loginSuccess({
                         username: name,
                         email: email,
                         accessToken: accessToken,
-                        idToken: idToken,
                         account: 'Microsoft',
                     }),
                 );
@@ -53,6 +52,22 @@ function SignIn() {
             .catch(() => {
                 navigate('/server_error');
             });
+    };
+
+    const handleErrorLoginWithFacebook = () => {
+        navigate('/server_error');
+    };
+
+    const handleLoginWithFacebook = (response) => {
+        dispatch(
+            loginSuccess({
+                username: response?.name,
+                accessToken: response?.accessToken,
+                avatar: response?.picture?.data?.url,
+                account: 'Facebook',
+            }),
+        );
+        navigate('/');
     };
 
     return (
@@ -206,11 +221,17 @@ function SignIn() {
                             alt=""
                         />
 
-                        <img
-                            className="mx-4 cursor-pointer rounded-full border-sky-300 p-2 duration-300 hover:border-4 hover:ease-in"
-                            width={58}
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png"
-                            alt=""
+                        <FacebookLogin
+                            appId="1298203157783120"
+                            autoLoad={false}
+                            fields="name,email,picture"
+                            scope="public_profile,user_friends"
+                            callback={handleLoginWithFacebook}
+                            icon="fa-facebook"
+                            textButton=""
+                            returnScopes="true"
+                            onFailure={handleErrorLoginWithFacebook}
+                            cssClass="cursor-pointer rounded-full border-sky-300 duration-300 hover:border-4 hover:ease-in w-[58px] h-full text-[34px] hover:text-[30px] text-sky-600 mx-3"
                         />
 
                         <img

@@ -19,6 +19,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.Iterator;
+import java.util.Set;
 
 @Data
 public class VerifyJwtTokenByMicrosoft implements VerifyJwtToken {
@@ -32,6 +34,14 @@ public class VerifyJwtTokenByMicrosoft implements VerifyJwtToken {
         String payload = new String(decoder.decode(chunks[1]));
         JsonObject json = new Gson().fromJson(payload, JsonObject.class);
         setJsonObject(json);
+        Set keys = json.keySet();
+        Iterator<String> value = keys.iterator();
+
+        while (value.hasNext()) {
+            String v = value.next();
+            System.out.println(v + " ~ " + jsonObject.get(v));
+        }
+
         String tid = json.get("tid").toString();
         tid = tid.substring(1, tid.length() - 1);
         String ver = json.get("ver").toString();
@@ -63,11 +73,14 @@ public class VerifyJwtTokenByMicrosoft implements VerifyJwtToken {
 
     @Override
     public User getUser() {
-        String name = jsonObject.get("name").toString();
-        String email = jsonObject.get("preferred_username").toString();
-        String password = jsonObject.get("oid").toString();
+        String name = String.valueOf(jsonObject.get("name"));
+        String email = String.valueOf(jsonObject.get("preferred_username"));
+        String password = String.valueOf(jsonObject.get("oid"));
+        String role = null;
+        if (jsonObject.get("scp").toString().contains("client"))
+            role = "client";
         User user = new User(name.substring(1, name.length() - 1), email.substring(1, email.length() - 1),
-                             password.substring(1, password.length() - 1), null, null, null, null, "client");
+                             password.substring(1, password.length() - 1), null, null, null, null, role);
         return user;
     }
 

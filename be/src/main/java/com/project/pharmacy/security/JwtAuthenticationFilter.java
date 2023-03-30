@@ -47,6 +47,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     userService.saveNewClientUser(user.getName(), user.getEmail(),
                                                   passwordEncoder.encode(user.getPassword()), null,
                                                   verifyJwtToken.getAccountType(), null);
+                    System.out.println(user.getName());
+                    System.out.println(user.getPassword());
+                    System.out.println(user.getRole());
                     userDetails = new CustomUserDetails(user);
                 } finally {
                     authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
@@ -54,6 +57,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            else {
+                throw new ServletException("token is invalid");
             }
         }
         filterChain.doFilter(request, response);
@@ -72,6 +78,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         switch (account) {
             case "Microsoft":
                 return new VerifyJwtTokenByMicrosoft();
+            case "Facebook":
+                return new VerifyJwtTokenByFacebook();
             default:
                 throw new ServletException("wrong account type");
         }

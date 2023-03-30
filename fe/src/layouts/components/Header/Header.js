@@ -72,7 +72,11 @@ function Header() {
                             onMouseLeave={() => setIsHovering(false)}
                         >
                             <img
-                                src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png"
+                                src={
+                                    user.avatar
+                                        ? user.avatar
+                                        : 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png'
+                                }
                                 alt="user-img"
                                 className="mr-1 h-10 w-10 object-cover"
                             />
@@ -159,7 +163,8 @@ function Header() {
                                                         handleSignOutWithMicrosoft();
                                                         break;
                                                     default:
-                                                        navigate('/server_error');
+                                                        dispatch(logoutSuccess(null));
+                                                        logOut();
                                                 }
                                             }}
                                         >
