@@ -6,8 +6,8 @@ import LoadToTop from './components/LoadToTop';
 
 function App() {
     useEffect(() => {
-        window.history.scrollRestoration = 'manual'
-      }, [])
+        window.history.scrollRestoration = 'manual';
+    }, []);
     return (
         <Router>
             <LoadToTop>

@@ -1,6 +1,7 @@
 package com.project.pharmacy.security;
 
 import com.project.pharmacy.entity.User;
+import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.StringUtils;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -18,6 +18,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -27,61 +30,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private Set<String> skipUrls = new HashSet<>(Arrays.asList("/api/cart/**"));
+    private AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = getJwtFromRequest(request);
+        String token = userService.getAccessTokenFromRequest(request);
         if (token != null) {
-            verifyJwtToken = getVerifyJwtToken(request);
-            if (verifyJwtToken.verifyJwtToken(token)) {
-                UsernamePasswordAuthenticationToken authentication = null;
-                User user = verifyJwtToken.getUser();
-                UserDetails userDetails = null;
-                try {
-                    userDetails = userService.loadUserByUsername(user.getName());
-                } catch (UsernameNotFoundException u) {
-                    userService.saveNewClientUser(user.getName(), user.getEmail(),
-                                                  passwordEncoder.encode(user.getPassword()), null,
-                                                  verifyJwtToken.getAccountType(), null);
-                    System.out.println(user.getName());
-                    System.out.println(user.getPassword());
-                    System.out.println(user.getRole());
-                    userDetails = new CustomUserDetails(user);
-                } finally {
-                    authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-                                                                             userDetails.getAuthorities());
+            try {
+                verifyJwtToken = userService.getVerifyJwtToken(request);
+                if (verifyJwtToken.verifyJwtToken(token)) {
+                    UsernamePasswordAuthenticationToken authentication = null;
+                    User user = verifyJwtToken.getUser();
+                    try {
+                        UserDetails userDetails = userService.loadUserByUsername(user.getName());
+                        authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                                                                                 userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        filterChain.doFilter(request, response);
+                    } catch (UsernameNotFoundException u) {
+                        request.setAttribute("exception message", "user is not registered");
+                        request.getRequestDispatcher("/api/auth/unauthorized").forward(request, response);
+                    }
+                } else {
+                    request.setAttribute("exception message", "token is invalid");
+                    request.getRequestDispatcher("/api/auth/unauthorized").forward(request, response);
                 }
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-            else {
-                throw new ServletException("token is invalid");
+            } catch (CustomException e) {
+                request.setAttribute("exception message", e.getMessage());
+                request.getRequestDispatcher("/api/auth/unauthorized").forward(request, response);
             }
         }
-        filterChain.doFilter(request, response);
     }
 
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
-    private VerifyJwtToken getVerifyJwtToken(HttpServletRequest request) throws ServletException {
-        String account = request.getHeader("Account");
-        switch (account) {
-            case "Microsoft":
-                return new VerifyJwtTokenByMicrosoft();
-            case "Facebook":
-                return new VerifyJwtTokenByFacebook();
-            default:
-                throw new ServletException("wrong account type");
-        }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return skipUrls.stream()
+                .noneMatch(p -> pathMatcher.match(p, request.getServletPath()));
     }
 }

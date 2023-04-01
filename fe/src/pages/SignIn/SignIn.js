@@ -1,6 +1,7 @@
 import { useFormik, Field, Formik, Form } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useState, useEffect } from 'react';
 import { Animation } from 'react-animate-style';
 import { NavLink } from 'react-router-dom';
 import * as Yup from 'yup';
@@ -9,12 +10,15 @@ import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '~/config/authConfig';
 import { loginSuccess } from '~/redux/authSlice';
 import FacebookLogin from 'react-facebook-login';
+import { InteractionRequiredAuthError, InteractionStatus } from '@azure/msal-browser';
+import { loginWithAccessToken, registerWithAccessToken } from '~/services/userServices';
 
 function SignIn() {
     const user = useSelector((state) => state.authentication.login.currentUser);
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const [cookies, setCookie] = useCookies(['access_token']);
 
     const formik = useFormik({
         initialValues: {
@@ -30,12 +34,13 @@ function SignIn() {
         },
     });
 
-    const { instance } = useMsal();
+    const { instance, accounts } = useMsal();
 
     const handleLoginWithMicrosoft = () => {
         instance
             .loginPopup(loginRequest)
             .then((e) => {
+                console.log(e);
                 const name = e?.account?.name;
                 const email = e?.account?.username;
                 const accessToken = e?.accessToken;
@@ -47,6 +52,8 @@ function SignIn() {
                         account: 'Microsoft',
                     }),
                 );
+                setCookieLogin(accessToken, 'Microsoft');
+                registerWithAccessToken(accessToken, 'Microsoft');
                 navigate('/');
             })
             .catch(() => {
@@ -59,6 +66,7 @@ function SignIn() {
     };
 
     const handleLoginWithFacebook = (response) => {
+        console.log(response);
         dispatch(
             loginSuccess({
                 username: response?.name,
@@ -67,8 +75,80 @@ function SignIn() {
                 account: 'Facebook',
             }),
         );
+        setCookieLogin(response?.accessToken, 'Facebook');
+        registerWithAccessToken(response?.accessToken, 'Facebook');
         navigate('/');
     };
+
+    useEffect(() => {
+        const accountType = cookies.accountType;
+        const accessToken = cookies.accessToken;
+        console.log(accessToken);
+        console.log(accountType);
+        if (accountType && accessToken) {
+            handleLoginWithAccessToken(accessToken, accountType).then(() => {
+                // navigate('/')
+            });
+        }
+    }, []);
+
+    function handleLoginWithAccessToken(accessToken, accountType) {
+        return loginWithAccessToken(accessToken, accountType).then(
+            (response) => {
+                const statusCode = response?.data?.status;
+                if (statusCode == 200) {
+                    dispatch(
+                        loginSuccess({
+                            username: response?.data?.data,
+                            email: '',
+                            accessToken: accessToken,
+                            account: accountType,
+                        }),
+                    );
+                }
+            },
+            (err) => {
+                const statusCode = err?.status;
+                if (statusCode === 401) {
+                    if (err?.status === 'token has expired') {
+                        handleRefreshTokenToGetNewAccessToken(accountType);
+                    } else {
+                        navigate('/signIn');
+                    }
+                } else {
+                    navigate('/server_error');
+                }
+            },
+        );
+    }
+
+    function handleRefreshTokenToGetNewAccessToken(accountType) {
+        if (accountType === 'Microsoft') {
+            const accessTokenRequest = {
+                scopes: ['api://a0009c06-17e5-438c-8fa8-a076d28644ce/user.read'],
+                account: accounts[0],
+            };
+            instance
+                .acquireTokenSilent(accessTokenRequest)
+                .then((accessTokenResponse) => {
+                    handleLoginWithAccessToken(accessTokenResponse.accessToken, accountType).then(() => {
+                        navigate('/');
+                        setCookieLogin(accessTokenResponse.accessToken, accountType);
+                    });
+                })
+                .catch((error) => {
+                    if (error instanceof InteractionRequiredAuthError) {
+                        instance.acquireTokenRedirect(accessTokenRequest);
+                    }
+                    console.log(error);
+                });
+        }
+    }
+
+    function setCookieLogin(accessToken, accountType) {
+        setCookie('accessToken', accessToken, { path: '/', maxAge: 31536000 }); // 1 year
+        setCookie('accountType', accountType, { path: '/', maxAge: 31536000 });
+    }
 
     return (
         <div className="max-w-full py-10">
@@ -225,7 +305,7 @@ function SignIn() {
                             appId="1298203157783120"
                             autoLoad={false}
                             fields="name,email,picture"
-                            scope="public_profile,user_friends"
+                            scope="public_profile,user_friends, email"
                             callback={handleLoginWithFacebook}
                             icon="fa-facebook"
                             textButton=""

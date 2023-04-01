@@ -3,7 +3,9 @@ package com.project.pharmacy.security;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.project.pharmacy.entity.User;
+import com.project.pharmacy.exception.CustomException;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,10 +17,9 @@ import java.net.URL;
 @Data
 public class VerifyJwtTokenByFacebook implements VerifyJwtToken {
     private JsonObject jsonObject;
-
     @Override
-    public boolean verifyJwtToken(String authToken) {
-        String graph = "https://graph.facebook.com/me?fields=permissions,name&access_token=" + authToken;
+    public boolean verifyJwtToken(String authToken) throws CustomException{
+        String graph = "https://graph.facebook.com/me?fields=permissions,name,email&access_token=" + authToken;
         URL graphURL = null;
         try {
             graphURL = new URL(graph);
@@ -28,13 +29,10 @@ public class VerifyJwtTokenByFacebook implements VerifyJwtToken {
             String line;
             while ((line = br.readLine()) != null)
                 sb.append(line + "\n");
-            System.out.println(sb);
             JsonObject json = new Gson().fromJson(sb.toString(), JsonObject.class);
             setJsonObject(json);
-        } catch (MalformedURLException e) {
-            return false;
         } catch (IOException e) {
-            return false;
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "token is invalid");
         }
         return true;
     }

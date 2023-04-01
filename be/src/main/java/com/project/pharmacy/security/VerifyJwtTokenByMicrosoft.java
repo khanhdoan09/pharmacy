@@ -11,7 +11,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.project.pharmacy.entity.User;
+import com.project.pharmacy.exception.CustomException;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,8 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.Iterator;
-import java.util.Set;
 
 @Data
 public class VerifyJwtTokenByMicrosoft implements VerifyJwtToken {
@@ -29,19 +29,11 @@ public class VerifyJwtTokenByMicrosoft implements VerifyJwtToken {
     private JsonObject jsonObject;
 
     @Override
-    public boolean verifyJwtToken(String authToken) {
+    public boolean verifyJwtToken(String authToken) throws CustomException {
         String[] chunks = authToken.split("\\.");
         String payload = new String(decoder.decode(chunks[1]));
         JsonObject json = new Gson().fromJson(payload, JsonObject.class);
         setJsonObject(json);
-        Set keys = json.keySet();
-        Iterator<String> value = keys.iterator();
-
-        while (value.hasNext()) {
-            String v = value.next();
-            System.out.println(v + " ~ " + jsonObject.get(v));
-        }
-
         String tid = json.get("tid").toString();
         tid = tid.substring(1, tid.length() - 1);
         String ver = json.get("ver").toString();
@@ -56,12 +48,11 @@ public class VerifyJwtTokenByMicrosoft implements VerifyJwtToken {
             algorithm.verify(decodedJWT);
             JsonObject payloadAsJson = decodeTokenPayloadToJsonObject(decodedJWT);
             if (hasTokenExpired(payloadAsJson)) {
-                System.out.println("Token has expired");
-                return false;
+                throw new CustomException(HttpStatus.UNAUTHORIZED, "token has expired");
             }
         } catch (JwkException | SignatureVerificationException | MalformedURLException ex) {
-            System.out.println(ex);
-            return false;
+            System.out.println(ex.getMessage());
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "token isnkjh invalid");
         }
         return true;
     }
@@ -77,7 +68,7 @@ public class VerifyJwtTokenByMicrosoft implements VerifyJwtToken {
         String email = String.valueOf(jsonObject.get("preferred_username"));
         String password = String.valueOf(jsonObject.get("oid"));
         String role = null;
-        if (jsonObject.get("scp").toString().contains("client"))
+        if (jsonObject.get("scp").toString().contains("user.read"))
             role = "client";
         User user = new User(name.substring(1, name.length() - 1), email.substring(1, email.length() - 1),
                              password.substring(1, password.length() - 1), null, null, null, null, role);
