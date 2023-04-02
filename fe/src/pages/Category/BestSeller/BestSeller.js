@@ -75,7 +75,7 @@ function BestSeller(props) {
                 <h3 className="select-none text-[20px] font-bold text-[#fff]">Bán Chạy Nhất</h3>
             </div>
             <Slider {...settings2}>
-                {props?.bestSellerByFieldId?.data?.map((e, index) => (
+                {props?.bestSellerByCategoryId?.map((e, index) => (
                     <div className=" px-1 " key={index}>
                         <ProductAds
                             label={e.specification}

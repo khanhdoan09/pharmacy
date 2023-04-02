@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { useMsal } from '@azure/msal-react';
+import { getAuth, signOut } from 'firebase/auth';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import { logoutSuccess } from '~/redux/authSlice';
 import { logOut } from '~/services/userServices';
@@ -21,6 +21,19 @@ function Header() {
     };
     const [isHovering, setIsHovering] = useState(false);
     const user = useSelector((state) => state.authentication.login.currentUser);
+
+    const auth = getAuth();
+    const handleSignOutWithGoogleFirebase = async () => {
+        await signOut(auth)
+            .then(() => {
+                dispatch(logoutSuccess(null));
+            })
+            .catch((err) => {
+                console.log('Lỗi đăng xuất google');
+                console.log(err?.code);
+                navigate('/server_error');
+            });
+    };
 
     function handleSignOutWithMicrosoft() {
         instance
@@ -46,7 +59,7 @@ function Header() {
                 </NavLink>
                 <div className="right flex text-white ">
                     {!user ? (
-                        <NavLink to="" className="track mr-3 flex items-center">
+                        <NavLink to="/signIn" className="track mr-3 flex items-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -84,7 +97,7 @@ function Header() {
                                 <p>Tài khoản</p>
                                 <p className="w-32 line-clamp-1">{user?.username}</p>
                             </div>
-                            {isHovering && (
+                            {isHovering && user && (
                                 <div className="fucn-user absolute top-11 right-0 z-10 w-60 animate-fadeBottomMobile rounded-lg border border-[#ccc] bg-[#ffffff]">
                                     <NavLink
                                         to="/user"
@@ -105,6 +118,46 @@ function Header() {
 
                                         <p className="ml-1 select-none text-[#333]">Thông tin cá nhân</p>
                                     </NavLink>
+
+                                    <div className="transition-basic flex items-center  rounded-b-lg px-2  py-2 text-[#333] hover:bg-[#edf2f8]">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            className="h-6 w-6 text-[#7c808e]"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+                                            />
+                                        </svg>
+
+                                        <p
+                                            className="ml-1 select-none text-[#7c808e]"
+                                            onClick={() => {
+                                                switch (user?.account) {
+                                                    case 'Microsoft':
+                                                        handleSignOutWithMicrosoft();
+                                                        break;
+                                                    case 'Google':
+                                                        handleSignOutWithGoogleFirebase();
+                                                        break;
+                                                    default:
+                                                        navigate('/server_error');
+                                                }
+                                            }}
+                                        >
+                                            Thoát tài khoản
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {isHovering && !user && (
+                                <div className="fucn-user absolute top-11 right-0 z-10 w-60 animate-fadeBottomMobile rounded-lg border border-[#ccc] bg-[#ffffff]">
                                     <NavLink
                                         to="/signin"
                                         className="transition-basic flex items-center  rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "

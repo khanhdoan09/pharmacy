@@ -1,34 +1,22 @@
-import 'slick-carousel/slick/slick.css';
+import { NavLink } from 'react-router-dom';
 import 'slick-carousel/slick/slick-theme.css';
-import { Navigate, NavLink } from 'react-router-dom';
+import 'slick-carousel/slick/slick.css';
 
-import Famous from './Famous';
-import Seller from './Seller';
-import Protect from './Protect';
-import Object from './Object';
-import View from './View';
-import Resistance from './Resistance';
-import EasyBuy from './EasyBuy';
-import HealthCheck from './HealthCheck';
-import SearchHome from './SearchHome';
-import SliderHome from '~/components/SliderHome';
 import Fade from 'react-reveal/Fade';
-import Commit from './Commit';
+import SliderHome from '~/components/SliderHome';
 import BranchPharmacy from './BranchPharmacy';
-import { useEffect } from 'react';
-// import * as searchServices from '~/services/searchServices';
-import * as medicineServices from '~/services/medicineServices';
+import Commit from './Commit';
+import EasyBuy from './EasyBuy';
+import Famous from './Famous';
+import HealthCheck from './HealthCheck';
+import Object from './Object';
+import Protect from './Protect';
+import Resistance from './Resistance';
+import SearchHome from './SearchHome';
+import Seller from './Seller';
+import View from './View';
 
 function Home() {
-    // useEffect(() => {
-    //     const fetchApi = async () => {
-    //         const result = await medicineServices.getAllMedicines();
-    //         console.log(result);
-    //     };
-
-    //     fetchApi();
-    // }, []);
-
     return (
         <div className="app overflow-hidden">
             <SliderHome />
