@@ -13,6 +13,8 @@ import ServerError from '~/pages/Error/ServerError/ServerError';
 import NotFound from '~/pages/Error/NotFound';
 import { HeaderSearchLayout } from '~/layouts';
 import Search from '~/pages/Search';
+import Category from '~/pages/Category';
+import CategoryDetail from '~/pages/CategoryDetail/CategoryDetail';
 
 const publicRoutes = [
     { path: config.routes.home, component: Home },
@@ -24,6 +26,10 @@ const publicRoutes = [
     { path: config.routes.confirmEmail, component: ConfirmEmail, layout: HeaderSearchLayout },
     { path: config.routes.forgotPassword, component: ForgotPassword, layout: HeaderSearchLayout },
     { path: config.routes.filter, component: Filter, layout: HeaderSearchLayout },
+    { path: config.routes.category, component: Category, layout: HeaderSearchLayout },
+    { path: config.routes.categoryDetail, component: CategoryDetail, layout: HeaderSearchLayout },
+
+
     { path: config.routes.search, component: Search, layout: HeaderSearchLayout },
     { path: config.routes.user, component: User, layout: HeaderSearchLayout },
     { path: config.routes.filter, component: Filter, layout: HeaderSearchLayout },

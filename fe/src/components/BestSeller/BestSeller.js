@@ -1,7 +1,7 @@
 import Slider from 'react-slick';
 import ProductAds from '~/components/ProductAds';
 
-function BestSeller(props) {
+function BestSeller(children) {
     const settings2 = {
         className: 'flex flex-wrap -mx-1 mt-4',
         infinite: true,
@@ -74,20 +74,7 @@ function BestSeller(props) {
 
                 <h3 className="select-none text-[20px] font-bold text-[#fff]">Bán Chạy Nhất</h3>
             </div>
-            <Slider {...settings2}>
-                {props?.bestSellerByFieldId?.data?.map((e, index) => (
-                    <div className=" px-1 " key={index}>
-                        <ProductAds
-                            label={e.specification}
-                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00032125-tinh-dasu-khu-khuan-chong-virus-sa-chanh-thao-nguyen-500ml-3465-62af_large.jpg"
-                            title={e.name}
-                            newPrice="169.000đ"
-                            oldPrice=""
-                            unit={e.category}
-                        />
-                    </div>
-                ))}
-            </Slider>
+            <Slider {...settings2}>{children}</Slider>
         </div>
     );
 }

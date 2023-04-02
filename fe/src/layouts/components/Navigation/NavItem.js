@@ -1,12 +1,12 @@
 import { NavLink } from 'react-router-dom';
 
-function NavItem({ children }) {
+function NavItem({ children, to }) {
     return (
         <NavLink
-            to="/filter"
-            className="nav-title flex items-center border-2 border-transparent hover:border-b-[#f59e0b] hover:border-b-2  py-[10px]	"
+            to={to || '/'}
+            className="nav-title flex items-center border-2 border-transparent py-[10px] hover:border-b-2  hover:border-b-[#f59e0b]	"
         >
-           {children}
+            {children}
         </NavLink>
     );
 }
