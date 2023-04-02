@@ -2,6 +2,10 @@ import { useMsal } from '@azure/msal-react';
 import { signInWithRedirect, signInWithPopup } from 'firebase/auth';
 import { Form, Formik, useFormik } from 'formik';
 import { useState } from 'react';
+import { useFormik, Field, Formik, Form } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCookies } from 'react-cookie';
+import { useState, useEffect } from 'react';
 import { Animation } from 'react-animate-style';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -9,12 +13,16 @@ import * as Yup from 'yup';
 import { loginRequest } from '~/config/authConfig';
 import { auth, provider } from '~/config/firebase';
 import { loginSuccess } from '~/redux/authSlice';
+import FacebookLogin from 'react-facebook-login';
+import { InteractionRequiredAuthError, InteractionStatus } from '@azure/msal-browser';
+import { loginWithAccessToken, registerWithAccessToken } from '~/services/userServices';
 
 function SignIn() {
     const user = useSelector((state) => state.authentication.login.currentUser);
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const [cookies, setCookie] = useCookies(['access_token']);
 
     const formik = useFormik({
         initialValues: {
@@ -30,7 +38,7 @@ function SignIn() {
         },
     });
 
-    const { instance } = useMsal();
+    const { instance, accounts } = useMsal();
 
     const handleLoginWithGoogleFirebase = async () => {
         await signInWithPopup(auth, provider)
@@ -60,25 +68,115 @@ function SignIn() {
         instance
             .loginPopup(loginRequest)
             .then((e) => {
+                console.log(e);
                 const name = e?.account?.name;
                 const email = e?.account?.username;
                 const accessToken = e?.accessToken;
-                const idToken = e?.idToken;
                 dispatch(
                     loginSuccess({
                         username: name,
                         email: email,
                         accessToken: accessToken,
-                        idToken: idToken,
                         account: 'Microsoft',
                     }),
                 );
+                setCookieLogin(accessToken, 'Microsoft');
+                registerWithAccessToken(accessToken, 'Microsoft');
                 navigate('/');
             })
             .catch(() => {
                 navigate('/server_error');
             });
     };
+
+    const handleErrorLoginWithFacebook = () => {
+        navigate('/server_error');
+    };
+
+    const handleLoginWithFacebook = (response) => {
+        console.log(response);
+        dispatch(
+            loginSuccess({
+                username: response?.name,
+                accessToken: response?.accessToken,
+                avatar: response?.picture?.data?.url,
+                account: 'Facebook',
+            }),
+        );
+        setCookieLogin(response?.accessToken, 'Facebook');
+        registerWithAccessToken(response?.accessToken, 'Facebook');
+        navigate('/');
+    };
+
+    useEffect(() => {
+        const accountType = cookies.accountType;
+        const accessToken = cookies.accessToken;
+        console.log(accessToken);
+        console.log(accountType);
+        if (accountType && accessToken) {
+            handleLoginWithAccessToken(accessToken, accountType).then(() => {
+                // navigate('/')
+            });
+        }
+    }, []);
+
+    function handleLoginWithAccessToken(accessToken, accountType) {
+        return loginWithAccessToken(accessToken, accountType).then(
+            (response) => {
+                const statusCode = response?.data?.status;
+                if (statusCode == 200) {
+                    dispatch(
+                        loginSuccess({
+                            username: response?.data?.data,
+                            email: '',
+                            accessToken: accessToken,
+                            account: accountType,
+                        }),
+                    );
+                }
+            },
+            (err) => {
+                const statusCode = err?.status;
+                if (statusCode === 401) {
+                    if (err?.status === 'token has expired') {
+                        handleRefreshTokenToGetNewAccessToken(accountType);
+                    } else {
+                        navigate('/signIn');
+                    }
+                } else {
+                    navigate('/server_error');
+                }
+            },
+        );
+    }
+
+    function handleRefreshTokenToGetNewAccessToken(accountType) {
+        if (accountType === 'Microsoft') {
+            const accessTokenRequest = {
+                scopes: ['api://a0009c06-17e5-438c-8fa8-a076d28644ce/user.read'],
+                account: accounts[0],
+            };
+            instance
+                .acquireTokenSilent(accessTokenRequest)
+                .then((accessTokenResponse) => {
+                    handleLoginWithAccessToken(accessTokenResponse.accessToken, accountType).then(() => {
+                        navigate('/');
+                        setCookieLogin(accessTokenResponse.accessToken, accountType);
+                    });
+                })
+                .catch((error) => {
+                    if (error instanceof InteractionRequiredAuthError) {
+                        instance.acquireTokenRedirect(accessTokenRequest);
+                    }
+                    console.log(error);
+                });
+        }
+    }
+
+    function setCookieLogin(accessToken, accountType) {
+        setCookie('accessToken', accessToken, { path: '/', maxAge: 31536000 }); // 1 year
+        setCookie('accountType', accountType, { path: '/', maxAge: 31536000 });
+    }
 
     return (
         <div className="max-w-full py-10">
@@ -232,11 +330,17 @@ function SignIn() {
                             alt=""
                         />
 
-                        <img
-                            className="mx-4 cursor-pointer rounded-full border-sky-300 p-2 duration-300 hover:border-4 hover:ease-in"
-                            width={58}
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png"
-                            alt=""
+                        <FacebookLogin
+                            appId="1298203157783120"
+                            autoLoad={false}
+                            fields="name,email,picture"
+                            scope="public_profile,user_friends, email"
+                            callback={handleLoginWithFacebook}
+                            icon="fa-facebook"
+                            textButton=""
+                            returnScopes="true"
+                            onFailure={handleErrorLoginWithFacebook}
+                            cssClass="cursor-pointer rounded-full border-sky-300 duration-300 hover:border-4 hover:ease-in w-[58px] h-full text-[34px] hover:text-[30px] text-sky-600 mx-3"
                         />
 
                         <img

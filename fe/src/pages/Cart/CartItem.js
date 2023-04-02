@@ -67,7 +67,7 @@ function CartItem({
 
     function handlerDeleteThisMedicineInCart() {
         activeShowLoading();
-        deleteAMedicineInCart(data?.id, user?.idToken, user?.account).then(
+        deleteAMedicineInCart(data?.id, user?.accessToken, user?.account).then(
             () => {
                 medicineInCartRef.current.remove();
                 unActiveShowLoading();
@@ -88,7 +88,7 @@ function CartItem({
         }
         activeShowLoading();
         setTimeout(() => {
-            updateMedicineQuantityInCart(data?.id, quantity, currentUnit?.level, user?.idToken, user?.account).then(
+            updateMedicineQuantityInCart(data?.id, quantity, currentUnit?.level, user?.accessToken, user?.account).then(
                 () => {
                     let newPrice = convertPriceToNumber(currentUnit?.price) * quantity;
                     let newTotalPrice =
@@ -123,7 +123,7 @@ function CartItem({
             let e = units?.data[i];
             if (e?.level === level) {
                 activeShowLoading();
-                updateUnitMedicineInCart(data?.id, e?.id, user?.idToken, user?.account).then(
+                updateUnitMedicineInCart(data?.id, e?.id, user?.accessToken, user?.account).then(
                     () => {
                         setCurrentUnit(e);
                         setPrice(convertNumberToPrice(e?.price * quantity));
@@ -185,31 +185,31 @@ function CartItem({
     }
 
     return (
-        <div ref={medicineInCartRef} className="border-t flex items-center py-3 px-2 hover:bg-[#f5f5f5] transition-all">
-            <div className="flex mr-1">
-                <div className="flex items-center text-sm my-3">
+        <div ref={medicineInCartRef} className="flex items-center border-t py-3 px-2 transition-all hover:bg-[#f5f5f5]">
+            <div className="mr-1 flex">
+                <div className="my-3 flex items-center text-sm">
                     <span
                         onClick={setCheckCartItem}
-                        className={`rounded-full p-1 mr-3 w-5 h-5 flex items-center justify-center text-white cursor-pointer ${
-                            check ? 'bg-sky-700 border border-sky-700' : 'border border-black'
+                        className={`mr-3 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full p-1 text-white ${
+                            check ? 'border border-sky-700 bg-sky-700' : 'border border-black'
                         }`}
                     >
                         {check ? <i className="fa-solid fa-check"></i> : null}
                     </span>
                 </div>
-                <div className="border border-gray-100 p-1 rounded-md mr-2 max-w-sm	 w-12 h-fit">
+                <div className="mr-2 h-fit w-12 max-w-sm rounded-md border	 border-gray-100 p-1">
                     <img src={image} alt="" />
                 </div>
             </div>
             <div className="flex flex-wrap items-center">
                 <div className="flex flex-wrap items-center justify-between">
-                    <span className="text-xs w-56 sm:mr-10">{data?.medicine?.name}</span>
-                    <span className="text-blue-900 text-base font-bold w-24 my-2">{price}đ</span>
+                    <span className="w-56 text-xs sm:mr-10">{data?.medicine?.name}</span>
+                    <span className="my-2 w-24 text-base font-bold text-blue-900">{price}đ</span>
                 </div>
-                <div className="flex justify-between max-sm:justify-start w-44">
-                    <div className="text-center p-0 mr-2">
+                <div className="flex w-44 justify-between max-sm:justify-start">
+                    <div className="mr-2 p-0 text-center">
                         <button
-                            className="border px-1 rounded-l-full text-sm text-gray-500 cursor-pointer"
+                            className="cursor-pointer rounded-l-full border px-1 text-sm text-gray-500"
                             onClick={() => {
                                 if (quantity > 1) {
                                     updateQuantity(Number(quantity) - 1);
@@ -219,7 +219,7 @@ function CartItem({
                             <i className="fa-solid fa-minus"></i>
                         </button>
                         <input
-                            className="text-sm w-6 border-t border-b text-center outline-0 border-border-slate-100 text-gray-500"
+                            className="border-border-slate-100 w-6 border-t border-b text-center text-sm text-gray-500 outline-0"
                             type="text"
                             value={quantity}
                             onBlur={(e) => {
@@ -230,7 +230,7 @@ function CartItem({
                             }}
                         ></input>
                         <button
-                            className="border px-1 rounded-r-full text-sm cursor-pointer"
+                            className="cursor-pointer rounded-r-full border px-1 text-sm"
                             onClick={() => {
                                 updateQuantity(Number(quantity) + 1);
                             }}
@@ -238,8 +238,8 @@ function CartItem({
                             <i className="fa-solid fa-plus  text-gray-500"></i>
                         </button>
                     </div>
-                    <div className="px-2 py-1 w-16 rounded-full  border text-sm cursor-pointer relative">
-                        <div className="flex justify-between items-center" onClick={() => setShowUnit(!showUnit)}>
+                    <div className="relative w-16 cursor-pointer rounded-full  border px-2 py-1 text-sm">
+                        <div className="flex items-center justify-between" onClick={() => setShowUnit(!showUnit)}>
                             <span className="text-xs">{currentUnit?.name}</span>
                             <span>
                                 <svg
@@ -248,7 +248,7 @@ function CartItem({
                                     viewBox="0 0 24 24"
                                     strokeWidth={1.5}
                                     stroke="currentColor"
-                                    className="w-3 h-3"
+                                    className="h-3 w-3"
                                 >
                                     <path
                                         strokeLinecap="round"
@@ -261,15 +261,15 @@ function CartItem({
                         <div
                             className={`${
                                 showUnit ? 'block' : 'hidden'
-                            } ease-in-out duration-300 px-1 text-sm rounded-lg cursor-pointer w-56 border py-2 bg-white absolute z-20 right-0 top-8`}
+                            } absolute right-0 top-8 z-20 w-56 cursor-pointer rounded-lg border bg-white px-1 py-2 text-sm duration-300 ease-in-out`}
                         >
                             {units?.data?.map((e, i) => {
                                 return (
-                                    <div key={i} className="flex justify-between px-2 border-b py-2">
+                                    <div key={i} className="flex justify-between border-b px-2 py-2">
                                         <div className="flex">
                                             <span
                                                 onClick={() => chooseUnit(e?.level)}
-                                                className={`rounded-full w-5 h-5 flex items-center justify-center mr-2 ${
+                                                className={`mr-2 flex h-5 w-5 items-center justify-center rounded-full ${
                                                     currentUnit?.id == e?.id ? 'bg-sky-700' : 'border border-black'
                                                 } text-white`}
                                             >
@@ -287,7 +287,7 @@ function CartItem({
                     </div>
                 </div>
             </div>
-            <div className="pt-1 sm:ml-3 max-sm:mr-1 max-sm:self-start">
+            <div className="pt-1 max-sm:mr-1 max-sm:self-start sm:ml-3">
                 <button onClick={handlerDeleteThisMedicineInCart}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -295,7 +295,7 @@ function CartItem({
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="w-5 h-5"
+                        className="h-5 w-5"
                     >
                         <path
                             strokeLinecap="round"

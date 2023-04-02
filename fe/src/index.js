@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
+import { CookiesProvider } from 'react-cookie';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const msalInstance = new PublicClientApplication(msalConfig);
@@ -19,7 +20,9 @@ root.render(
     <Provider store={store}>
         <PersistGate persistor={persistor}>
             <MsalProvider instance={msalInstance}>
-                <App />
+                <CookiesProvider>
+                    <App />
+                </CookiesProvider>
             </MsalProvider>
         </PersistGate>
     </Provider>,

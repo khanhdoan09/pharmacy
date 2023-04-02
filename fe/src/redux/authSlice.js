@@ -8,6 +8,11 @@ const authenticationSlice = createSlice({
             isFetching: false,
             error: false,
         },
+        logout: {
+            currentUser: null,
+            isFetching: false,
+            error: false,
+        },
     },
     reducers: {
         loginSuccess: (state, action) => {

@@ -29,7 +29,7 @@ function Cart() {
         if (user == null) {
             navigate('/signIn');
         } else {
-            const load = getAllMedicinesInCart(user?.idToken, user?.account);
+            const load = getAllMedicinesInCart(user?.accessToken, user?.account);
             load.then(
                 (e) => {
                     if (e.status == 200) {
@@ -61,7 +61,7 @@ function Cart() {
     function outOfStock() {
         return (
             <div className="pb-2">
-                <div className="flex items-center text-orange-400 text-xs">Sản phẩm đang tạm hết hàng</div>
+                <div className="flex items-center text-xs text-orange-400">Sản phẩm đang tạm hết hàng</div>
             </div>
         );
     }
@@ -168,12 +168,12 @@ function Cart() {
     return (
         <div className="bg-[rgb(237,240,243)] py-5" id="num">
             <div
-                className={`p-5 rounded-xl bg-[#edf0f3] z-50 absolute left-[45%] top-[35%] ${
+                className={`absolute left-[45%] top-[35%] z-50 rounded-xl bg-[#edf0f3] p-5 ${
                     showLoading ? 'block' : 'hidden'
                 }`}
             >
-                <span className="flex items-center justify-center w-full ">
-                    <svg className="animate-spin h-16 w-16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <span className="flex w-full items-center justify-center ">
+                    <svg className="h-16 w-16 animate-spin" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <circle
                             className="opacity-40"
                             cx={'12'}
@@ -191,22 +191,22 @@ function Cart() {
                 </span>
                 <p className="mt-3">Đang cập nhật giỏ hàng</p>
             </div>
-            <div className="w-full sm:flex flex-wrap justify-evenly max-sm:justify-start ">
+            <div className="w-full flex-wrap justify-evenly max-sm:justify-start sm:flex ">
                 {/* <CartEmpty></CartEmpty> */}
-                <div className="px-1 pb-3 rounded-xl">
-                    <div className="mb-5 sm:mr-3 px-3 flex items-center justify-between px-4 bg-contain bg-[url(https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/voucher%2Fbg-voucher.png?alt=media&token=24592f56-63b9-4e23-8006-a639ca5b8028)]">
+                <div className="rounded-xl px-1 pb-3">
+                    <div className="mb-5 flex items-center justify-between bg-[url(https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/voucher%2Fbg-voucher.png?alt=media&token=24592f56-63b9-4e23-8006-a639ca5b8028)] bg-contain px-3 px-4 sm:mr-3">
                         <div className="flex items-center">
                             <img
                                 width={40}
                                 src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/voucher%2Fvoucher.png?alt=media&token=44249f28-5df6-435f-81a5-1f7544564e19"
                             ></img>
-                            <p className="text-[#1250dc] text-[14px] flex flex-wrap">
+                            <p className="flex flex-wrap text-[14px] text-[#1250dc]">
                                 <span className="mr-1 font-semibold">Khuyến mại </span>
                                 <span>dành riêng cho bạn</span>
                             </p>
                         </div>
                         <div
-                            className="flex items-center cursor-pointer"
+                            className="flex cursor-pointer items-center"
                             onClick={() => {
                                 document.body.style.overflow = 'hidden';
                                 let dateObj = new Date();
@@ -225,7 +225,7 @@ function Cart() {
                                 );
                             }}
                         >
-                            <span className="whitespace-nowrap text-[#1250dc] bg-[#eaeffa] text-[14px] font-[500] tracking-[.01em] rounded-full py-1 px-5">
+                            <span className="whitespace-nowrap rounded-full bg-[#eaeffa] py-1 px-5 text-[14px] font-[500] tracking-[.01em] text-[#1250dc]">
                                 Chọn ngay
                             </span>
                             <span className="text-[#728091] max-sm:hidden">
@@ -235,30 +235,30 @@ function Cart() {
                                     viewBox="0 0 24 24"
                                     strokeWidth={1.5}
                                     stroke="currentColor"
-                                    className="w-6 h-6"
+                                    className="h-6 w-6"
                                 >
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                 </svg>
                             </span>
                         </div>
                     </div>
-                    <div className="bg-white sm:mr-3 px-3 rounded-xl ">
+                    <div className="rounded-xl bg-white px-3 sm:mr-3 ">
                         <div>
                             <div className="flex items-center">
-                                <div className="flex text-sm my-3 w-80 font-[500]">
+                                <div className="my-3 flex w-80 text-sm font-[500]">
                                     <span
                                         onClick={setCheckAllCartItem}
-                                        className={`rounded-full p-1 mr-3 w-5 h-5 flex items-center justify-center text-white cursor-pointer ${
-                                            checkAll ? 'bg-sky-700 border border-sky-700' : 'border border-black'
+                                        className={`mr-3 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full p-1 text-white ${
+                                            checkAll ? 'border border-sky-700 bg-sky-700' : 'border border-black'
                                         }`}
                                     >
                                         {checkAll ? <i className="fa-solid fa-check"></i> : null}
                                     </span>
                                     Chọn tất cả (3)
                                 </div>
-                                <div className="text-sm w-36 text-center max-sm:hidden font-[500]">Giá thành</div>
-                                <div className="text-sm w-20 text-center max-sm:hidden font-[500]">Số lượng</div>
-                                <div className="text-sm w-32 text-center max-sm:hidden font-[500]">Đơn vị</div>
+                                <div className="w-36 text-center text-sm font-[500] max-sm:hidden">Giá thành</div>
+                                <div className="w-20 text-center text-sm font-[500] max-sm:hidden">Số lượng</div>
+                                <div className="w-32 text-center text-sm font-[500] max-sm:hidden">Đơn vị</div>
                             </div>
                         </div>
                         <div>
@@ -296,12 +296,12 @@ function Cart() {
                             })}
                         </div>
                     </div>
-                    <div className="sm:w-[700px] my-3">
-                        <h2 className="font-[500] tracking-[.0025em] text-[#020b27] text-[18px]">Sản phẩm vừa xem</h2>
-                        <Slider {...settings} className="m-0 p-0 relative">
+                    <div className="my-3 sm:w-[700px]">
+                        <h2 className="text-[18px] font-[500] tracking-[.0025em] text-[#020b27]">Sản phẩm vừa xem</h2>
+                        <Slider {...settings} className="relative m-0 p-0">
                             {Array.from({ length: 6 }, (v, i) => (
                                 <div key={i} className="">
-                                    <div className="max-sm:px-1 sm:px-3 py-5">
+                                    <div className="py-5 max-sm:px-1 sm:px-3">
                                         <ProductSeller
                                             img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00500184-sua-nutren-junior-nestle-health-science-hop-850g-2256-62a8_large.jpg"
                                             name="Sữa bột Nestlé Nutren Junior hỗ trợ hệ tiêu hóa giúp trẻ hấp thu dinh dưỡng (850g)"
@@ -319,36 +319,36 @@ function Cart() {
                         </Slider>
                     </div>
                 </div>
-                <div className="sticky h-fit top-0 flex z-20">
-                    <div className="z-10 w-96 border-2 bottom-0 bg-white h-fit py-4 px-3 sm:rounded-3xl max-sm:rounded-t-3xl max-sm:w-screen max-sm:fixed">
-                        <div className={`${showModal ? 'block' : 'hidden'} sm:block sm:text-[16px] max-sm:text-sm`}>
-                            <div className="flex justify-between my-2">
+                <div className="sticky top-0 z-20 flex h-fit">
+                    <div className="bottom-0 z-10 h-fit w-96 border-2 bg-white py-4 px-3 max-sm:fixed max-sm:w-screen max-sm:rounded-t-3xl sm:rounded-3xl">
+                        <div className={`${showModal ? 'block' : 'hidden'} max-sm:text-sm sm:block sm:text-[16px]`}>
+                            <div className="my-2 flex justify-between">
                                 <h5 className="text-slate-600">Tổng tiền</h5>
                                 <h5>{totalPrice}đ</h5>
                             </div>
-                            <div className="flex justify-between my-2">
+                            <div className="my-2 flex justify-between">
                                 <h5 className="text-slate-600">Giảm giá trực tiếp</h5>
                                 <h5>0đ</h5>
                             </div>
-                            <div className="flex justify-between my-2">
+                            <div className="my-2 flex justify-between">
                                 <h5 className="text-slate-600">Giảm giá voucher</h5>
                                 <h5>824.400đ</h5>
                             </div>
-                            <div className="flex justify-between my-2">
+                            <div className="my-2 flex justify-between">
                                 <h5 className="text-slate-600">Tiết kiệm được</h5>
                                 <h5>0đ</h5>
                             </div>
                         </div>
-                        <div className="max-sm:flex justify-between items-center">
-                            <div className="flex max-sm:flex-col justify-between sm:border-t mt-3 py-3">
+                        <div className="items-center justify-between max-sm:flex">
+                            <div className="mt-3 flex justify-between py-3 max-sm:flex-col sm:border-t">
                                 <h4 className="text-[16px] font-semibold">Tạm tính</h4>
                                 <h4
-                                    className="text-[20px] text-[#1250dc] font-[600] tracking-[.005em] flex items-center"
+                                    className="flex items-center text-[20px] font-[600] tracking-[.005em] text-[#1250dc]"
                                     onClick={() => setShowModal(!showModal)}
                                 >
                                     818.000đ
                                     <span
-                                        className={`sm:hidden ml-2 duration-300 ${
+                                        className={`ml-2 duration-300 sm:hidden ${
                                             showModal ? 'rotate-180' : 'rotate-0'
                                         }`}
                                     >
@@ -358,7 +358,7 @@ function Cart() {
                                             viewBox="0 0 24 24"
                                             strokeWidth={2}
                                             stroke="black"
-                                            className="w-5 h-5"
+                                            className="h-5 w-5"
                                         >
                                             <path
                                                 strokeLinecap="round"
@@ -371,14 +371,14 @@ function Cart() {
                             </div>
                             <button
                                 onClick={handleSubmit}
-                                className="w-full max-sm:w-5/12 max-sm:py-4 sm:py-2 rounded-3xl h-fit text-center bg-sky-600 text-white text-sm cursor-pointer "
+                                className="h-fit w-full cursor-pointer rounded-3xl bg-sky-600 text-center text-sm text-white max-sm:w-5/12 max-sm:py-4 sm:py-2 "
                             >
                                 Đặt hàng ({checklist})
                             </button>
                         </div>
-                        <div className="text-center mt-4 max-sm:hidden">
-                            <h6 className="text-xs text-[#020b27] font-[400px]">Nếu tiến hành đặt hàng, bạn đồng ý</h6>
-                            <h6 className="mt-3 decoration-solid cursor-pointer text-xs font-semibold underline text-slate-600">
+                        <div className="mt-4 text-center max-sm:hidden">
+                            <h6 className="text-xs font-[400px] text-[#020b27]">Nếu tiến hành đặt hàng, bạn đồng ý</h6>
+                            <h6 className="mt-3 cursor-pointer text-xs font-semibold text-slate-600 underline decoration-solid">
                                 Điều khoản của nhà thuốc
                             </h6>
                         </div>
@@ -386,17 +386,17 @@ function Cart() {
                 </div>
             </div>
             <div
-                className={`w-screen h-screen absolute bg-black opacity-50 top-0 z-40 ${
+                className={`absolute top-0 z-40 h-screen w-screen bg-black opacity-50 ${
                     showVouchers || showLoading ? 'block' : 'hidden'
                 }`}
             ></div>
             <div
                 ref={voucherRef}
-                className={`opacity-100	z-40 absolute right-0 top-0 bg-white h-full max-sm:w-full ${
+                className={`absolute	right-0 top-0 z-40 h-full bg-white opacity-100 max-sm:w-full ${
                     showVouchers ? 'block' : 'hidden'
                 }`}
             >
-                <div className="opacity-100 flex justify-between items-center text-2xl font-[500] p-5">
+                <div className="flex items-center justify-between p-5 text-2xl font-[500] opacity-100">
                     <p className="">Khuyến mại tặng bạn</p>
                     <span
                         className="cursor-pointer"
@@ -411,26 +411,26 @@ function Cart() {
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-8 h-8"
+                            className="h-8 w-8"
                         >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </span>
                 </div>
-                <div className="bg-[#edf0f3] py-3 h-screen z-50 border-4">
-                    <p className="text-[#4a4f63] font-[600] px-5">Khuyến mại đơn hàng</p>
+                <div className="z-50 h-screen border-4 bg-[#edf0f3] py-3">
+                    <p className="px-5 font-[600] text-[#4a4f63]">Khuyến mại đơn hàng</p>
                     <div className="h-3/4 overflow-auto px-5">
                         {vouchers?.data?.map((e, i) => {
                             return <Voucher key={i} name={e?.name}></Voucher>;
                         })}
                     </div>
-                    <div className="h-1/5 pb-10 w-full bg-white flex items-center rounded-2xl">
+                    <div className="flex h-1/5 w-full items-center rounded-2xl bg-white pb-10">
                         <p
                             onClick={() => {
                                 document.body.style.overflow = 'scroll';
                                 setShowVouchers(false);
                             }}
-                            className="py-3 mx-5 w-full rounded-3xl h-fit text-center bg-sky-600 text-white text-sm cursor-pointer "
+                            className="mx-5 h-fit w-full cursor-pointer rounded-3xl bg-sky-600 py-3 text-center text-sm text-white "
                         >
                             Về giỏ hàng
                         </p>
