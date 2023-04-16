@@ -1,20 +1,17 @@
+import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
-import { signInWithRedirect, signInWithPopup } from 'firebase/auth';
+import { signInWithPopup } from 'firebase/auth';
 import { Form, Formik, useFormik } from 'formik';
-import { useState } from 'react';
-import { useFormik, Field, Formik, Form } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
-import { useCookies } from 'react-cookie';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Animation } from 'react-animate-style';
+import { useCookies } from 'react-cookie';
+import FacebookLogin from 'react-facebook-login';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { loginRequest } from '~/config/authConfig';
 import { auth, provider } from '~/config/firebase';
 import { loginSuccess } from '~/redux/authSlice';
-import FacebookLogin from 'react-facebook-login';
-import { InteractionRequiredAuthError, InteractionStatus } from '@azure/msal-browser';
 import { loginWithAccessToken, registerWithAccessToken } from '~/services/userServices';
 
 function SignIn() {
