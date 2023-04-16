@@ -26,4 +26,7 @@ public class UnitService {
         return units;
     }
 
+    public int findALLQuantityByLevelUnit(int unitId, int medicineId) {
+        return unitRepository.findALLQuantityByLevelUnit(unitId, medicineId);
+    }
 }

@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useFormik, Field, Formik, Form } from 'formik';
-import OrderItem from './OrderItem';
+import CheckoutItem from '~/components/CheckoutItem/CheckoutItem';
 import address from '~/data/data';
+import { useSelector, useDispatch } from 'react-redux';
+import { convertNumberToPrice } from '~/utils/currency';
+import PaymentMethodItem from '~/components/PaymentMethodItem/PaymentMethodItem';
+import { addAddress } from '~/redux/addressSlice';
+import { useNavigate } from 'react-router-dom';
 
 const validate = (values) => {
     const errors = {};
@@ -33,8 +38,12 @@ const validate = (values) => {
 };
 
 function Order() {
+    const dispatch = useDispatch();
+    const cart = useSelector((state) => state.cart.medicines);
     const [showModal, setShowModal] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState(undefined);
+    const navigate = useNavigate();
+
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -47,33 +56,49 @@ function Order() {
         },
         validate,
         onSubmit: (values) => {
-            console.log(JSON.stringify(values, null, 2));
+            dispatch(
+                addAddress({
+                    name: values?.name,
+                    phoneNumber: values?.phoneNumber,
+                    detailAddress: values?.detailAddress,
+                    message: values?.message,
+                    city: JSON.parse(values?.city)?.name,
+                    district: JSON.parse(values?.district)?.name,
+                    ward: JSON.parse(values?.ward)?.name,
+                }),
+            );
+            navigate('/payment');
         },
     });
+    const [totalPrice, setTotalPrice] = useState(0);
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        let totalPrice = 0;
+        cart?.forEach((e) => (totalPrice = e?.quantity * e?.unit?.price + totalPrice));
+        setTotalPrice(totalPrice);
+    }, []);
 
     return (
         <div className="bg-[rgb(237,240,243)] py-5">
-            <div className="w-full sm:mx-14 sm:flex justify-between">
-                <p className="my-3 font-[500] text-[#020b27] leading-[2rem] text-[1.1rem]">Chọn địa chỉ giao hàng</p>
+            <div className="w-full justify-between sm:mx-14 sm:flex">
+                <p className="my-3 text-[1.1rem] font-[500] leading-[2rem] text-[#020b27]">Chọn địa chỉ giao hàng</p>
             </div>
             <Formik className="w-full" initialValues={formik.initialValues} onSubmit={formik.handleSubmit}>
-                <Form className="sm:mx-14 sm:flex justify-between">
+                <Form className="justify-between sm:mx-14 sm:flex">
                     <div className="">
-                        <div className="rounded-xl px-3 py-5 bg-white">
+                        <div className="rounded-xl bg-white px-3 py-5">
                             <div className="flex items-center">
                                 <span>
                                     <img width={25} src="https://nhathuoclongchau.com.vn/estore-images/user.png"></img>
                                 </span>
-                                <span className="ml-3 text-sm font-[500] text-[#020b27] leading-[2rem]">
+                                <span className="ml-3 text-sm font-[500] leading-[2rem] text-[#020b27]">
                                     Thông tin người nhận
                                 </span>
                             </div>
-                            <div className="flex flex-wrap justify-between mt-5">
-                                <div className="sm:w-[49%] max-sm:w-full">
+                            <div className="mt-5 flex flex-wrap justify-between">
+                                <div className="max-sm:w-full sm:w-[49%]">
                                     <input
-                                        className={`border outline-0 text-slate-400 p-3 rounded-xl w-full h-12 ${
+                                        className={`h-12 w-full rounded-xl border p-3 text-slate-400 outline-0 ${
                                             formik.touched.name && formik.errors.name
                                                 ? `border-red-600 bg-rose-50`
                                                 : null
@@ -85,14 +110,14 @@ function Order() {
                                         placeholder="Họ và tên"
                                     ></input>
                                     {formik.touched.name && formik.errors.name ? (
-                                        <span className="flex items-center mt-2 text-red-600 text-sm">
+                                        <span className="mt-2 flex items-center text-sm text-red-600">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 strokeWidth={1.5}
                                                 stroke="currentColor"
-                                                className="w-6 h-6"
+                                                className="h-6 w-6"
                                             >
                                                 <path
                                                     strokeLinecap="round"
@@ -104,9 +129,9 @@ function Order() {
                                         </span>
                                     ) : null}
                                 </div>
-                                <div className="sm:w-[49%] max-sm:w-full">
+                                <div className="max-sm:w-full sm:w-[49%]">
                                     <input
-                                        className={`border outline-0 text-slate-400 p-3 rounded-xl w-full h-12 max-sm:mt-3 ${
+                                        className={`h-12 w-full rounded-xl border p-3 text-slate-400 outline-0 max-sm:mt-3 ${
                                             formik.touched.phoneNumber && formik.errors.phoneNumber
                                                 ? `border-red-600 bg-rose-50`
                                                 : null
@@ -118,14 +143,14 @@ function Order() {
                                         value={formik.values.phoneNumber}
                                     ></input>
                                     {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
-                                        <span className="flex items-center mt-2 text-red-600 text-sm">
+                                        <span className="mt-2 flex items-center text-sm text-red-600">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 strokeWidth={1.5}
                                                 stroke="currentColor"
-                                                className="w-6 h-6"
+                                                className="h-6 w-6"
                                             >
                                                 <path
                                                     strokeLinecap="round"
@@ -138,25 +163,25 @@ function Order() {
                                     ) : null}
                                 </div>
                             </div>
-                            <div className="flex items-center my-5 border-t w-full pt-3">
+                            <div className="my-5 flex w-full items-center border-t pt-3">
                                 <span>
                                     <img width={25} src="https://nhathuoclongchau.com.vn/estore-images/pin.png"></img>
                                 </span>
-                                <span className="ml-3 text-sm font-[500] text-[#020b27] leading-[2rem]">
+                                <span className="ml-3 text-sm font-[500] leading-[2rem] text-[#020b27]">
                                     Địa chỉ nhận hàng
                                 </span>
                             </div>
                             <div className="mb-1">
                                 {formik.touched.city &&
                                 (formik.errors.city || formik.errors.district || formik.errors.ward) ? (
-                                    <span className="flex items-center mt-2 text-red-600 text-sm">
+                                    <span className="mt-2 flex items-center text-sm text-red-600">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-6 h-6"
+                                            className="h-6 w-6"
                                         >
                                             <path
                                                 strokeLinecap="round"
@@ -180,7 +205,7 @@ function Order() {
                                     value={formik.values.city}
                                     as="select"
                                     name="city"
-                                    className={`border outline-0 text-slate-400 p-3 rounded-xl sm:w-[49%] max-sm:w-full ${
+                                    className={`rounded-xl border p-3 text-slate-400 outline-0 max-sm:w-full sm:w-[49%] ${
                                         formik.touched.city && formik.errors.city ? `border-red-600 bg-rose-50` : null
                                     }`}
                                 >
@@ -200,7 +225,7 @@ function Order() {
                                     value={formik.values.district}
                                     as="select"
                                     name="district"
-                                    className={`border outline-0 text-slate-400 p-3 rounded-xl sm:w-[49%] max-sm:w-full max-sm:mt-5 ${
+                                    className={`rounded-xl border p-3 text-slate-400 outline-0 max-sm:mt-5 max-sm:w-full sm:w-[49%] ${
                                         formik.touched.district && formik.errors.district
                                             ? `border-red-600 bg-rose-50`
                                             : null
@@ -226,7 +251,7 @@ function Order() {
                                     value={formik.values.ward}
                                     as="select"
                                     name="ward"
-                                    className={`border outline-0 text-slate-400 p-3 rounded-xl w-full ${
+                                    className={`w-full rounded-xl border p-3 text-slate-400 outline-0 ${
                                         formik.touched.ward && formik.errors.ward ? `border-red-600 bg-rose-50` : null
                                     }`}
                                 >
@@ -246,7 +271,7 @@ function Order() {
                             </div>
                             <div className="mt-5">
                                 <input
-                                    className={`border outline-0 text-slate-400 p-3 rounded-xl w-full ${
+                                    className={`w-full rounded-xl border p-3 text-slate-400 outline-0 ${
                                         formik.touched.name && formik.errors.name ? `border-red-600 bg-rose-50` : null
                                     }`}
                                     placeholder="Nhập địa chỉ cụ thể"
@@ -256,14 +281,14 @@ function Order() {
                                     value={formik.values.detailAddress}
                                 ></input>
                                 {formik.touched.detailAddress && formik.errors.detailAddress ? (
-                                    <span className="flex items-center mt-2 text-red-600 text-sm">
+                                    <span className="mt-2 flex items-center text-sm text-red-600">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-6 h-6"
+                                            className="h-6 w-6"
                                         >
                                             <path
                                                 strokeLinecap="round"
@@ -276,51 +301,73 @@ function Order() {
                                 ) : null}
                             </div>
                         </div>
-                        <p className="my-3 font-[500] text-[#020b27] leading-[2rem] text-[1.1rem]">
+                        <p className="my-3 text-[1.1rem] font-[500] leading-[2rem] text-[#020b27]">
                             Danh sách sản phẩm (3)
                         </p>
-                        <div className="rounded-xl px-3 py-5 bg-white">
-                            {Array.from({ length: 3 }, (e, i) => {
+                        <div className="rounded-xl bg-white px-3 py-5">
+                            {cart.map((e, i) => {
                                 return (
                                     <div key={i} className={i === 0 ? null : 'border-t'}>
-                                        <OrderItem></OrderItem>
+                                        <CheckoutItem
+                                            avatar={e?.avatar}
+                                            medicine={e?.medicine}
+                                            quantity={e?.quantity}
+                                            unit={e?.unit}
+                                        ></CheckoutItem>
                                     </div>
                                 );
                             })}
                         </div>
-                        <p className="my-3 font-[500] text-[#020b27] leading-[2rem] text-[1.1rem]">
+                        <p className="my-3 text-[1.1rem] font-[500] leading-[2rem] text-[#020b27]">
                             Chọn hình thức thanh toán
                         </p>
-                        <div className="rounded-xl px-3 py-5 bg-white">
+                        <div className="rounded-xl bg-white px-3 py-1">
                             <div
-                                className="flex items-center p-3 cursor-pointer"
+                                className="flex cursor-pointer items-center p-3"
                                 onClick={() =>
                                     paymentMethod === 'vnpay' ? setPaymentMethod(undefined) : setPaymentMethod('vnpay')
                                 }
                             >
                                 <div
-                                    className={`flex items-center rounded-full w-5 h-5 ${
-                                        paymentMethod === 'vnpay' ? 'bg-blue-700' : 'border-stone-500 border'
+                                    className={`flex h-5 w-5 items-center rounded-full ${
+                                        paymentMethod === 'vnpay' ? 'bg-blue-700' : 'border border-stone-500'
                                     }`}
                                 >
                                     <i
-                                        className={`fa-solid fa-check text-white text-sm ml-[3px] ${
+                                        className={`fa-solid fa-check ml-[3px] text-sm text-white ${
                                             paymentMethod === 'vnpay' ? 'block' : 'hidden'
                                         }`}
                                     ></i>
                                 </div>
-                                <div className="mx-3">
-                                    <img
-                                        width={35}
-                                        src="https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/vnpay.png"
-                                    ></img>
-                                </div>
-                                <p htmlFor="vnpay" className="text-sm">
-                                    Thanh toán bằng thẻ ATM nội địa (Qua VNPay)
-                                </p>
+                                <PaymentMethodItem
+                                    urlImg={'https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/vnpay.png'}
+                                    name={'Thanh toán bằng thẻ ATM nội địa (Qua VNPay)'}
+                                ></PaymentMethodItem>
                             </div>
                             <div
-                                className="flex items-center p-3 cursor-pointer border-t"
+                                className="flex cursor-pointer items-center border-t p-3"
+                                onClick={() =>
+                                    paymentMethod === 'moca' ? setPaymentMethod(undefined) : setPaymentMethod('moca')
+                                }
+                            >
+                                <div
+                                    className={`flex h-5 w-5 items-center rounded-full ${
+                                        paymentMethod === 'moca' ? 'bg-blue-700' : 'border border-stone-500'
+                                    }`}
+                                >
+                                    <i
+                                        className={`fa-solid fa-check ml-[3px] text-sm text-white ${
+                                            paymentMethod === 'moca' ? 'block' : 'hidden'
+                                        }`}
+                                    ></i>
+                                </div>
+                                <PaymentMethodItem
+                                    urlImg={'https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/card.png'}
+                                    name={'Thanh toán bằng thẻ quốc tế Visa, Master, JCB'}
+                                ></PaymentMethodItem>
+                            </div>
+                            <div
+                                className="flex cursor-pointer items-center border-t p-3"
                                 onClick={() =>
                                     paymentMethod === 'paypal'
                                         ? setPaymentMethod(undefined)
@@ -328,51 +375,25 @@ function Order() {
                                 }
                             >
                                 <div
-                                    className={`flex items-center rounded-full w-5 h-5 ${
-                                        paymentMethod === 'paypal' ? 'bg-blue-700' : 'border-stone-500 border'
+                                    className={`flex h-5 w-5 items-center rounded-full ${
+                                        paymentMethod === 'paypal' ? 'bg-blue-700' : 'border border-stone-500'
                                     }`}
                                 >
                                     <i
-                                        className={`fa-solid fa-check text-white text-sm ml-[3px] ${
+                                        className={`fa-solid fa-check ml-[3px] text-sm text-white ${
                                             paymentMethod === 'paypal' ? 'block' : 'hidden'
                                         }`}
                                     ></i>
                                 </div>
-                                <div className="mx-3">
-                                    <img
-                                        width={35}
-                                        src="https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/card.png"
-                                    ></img>
-                                </div>
-                                <p className="text-sm">Thanh toán bằng thẻ quốc tế Visa, Master, JCB</p>
+                                <PaymentMethodItem
+                                    urlImg={
+                                        'https://static.vecteezy.com/system/resources/thumbnails/009/469/637/small/paypal-payment-icon-editorial-logo-free-vector.jpg'
+                                    }
+                                    name={'Thanh toán bằng paypal'}
+                                ></PaymentMethodItem>
                             </div>
                             <div
-                                className="flex items-center p-3 cursor-pointer border-t"
-                                onClick={() =>
-                                    paymentMethod === 'moca' ? setPaymentMethod(undefined) : setPaymentMethod('moca')
-                                }
-                            >
-                                <div
-                                    className={`flex items-center rounded-full w-5 h-5 ${
-                                        paymentMethod === 'moca' ? 'bg-blue-700' : 'border-stone-500 border'
-                                    }`}
-                                >
-                                    <i
-                                        className={`fa-solid fa-check text-white text-sm ml-[3px] ${
-                                            paymentMethod === 'moca' ? 'block' : 'hidden'
-                                        }`}
-                                    ></i>
-                                </div>
-                                <div className="mx-3">
-                                    <img
-                                        width={35}
-                                        src="https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/moca.png"
-                                    ></img>
-                                </div>
-                                <p className="text-sm">Thanh toán bằng ví Moca</p>
-                            </div>
-                            <div
-                                className="flex items-center p-3 cursor-pointer border-t"
+                                className="flex cursor-pointer items-center border-t p-3"
                                 onClick={() =>
                                     paymentMethod === 'zalopay'
                                         ? setPaymentMethod(undefined)
@@ -380,55 +401,54 @@ function Order() {
                                 }
                             >
                                 <div
-                                    className={`flex items-center rounded-full w-5 h-5 ${
-                                        paymentMethod === 'zalopay' ? 'bg-blue-700' : 'border-stone-500 border'
+                                    className={`flex h-5 w-5 items-center rounded-full ${
+                                        paymentMethod === 'zalopay' ? 'bg-blue-700' : 'border border-stone-500'
                                     }`}
                                 >
                                     <i
-                                        className={`fa-solid fa-check text-white text-sm ml-[3px] ${
+                                        className={`fa-solid fa-check ml-[3px] text-sm text-white ${
                                             paymentMethod === 'zalopay' ? 'block' : 'hidden'
                                         }`}
                                     ></i>
                                 </div>
-                                <div className="mx-3">
-                                    <img
-                                        width={35}
-                                        src="https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/zalopay.png"
-                                    ></img>
-                                </div>
-                                <p className="text-sm">Thanh toán bằng ví ZaloPay</p>
+                                <PaymentMethodItem
+                                    urlImg={'https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/zalopay.png'}
+                                    name={'Thanh toán bằng ví ZaloPay'}
+                                ></PaymentMethodItem>
                             </div>
                         </div>
                     </div>
-                    <div className="sticky h-fit top-0 flex mx-2">
-                        <div className="z-10 bg-white border-2 h-fit py-4 px-3 sm:rounded-3xl max-sm:rounded-t-3xl max-sm:w-screen sm:w-96 max-sm:fixed left-0 bottom-0">
+                    <div className="sticky top-0 mx-2 flex h-fit">
+                        <div className="left-0 bottom-0 z-10 h-fit border-2 bg-white py-4 px-3 max-sm:fixed max-sm:w-screen max-sm:rounded-t-3xl sm:w-96 sm:rounded-3xl">
                             <div className={`${showModal ? 'block' : 'hidden'} sm:block`}>
-                                <div className="flex justify-between my-2">
-                                    <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">Tổng tiền</h5>
-                                    <h5 className="sm:text-[15px] max-sm:text-sm">824.400đ</h5>
+                                <div className="my-2 flex justify-between">
+                                    <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Tổng tiền</h5>
+                                    <h5 className="max-sm:text-sm sm:text-[15px]">
+                                        {convertNumberToPrice(totalPrice)}đ
+                                    </h5>
                                 </div>
-                                <div className="flex justify-between my-2">
-                                    <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">Giảm giá trực tiếp</h5>
-                                    <h5 className="sm:text-[15px] max-sm:text-sm">0đ</h5>
+                                <div className="my-2 flex justify-between">
+                                    <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Giảm giá trực tiếp</h5>
+                                    <h5 className="max-sm:text-sm sm:text-[15px]">0đ</h5>
                                 </div>
-                                <div className="flex justify-between my-2">
-                                    <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">
+                                <div className="my-2 flex justify-between">
+                                    <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">
                                         Giảm giá điểm thưởng
                                     </h5>
-                                    <h5 className="sm:text-[15px] max-sm:text-sm">824.400đ</h5>
+                                    <h5 className="max-sm:text-sm sm:text-[15px]">824.400đ</h5>
                                 </div>
-                                <div className="flex justify-between my-2">
-                                    <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">Tiết kiệm được</h5>
-                                    <h5 className="sm:text-[15px] max-sm:text-sm">0đ</h5>
+                                <div className="my-2 flex justify-between">
+                                    <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Tiết kiệm được</h5>
+                                    <h5 className="max-sm:text-sm sm:text-[15px]">0đ</h5>
                                 </div>
-                                <div className="flex justify-between border-t py-2 mt-3">
-                                    <h5 className="sm:text-[15px] max-sm:text-sm text-slate-600">Phí vận chuyển</h5>
-                                    <h5 className="sm:text-[15px] max-sm:text-sm text-green-600	">Miễn phí</h5>
+                                <div className="mt-3 flex justify-between border-t py-2">
+                                    <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Phí vận chuyển</h5>
+                                    <h5 className="text-green-600 max-sm:text-sm sm:text-[15px]	">Miễn phí</h5>
                                 </div>
-                                <div className="sm:hidden max-sm:block">
+                                <div className="max-sm:block sm:hidden">
                                     <textarea
                                         placeholder="Ghi chú cho dược sỹ (ví dụ: hãy gọi trước khi giao nhé!)"
-                                        className="h-20 border outline-0 text-slate-400 text-sm p-3 rounded-xl w-full"
+                                        className="h-20 w-full rounded-xl border p-3 text-sm text-slate-400 outline-0"
                                         name="message"
                                         type="text"
                                         onChange={formik.handleChange}
@@ -436,16 +456,16 @@ function Order() {
                                     ></textarea>
                                 </div>
                             </div>
-                            <div className="justify-between items-center max-sm:flex sm:border-t">
-                                <div className="flex max-sm:flex-col justify-between mt-2 py-3">
+                            <div className="items-center justify-between max-sm:flex sm:border-t">
+                                <div className="mt-2 flex justify-between py-3 max-sm:flex-col">
                                     <h4 className="text-ms font-semibold">Thành tiền</h4>
                                     <h4
-                                        className="text-base text-blue-700 font-bold flex items-center "
+                                        className="flex items-center text-base font-bold text-blue-700 "
                                         onClick={() => setShowModal(!showModal)}
                                     >
                                         818.000đ
                                         <span
-                                            className={`sm:hidden ml-2 duration-300 ${
+                                            className={`ml-2 duration-300 sm:hidden ${
                                                 showModal ? 'rotate-180' : 'rotate-0'
                                             }`}
                                         >
@@ -455,7 +475,7 @@ function Order() {
                                                 viewBox="0 0 24 24"
                                                 strokeWidth={2}
                                                 stroke="black"
-                                                className="w-5 h-5"
+                                                className="h-5 w-5"
                                             >
                                                 <path
                                                     strokeLinecap="round"
@@ -466,22 +486,26 @@ function Order() {
                                         </span>
                                     </h4>
                                 </div>
-                                <div className="sm:block max-sm:hidden">
+                                <div className="max-sm:hidden sm:block">
                                     <textarea
                                         placeholder="Ghi chú cho dược sỹ (ví dụ: hãy gọi trước khi giao nhé!)"
-                                        className="h-20 border outline-0 text-slate-400 text-sm p-3 rounded-xl w-full"
+                                        className="h-20 w-full rounded-xl border p-3 text-sm text-slate-400 outline-0"
+                                        name="message"
+                                        type="text"
+                                        onChange={formik.handleChange}
+                                        value={formik.values.message}
                                     ></textarea>
                                 </div>
                                 <button
                                     type="submit"
-                                    className="w-full max-sm:w-5/12 max-sm:py-4 sm:py-2 rounded-3xl mt-3 h-fit text-center bg-sky-600 text-white text-sm cursor-pointer "
+                                    className="mt-3 h-fit w-full cursor-pointer rounded-3xl bg-sky-600 text-center text-sm text-white max-sm:w-5/12 max-sm:py-4 sm:py-2 "
                                 >
                                     Đặt hàng (2)
                                 </button>
                             </div>
-                            <div className="text-center mt-5 max-sm:hidden">
+                            <div className="mt-5 text-center max-sm:hidden">
                                 <h6 className="text-xs text-slate-400">Nếu tiến hành đặt hàng, bạn đồng ý</h6>
-                                <h6 className="decoration-solid	text-xs font-semibold underline text-slate-600">
+                                <h6 className="text-xs	font-semibold text-slate-600 underline decoration-solid">
                                     Điều khoản của nhà thuốc
                                 </h6>
                             </div>

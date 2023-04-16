@@ -15,5 +15,6 @@ const routes = {
     not_found: '*',
     serverError: 'server_error',
     notFound: '*',
+    payment: 'payment',
 };
 export default routes;

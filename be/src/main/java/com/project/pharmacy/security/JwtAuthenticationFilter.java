@@ -64,6 +64,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 request.getRequestDispatcher("/api/auth/unauthorized").forward(request, response);
             }
         }
+//        filterChain.doFilter(request, response);
+
     }
 
     @Override

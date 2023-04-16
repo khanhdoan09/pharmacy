@@ -2,7 +2,6 @@ package com.project.pharmacy.service;
 
 import com.project.pharmacy.entity.Medicine;
 import com.project.pharmacy.exception.CustomException;
-
 import com.project.pharmacy.repository.MedicineRepostory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,9 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-
-import java.sql.Array;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,8 +47,9 @@ public class MedicineService {
     public List<Medicine> bestSellerByCategoryId(int categoryId) throws CustomException {
         List<Medicine> medicines = medicineRepostory.bestSellerByCategoryId(categoryId);
         if (medicines.size() == 0) {
-            throw new CustomException(HttpStatus.NOT_FOUND,
-                                      "Can't find bestSellerByCategoryId with category id is " + categoryId);
+            throw new CustomException(
+                    HttpStatus.NOT_FOUND,
+                    "Can't find bestSellerByCategoryId with category id is " + categoryId);
         }
         return medicines;
     }
@@ -87,11 +84,13 @@ public class MedicineService {
     public List<Medicine> findMedicineByCategoryIdOrderByExpensivePrice(int categoryId) throws CustomException {
         List<Medicine> medicines = medicineRepostory.findMedicineByCategoryIdOrderByExpensivePrice(categoryId);
         if (medicines.size() == 0) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Can't findMedicineByCategoryIdOrderByExpensivePrice with " +
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't findMedicineByCategoryIdOrderByExpensivePrice with" +
+                    " " +
                     "category id is " + categoryId);
         }
         return medicines;
     }
+
     public List<Medicine> findMedicineByCategoryIdOrderByCheapPrice(int categoryId) throws CustomException {
         List<Medicine> medicines = medicineRepostory.findMedicineByCategoryIdOrderByCheapPrice(categoryId);
         if (medicines.size() == 0) {
@@ -100,6 +99,7 @@ public class MedicineService {
         }
         return medicines;
     }
+
     public List<Medicine> findMedicineByCategoryIdOrderByNewRelease(int categoryId) throws CustomException {
         List<Medicine> medicines = medicineRepostory.findMedicineByCategoryIdOrderByNewRelease(categoryId);
         if (medicines.size() == 0) {
@@ -108,6 +108,7 @@ public class MedicineService {
         }
         return medicines;
     }
+
     public List<Medicine> findMedicineByCategoryDetailId(int categoryDetailId) throws CustomException {
         List<Medicine> medicines = medicineRepostory.findMedicineByCategoryDetailId(categoryDetailId);
         if (medicines.size() == 0) {
@@ -115,5 +116,12 @@ public class MedicineService {
                     "category detail id is " + categoryDetailId);
         }
         return medicines;
+    }
+
+    public void updateTotalQuantityAndSaleQuantity(int medicineId, int numberToUpdate) {
+        Medicine medicine = this.medicineRepostory.findById(medicineId).get();
+        medicine.setTotalNumber(medicine.getTotalNumber() - numberToUpdate);
+        medicine.setSaleNumber(medicine.getSaleNumber() + numberToUpdate);
+        this.medicineRepostory.save(medicine);
     }
 }

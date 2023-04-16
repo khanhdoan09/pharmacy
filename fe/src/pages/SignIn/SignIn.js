@@ -65,7 +65,7 @@ function SignIn() {
         instance
             .loginPopup(loginRequest)
             .then((e) => {
-                console.log(e);
+                console.log(accounts);
                 const name = e?.account?.name;
                 const email = e?.account?.username;
                 const accessToken = e?.accessToken;
@@ -136,6 +136,7 @@ function SignIn() {
                 const statusCode = err?.status;
                 if (statusCode === 401) {
                     if (err?.status === 'token has expired') {
+                        console.log('expired');
                         handleRefreshTokenToGetNewAccessToken(accountType);
                     } else {
                         navigate('/signIn');

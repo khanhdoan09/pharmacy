@@ -59,23 +59,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    @Override
-    public void configure(WebSecurity webSecurity) throws Exception {
-        webSecurity.ignoring().antMatchers("/api/**");
-    }
+//    @Override
+//    public void configure(WebSecurity webSecurity) throws Exception {
+//        webSecurity.ignoring().antMatchers("/api/**");
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/**")
+                .antMatchers("/")
                 .permitAll()
                 .antMatchers( "/api/cart/**")
-                .authenticated()
-//                .hasAnyAuthority("client")
-//                .and()
-//                .exceptionHandling().accessDeniedPage("/api/auth/unauthorized")
+//                .authenticated()
+                .hasAnyAuthority("client")
+                .and()
+                .exceptionHandling().accessDeniedPage("/api/auth/unauthorized")
                 .and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         ;
 //        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

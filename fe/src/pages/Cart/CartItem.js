@@ -21,13 +21,15 @@ function CartItem({
     const [quantity, setQuantity] = useState(data?.quantity);
     const [check, setCheck] = useState(data?.medicine?.active == 1);
     const [showUnit, setShowUnit] = useState(false);
-    const [image, setImage] = useState('');
+    const [image, setImage] = useState(
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlBWOxDZ6-zuaW-Bp6x8aw3FNAdI_x90UpUNJhSrd1&s',
+    );
     const [active, setActive] = useState(data?.medicine?.active == 1);
     const [units, setUnits] = useState({});
     const [currentUnit, setCurrentUnit] = useState(data?.unit);
+    const [listMedicinesUnchecked, setListMedicinesUnchecked] = useState({});
     const navigate = useNavigate();
     const medicineInCartRef = useRef({});
-
     const user = useSelector((state) => state.authentication.login.currentUser);
 
     useEffect(() => {
@@ -39,16 +41,17 @@ function CartItem({
 
     useEffect(() => {
         const imagePromise = getImageFromFirebase(`product/${data?.medicine?.id}`, `${data?.medicine?.avatar}`);
-        imagePromise
-            .then((url) => {
-                setImage(url);
-                return url;
-            })
-            .catch((error) => {
-                setImage(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlBWOxDZ6-zuaW-Bp6x8aw3FNAdI_x90UpUNJhSrd1&s',
-                );
+        imagePromise.then((url) => {
+            setImage(url);
+            let tmp = cartChecked.map((e) => {
+                if (e?.medicine?.id == data?.medicine?.id) {
+                    e.avatar = url;
+                    return e;
+                } else return e;
             });
+            setCartChecked(tmp);
+            return url;
+        });
     }, []);
 
     useEffect(() => {
@@ -166,10 +169,17 @@ function CartItem({
         setTotalPrice(convertNumberToPrice(newTotalPrice));
         if (check) {
             setChecklist(checklist - 1);
-            const tmp = cartChecked.filter((e) => e != data?.id);
-            setCartChecked(tmp);
+            const tmpChecked = cartChecked.filter((e) => e?.id !== data?.id);
+            const tmpUnChecked = cartChecked.filter((e) => e?.id === data?.id);
+            setCartChecked(tmpChecked);
+            setListMedicinesUnchecked(tmpUnChecked);
         } else {
             setChecklist(checklist + 1);
+            let tmp = cartChecked;
+            listMedicinesUnchecked.forEach((e) => {
+                tmp.unshift(e);
+            });
+            setCartChecked(tmp);
         }
         setCheck(!check);
     }

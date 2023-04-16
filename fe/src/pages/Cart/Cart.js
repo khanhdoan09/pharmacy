@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 // import CartEmpty from './CartEmpty';
 import CartItem from './CartItem';
 import Slider from 'react-slick';
@@ -10,9 +10,13 @@ import Voucher from '~/components/Voucher';
 import { useNavigate } from 'react-router-dom';
 import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
 import { getAllVouchersByToDay } from '~/services/voucherServices';
-import { getAllMedicinesInCart } from '~/services/cartService';
+import { getAllMedicinesInCart } from '~/services/cartServices';
+import { addMedicinesToCart } from '~/redux/cartSlice';
+import { useCookies } from 'react-cookie';
+import useAcquireAccessToken from '~/hooks/useAcquireAcessToken';
 
 function Cart() {
+    const [cookies, setCookie] = useCookies(['access_token']);
     const voucherRef = useRef();
     const [totalPrice, setTotalPrice] = useState(0);
     const [showModal, setShowModal] = useState(false);
@@ -25,6 +29,8 @@ function Cart() {
     const [showLoading, setShowLoading] = useState(false);
     const navigate = useNavigate();
     const user = useSelector((state) => state.authentication.login.currentUser);
+    const getNewAccessToken = useAcquireAccessToken();
+
     useEffect(() => {
         if (user == null) {
             navigate('/signIn');
@@ -40,7 +46,7 @@ function Cart() {
                             if (e2.medicine.active == 1) {
                                 tmpTotalPrice += e2?.unit?.price * e2?.quantity;
                                 num += 1;
-                                cartChecked.push(e2?.id);
+                                cartChecked.push(e2);
                             }
                         });
                         setChecklist(num);
@@ -48,9 +54,13 @@ function Cart() {
                     }
                 },
                 (err) => {
-                    if (err?.status === 403 || err?.status === 401) {
+                    if (err?.status === 401) {
+                        getNewAccessToken();
+                    } else if (err?.status === 403) {
                         navigate('/signIn');
+                    } else if (err?.status === 404) {
                     } else {
+                        console.log(err);
                         navigate('/server_error');
                     }
                 },
@@ -147,7 +157,7 @@ function Cart() {
             data?.data?.map((e) => {
                 if (e.medicine.active == 1) {
                     num += 1;
-                    list.push(e?.id);
+                    list.push(e);
                 }
             });
             setChecklist(num);
@@ -155,14 +165,12 @@ function Cart() {
         }
         setCheckAll(!checkAll);
     }
+    const cart = useSelector((state) => state.cart.medicines);
 
+    const dispatch = useDispatch();
     function handleSubmit() {
-        let params = '';
-        cartChecked?.map((e) => {
-            params += 'id=' + e + '&';
-        });
-        params = params.substring(0, params.length - 1);
-        navigate('/order?' + params);
+        dispatch(addMedicinesToCart(cartChecked));
+        navigate('/order');
     }
 
     return (
@@ -219,8 +227,9 @@ function Cart() {
                                         setVouchers(e?.data);
                                         setShowVouchers(true);
                                     },
-                                    () => {
+                                    (err) => {
                                         navigate('/server_error');
+                                        console.log(err);
                                     },
                                 );
                             }}

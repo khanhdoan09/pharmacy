@@ -15,6 +15,7 @@ import { HeaderSearchLayout } from '~/layouts';
 import Search from '~/pages/Search';
 import Category from '~/pages/Category';
 import CategoryDetail from '~/pages/CategoryDetail/CategoryDetail';
+import { Payment } from '~/pages/Payment';
 
 const publicRoutes = [
     { path: config.routes.home, component: Home },
@@ -35,6 +36,7 @@ const publicRoutes = [
     { path: config.routes.filter, component: Filter, layout: HeaderSearchLayout },
     { path: config.routes.serverError, component: ServerError, layout: HeaderSearchLayout },
     { path: config.routes.notFound, component: NotFound, layout: HeaderSearchLayout },
+    { path: config.routes.payment, component: Payment, layout: HeaderSearchLayout },
 ];
 const privateRoutes = [];
 export { publicRoutes, privateRoutes };

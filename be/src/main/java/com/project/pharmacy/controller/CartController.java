@@ -65,8 +65,7 @@ public class CartController {
     public ResponseHandler<List<Cart>> findMedicinesByUserId(@PathVariable int userId) throws CustomException {
         List<Cart> carts = cartService.findMedicinesInCart(userId);
         ResponseHandler<List<Cart>> responseHandler = new ResponseHandler<List<Cart>>("server successfully get " +
-                                                                                              "medicines in cart by " +
-                                                                                              "user id", 200, carts);
+                                                                                              "medicines in cart by " + "user id", 200, carts);
         return responseHandler;
     }
 

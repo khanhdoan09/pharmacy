@@ -7,8 +7,7 @@ export const getAllMedicinesInCart = async (token, account) => {
         const load = await request.get(`/${controller}/get/2`, {
             headers: {
                 Authorization: `Bearer ${token}`,
-                Account: account,
-                AddNew: 'false',
+                AccountType: account,
             },
         });
         return load;
@@ -22,8 +21,7 @@ export const deleteAMedicineInCart = async (id, token, account) => {
         const load = await request.delete(`/${controller}/delete/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
-                Account: account,
-                AddNew: 'false',
+                AccountType: account,
             },
         });
         return load;
@@ -33,7 +31,6 @@ export const deleteAMedicineInCart = async (id, token, account) => {
 };
 
 export const updateMedicineQuantityInCart = async (id, quantity, level, token, account) => {
-    console.log(token);
     try {
         const load = await request.put(
             `/${controller}/update_quantity?id=${id}&quantity=${quantity}&level=${level}`,
@@ -41,8 +38,7 @@ export const updateMedicineQuantityInCart = async (id, quantity, level, token, a
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    Account: account,
-                    AddNew: 'false',
+                    AccountType: account,
                 },
             },
         );
@@ -60,8 +56,7 @@ export const updateUnitMedicineInCart = async (cartId, unitId, token, account) =
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    Account: account,
-                    AddNew: 'false',
+                    AccountType: account,
                 },
             },
         );

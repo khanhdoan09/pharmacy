@@ -70,16 +70,14 @@ public class UserController {
             @Schema(implementation = ResponseHandler.class)))
     })
     @GetMapping("/unauthorized")
-    public ResponseHandler unauthorized(HttpServletRequest request) {
+    public ResponseHandler unauthorized(HttpServletRequest request) throws CustomException {
         String message = null;
         if (request.getAttribute("exception message") != null) {
             message = request.getAttribute("exception message").toString();
         } else {
             message = "token is invalid";
         }
-        ResponseHandler responseHandler = new ResponseHandler(message,
-                                                              HttpStatus.UNAUTHORIZED.value(), null);
-        return responseHandler;
+        throw new CustomException(HttpStatus.UNAUTHORIZED, message);
     }
 
     @Operation(description = "login with access token")
@@ -110,7 +108,8 @@ public class UserController {
         User user = verifyJwtToken.getUser();
 
         try {
-            userService.findByEmail(user.getEmail());
+            System.out.println(user.getEmail()+" ~ " + user.getAccountType());
+            userService.findByEmailAndAccountType(user.getEmail(), user.getAccountType());
             // if user is not existed so throw an exception then catch it and save new user
         }
         catch (CustomException e) {

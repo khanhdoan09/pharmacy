@@ -52,7 +52,7 @@ public class VerifyJwtTokenByMicrosoft implements VerifyJwtToken {
             }
         } catch (JwkException | SignatureVerificationException | MalformedURLException ex) {
             System.out.println(ex.getMessage());
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "token isnkjh invalid");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "token is not invalid");
         }
         return true;
     }

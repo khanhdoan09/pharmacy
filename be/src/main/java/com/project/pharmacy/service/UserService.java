@@ -73,8 +73,8 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public User findByEmail(String email) throws CustomException{
-        Optional<User> user = userRepository.findByEmail(email);
+    public User findByEmailAndAccountType(String email, String accountType) throws CustomException{
+        Optional<User> user = userRepository.findByEmailAndAccountType(email, accountType);
         return user.map(u -> {
             return u;
         }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "not found user by email"));
