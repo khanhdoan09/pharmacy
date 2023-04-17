@@ -81,6 +81,7 @@ function NavModal(props) {
                             return (
                                 <div className=" px-1" key={e.id}>
                                     <ProductSeller
+                                        to={`/detail/medicineId=${e.id}`}
                                         img={n5 + 's'}
                                         name="Viên uống Maca M Male Power Nature's Supplements bổ thận, tráng dương (60 viên)"
                                         newPrice="627.000đ"

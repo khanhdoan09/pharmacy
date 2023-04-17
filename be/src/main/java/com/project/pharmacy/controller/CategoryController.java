@@ -1,6 +1,7 @@
 package com.project.pharmacy.controller;
 
 import com.project.pharmacy.entity.Category;
+import com.project.pharmacy.entity.CategoryDetail;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.service.CategoryService;
@@ -16,10 +17,10 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class CategoryController {
     @Autowired
-    private CategoryService categoryService;
+     CategoryService categoryService;
 
     @Autowired
-    private ModelMapper mapper;
+     ModelMapper mapper;
 
     @GetMapping("/categories")
     public ResponseHandler<List<Category>> getAllFields() {
@@ -44,6 +45,23 @@ public class CategoryController {
         List<Category> categories = categoryService.findCategoriesBySlugField(slugField);
         ResponseHandler<List<Category>> responseHandler = new ResponseHandler<>(
                 "Successfully find category by slug field", HttpStatus.OK.value(), categories
+        );
+        return responseHandler;
+    }
+
+    @GetMapping("/categoryDetail/{categoryId}")
+    public ResponseHandler<List<CategoryDetail>> getCategoryDetailByCategoryId(@PathVariable("categoryId") int categoryId) throws CustomException {
+        List<CategoryDetail> listCD = categoryService.findCategoryDetailByCategoryId(categoryId);
+        ResponseHandler<List<CategoryDetail>> responseHandler = new ResponseHandler<>(
+                "Successfully find category detail", HttpStatus.OK.value(), listCD
+        );
+        return responseHandler;
+    }
+    @GetMapping("/findCategoryDetailBySlugCategory/{slugCategory}")
+    public ResponseHandler<List<CategoryDetail>> findCategoryDetailBySlugCategory(@PathVariable("slugCategory") String slugCategory) throws CustomException {
+        List<CategoryDetail> listCD = categoryService.findCategoryDetailBySlugCategory(slugCategory);
+        ResponseHandler<List<CategoryDetail>> responseHandler = new ResponseHandler<>(
+                "Successfully find category detail", HttpStatus.OK.value(), listCD
         );
         return responseHandler;
     }

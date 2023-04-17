@@ -1,28 +1,21 @@
 package com.project.pharmacy.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "medicine_ingredient")
-@Data
-
+@Table(name = "producer")
 @AllArgsConstructor
 @NoArgsConstructor
-public class MedicineIngredient {
+@Getter
+@Setter
+public class Producer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int medicineId;
-    private int ingredientId;
-    private String content;
-
-    @OneToOne
-    @JoinColumn(name = "id")
-    private Ingredient ingredient;
-
-
+    private String name;
 }

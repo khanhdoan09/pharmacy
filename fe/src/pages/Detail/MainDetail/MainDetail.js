@@ -2,91 +2,93 @@ import { useState } from 'react';
 import SliderImageDetail from '../SliderImageDetail';
 import { Animation } from 'react-animate-style';
 
-function MainDetail() {
+function MainDetail(props) {
     const [toggleState, setToggleState] = useState(1);
+    const [quantity, setQuantity] = useState(1);
+    const [priceWithUnit, setPriceWithUnit] = useState();
+    const [nameUnit, setNameUnit] = useState();
+    const [maxValue, setMaxValue] = useState(props?.detail?.medicine?.priceWithUnit[0]?.quantity);
+
+    const handleIncrementQuantity = (maxQuantity) => {
+        if (quantity === maxQuantity) {
+            setQuantity(maxQuantity);
+        } else {
+            setQuantity((quantity) => quantity + 1);
+        }
+    };
+    const handleDecrementQuantity = () => {
+        if (quantity === 1) {
+            setQuantity(1);
+        } else {
+            setQuantity((quantity) => quantity - 1);
+        }
+    };
 
     const toggleTab = (index) => {
         setToggleState(index);
     };
+
     return (
         <div className="main-detail !grid gap-6 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 ">
             <SliderImageDetail />
 
-            <div className="text px-1 animate-fadeBottomMobile">
+            <div className="text animate-fadeBottomMobile px-1">
                 <div className="header-text border-b pb-4 ">
                     <p className="text-base">
                         Thương hiệu:
-                        <span className="uppercase text-[#1d48ba]"> Thành công</span>
+                        <span className="uppercase text-[#1d48ba]"> {props?.detail?.medicine?.brandDetail?.name}</span>
                     </p>
-                    <h3 className="text-[28px] font-bold text-[#072d94]">
-                        Viên uống Trùng Thảo Gold Thành Công hỗ trợ dễ ngủ, ngủ sâu giấc (30 viên)
-                    </h3>
+                    <h3 className="text-[28px] font-bold text-[#072d94]">{props?.detail?.medicine?.name}</h3>
                     <div className="flex items-center justify-between">
-                        <span className="text-[#b6c0d7]">(00032348)</span>
+                        <span className="text-[#b6c0d7]">Mã sản phẩm: ({props?.detail?.id})</span>
                         <div className="text-sm">
                             <span className="cursor-pointer border-r border-[#bb91a5] px-2 hover:underline">
-                                0 đánh giá
+                                {props?.detail?.rateNumber} đánh giá
                             </span>
-                            <span className="cursor-pointer px-2 hover:underline">23 bình luận</span>
+                            <span className="cursor-pointer px-2 hover:underline">
+                                {props?.detail?.commentNumber} bình luận
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div className="center-text pt-4">
                     <div className="price">
                         <h3 className="text-[32px] font-bold">
-                            173.000đ &#8260; <span className="text-2xl font-normal text-[#1e293b]">Hộp</span>
+                            {priceWithUnit || props?.detail?.medicine?.priceWithUnit[0].price} &#8260;{' '}
+                            <span className="text-2xl font-normal text-[#1e293b]">
+                                {nameUnit || props?.detail?.medicine?.priceWithUnit[0].name}
+                            </span>
                         </h3>
                     </div>
                     <div className="mt-4 flex items-center">
                         <p className="mr-2 line-clamp-1">Đơn vị bán: </p>
 
                         <div className="select-unit">
-                            <div className="unit-item flex items-center flex-wrap">
-                                <div
-                                    onClick={() => toggleTab(1)}
-                                    className={
-                                        toggleState === 1
-                                            ? ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1 mb-1'
-                                            : ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1 mb-1'
-                                    }
-                                >
-                                    <img
-                                        src="https://cdn-icons-png.flaticon.com/512/2800/2800607.png"
-                                        className="mr-2 h-5 w-5 select-none object-cover"
-                                        alt=""
-                                    />
-                                    <p>Hộp</p>
-                                </div>
-                                <div
-                                    onClick={() => toggleTab(2)}
-                                    className={
-                                        toggleState === 2
-                                            ? ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1 mb-1'
-                                            : ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1 mb-1'
-                                    }
-                                >
-                                    <img
-                                        src="https://cdn-icons-png.flaticon.com/512/4005/4005690.png"
-                                        className="mr-2 h-5 w-5 select-none object-cover"
-                                        alt=""
-                                    />
-                                    <p>Gói</p>
-                                </div>
-                                <div
-                                    onClick={() => toggleTab(3)}
-                                    className={
-                                        toggleState === 3
-                                            ? ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1 mb-1'
-                                            : ' transition-basic mr-2 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1 mb-1'
-                                    }
-                                >
-                                    <img
-                                        src="https://cdn-icons-png.flaticon.com/512/4625/4625809.png"
-                                        className="mr-2 h-5 w-5 select-none object-cover"
-                                        alt=""
-                                    />
-                                    <p>Viên</p>
-                                </div>
+                            <div className="unit-item flex flex-wrap items-center">
+                                {props?.detail?.medicine?.priceWithUnit?.map((u) => (
+                                    <div
+                                        key={u.id}
+                                        onClick={() => {
+                                            toggleTab(u.id);
+                                            setNameUnit(u.name);
+                                            setPriceWithUnit(u.price);
+                                            setMaxValue(u.quantity);
+                                            setQuantity(1);
+                                        }}
+                                        className={
+                                            toggleState === u.id
+                                                ? ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1'
+                                                : ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1'
+                                        }
+                                    >
+                                        {/* <img
+                                            src="https://cdn-icons-png.flaticon.com/512/2800/2800607.png"
+                                            className="mr-2 h-5 w-5 select-none object-cover"
+                                            alt=""
+                                        /> */}
+                                        <p className="capitalize">{u.name}</p>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -94,7 +96,7 @@ function MainDetail() {
                         <p className="font-bold">
                             Danh mục: &#160;
                             <span className="cursor-pointer font-normal text-[#1d48ba] hover:underline">
-                                Hỗ trợ giấc ngủ ngon
+                                {props?.detail?.medicine?.categoryDetail?.name}
                             </span>
                         </p>
                     </div>
@@ -104,20 +106,22 @@ function MainDetail() {
                     </p>
                     <p className="mt-4 font-bold">
                         Nhà sản xuất: &#160;
-                        <span className="font-normal">CÔNG TY DƯỢC PHẨM VÀ THƯƠNG MẠI THÀNH CÔNG - TNHH</span>
+                        <span className="font-normal"> {props?.detail?.medicine?.producerDetail?.name}</span>
                     </p>
                     <p className="mt-4 font-bold">
                         Công dụng: &#160;
-                        <span className="text-justify font-normal">
-                            Trùng Thảo Gold hỗ trợ dễ ngủ, ngủ sâu giấc trong các trường hợp mất ngủ, ngủ kém. Hỗ trợ
-                            tăng cường sức khỏe, nâng cao sức đề kháng.
-                        </span>
+                        <span className="text-justify font-normal">{props?.detail?.benefit}</span>
                     </p>
 
                     <div className="mt-4 flex items-center">
                         <p className="font-bold">Chọn số lượng &#160;</p>
                         <div className="modify-quantity flex items-center ">
-                            <button className="h-9 rounded-l-3xl border  px-[6px]">
+                            <button
+                                className="h-9 rounded-l-3xl border  px-[6px]"
+                                onClick={() => {
+                                    handleDecrementQuantity();
+                                }}
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -131,9 +135,17 @@ function MainDetail() {
                             </button>
                             <input
                                 className="h-9 w-10 border text-center outline-none hover:border-[#807b7b]"
-                                placeholder="1"
+                                value={quantity}
+                                onChange={(e) => {
+                                    e.target.value = quantity;
+                                }}
                             />
-                            <button className="h-9 rounded-r-3xl border  px-[6px]">
+                            <button
+                                className="h-9 rounded-r-3xl border  px-[6px]"
+                                onClick={() => {
+                                    handleIncrementQuantity(maxValue);
+                                }}
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -177,7 +189,7 @@ function MainDetail() {
                                     />
                                 </svg>
                                 <p className="font-bold line-clamp-1">Đổi trả trong 30 ngày</p>
-                                <p className='line-clamp-1'>kể từ ngày mua hàng</p>
+                                <p className="line-clamp-1">kể từ ngày mua hàng</p>
                             </div>
                             <div className="commit-item flex flex-col items-center">
                                 <svg
@@ -196,7 +208,7 @@ function MainDetail() {
                                 </svg>
 
                                 <p className="font-bold line-clamp-1">Miễn phí 100%</p>
-                                <p className='line-clamp-1'>đổi thuốc</p>
+                                <p className="line-clamp-1">đổi thuốc</p>
                             </div>
                             <div className="commit-item flex flex-col items-center">
                                 <svg
@@ -215,7 +227,7 @@ function MainDetail() {
                                 </svg>
 
                                 <p className="font-bold line-clamp-1">Miễn phí vận chuyển</p>
-                                <p className='line-clamp-1'>theo chính sách giao hàng</p>
+                                <p className="line-clamp-1">theo chính sách giao hàng</p>
                             </div>
                         </div>
                     </div>

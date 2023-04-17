@@ -33,4 +33,19 @@ public class Medicine {
     private int totalNumber;
     private int saleNumber;
     private String avatar;
+
+    @OneToOne
+    @JoinColumn(name = "brand", insertable = false, updatable = false)
+    private Brand brandDetail;
+    @OneToOne
+    @JoinColumn(name = "producer", insertable = false, updatable = false)
+    private Producer producerDetail;
+    @OneToOne
+    @JoinColumn(name = "categoryDetailId", insertable = false, updatable = false)
+    private CategoryDetail categoryDetail;
+    @OneToMany(mappedBy = "medicineId", cascade = CascadeType.ALL)
+    private List<MedicineIngredient> ingredient;
+    @OneToMany(mappedBy = "medicineId", cascade = CascadeType.ALL)
+    private List<Unit> priceWithUnit;
+
 }

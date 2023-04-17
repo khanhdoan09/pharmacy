@@ -1,6 +1,6 @@
 const routes = {
     home: '/', // đã kiểm tra
-    detail: '/detail',
+    detail: '/detail/:medicineId',
     cart: '/cart',
     order: '/order',
     signIn: '/signIn', // đã kiểm tra

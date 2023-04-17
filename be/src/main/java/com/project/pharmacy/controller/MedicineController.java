@@ -1,6 +1,8 @@
 package com.project.pharmacy.controller;
 
 import com.project.pharmacy.entity.Medicine;
+import com.project.pharmacy.entity.MedicineDetail;
+import com.project.pharmacy.entity.MedicineIngredient;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.service.MedicineService;
@@ -11,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,8 @@ public class MedicineController {
 
     @Autowired
     private ModelMapper mapper;
+
+
 
 
     @GetMapping("/search/{keyword}/{page}/{pageSize}")
@@ -155,6 +158,26 @@ public class MedicineController {
                 "Successfully findMedicineByCategoryDetailId",
                 HttpStatus.OK.value(),
                 medicines);
+        return responseHandler;
+    }
+    @GetMapping("/findMedicineDetailByMedicineId/{medicineId}")
+    public ResponseHandler findMedicineDetailByMedicineId(@PathVariable("medicineId") int medicineId) throws CustomException {
+        ResponseHandler<MedicineDetail> responseHandler = new ResponseHandler<MedicineDetail>(
+                "Successfully findMedicineDetailByMedicineId",
+                HttpStatus.OK.value(),
+                medicineService.findMedicineDetailByMedicineId(medicineId));
+        return responseHandler;
+    }
+    @GetMapping("/findMedicineIngredientByMedicineId/{medicineId}")
+    public ResponseHandler<List<MedicineIngredient>> findMedicineIngredientByMedicineId(@PathVariable("medicineId") int medicineId
+                                                                               ) throws CustomException {
+
+        List<MedicineIngredient> medicineIngredients = medicineService.findMedicineIngredientByMedicineId(medicineId);
+
+        ResponseHandler<List<MedicineIngredient>> responseHandler = new ResponseHandler<List<MedicineIngredient>>(
+                "Successfully findIngredientByMedicineId",
+                HttpStatus.OK.value(),
+                medicineIngredients);
         return responseHandler;
     }
 }

@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-function DetailList() {
+function DetailList(props) {
     const refScrollDesc = useRef(null);
     const refScrollIngredient = useRef(null);
     const refScrollUses = useRef(null);
@@ -10,7 +10,7 @@ function DetailList() {
     const refScrollPreserve = useRef(null);
     return (
         <div className=" grid gap-6 px-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  xl:grid-cols-4 2xl:grid-cols-4">
-            <div className="detail-list !sticky !top-0 left-0 h-fit rounded-lg border-b bg-[#edf2f8] cs:hidden xs:hidden sm:hidden md:hidden lg:block xl:block 2xl:flex">
+            <div className="!sticky !top-0 left-0 h-fit rounded-lg border-b bg-[#edf2f8] cs:hidden xs:hidden sm:hidden md:hidden lg:block xl:block 2xl:block">
                 <div className="flex cursor-pointer items-center border-b border-[#d8e0e8] px-4 py-3">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +26,7 @@ function DetailList() {
                             d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h16.5"
                         />
                     </svg>
-                    <span className="font-bold capitalize"> Nội dung chính</span>
+                    <span className="font-bold capitalize">Nội dung chính</span>
                 </div>
                 <ul className="py-2">
                     <li
@@ -97,19 +97,9 @@ function DetailList() {
             <div className="detail col-span-3">
                 <div className="desc" ref={refScrollDesc}>
                     <h3 className="mb-3 text-2xl font-bold text-[#1e293b]">Mô Tả Sản Phẩm</h3>
-                    <p className="mb-3 text-xl font-bold text-[#1e293b]">Trùng Thảo Gold</p>
-                    <p>Tăng cường thể lực - Cải thiện giấc ngủ</p>
-                    <p>
-                        Trùng Thảo Gold chứa đông trùng hạ thảo, linh chi, nhân sâm, sữa ong chúa và 12 dưỡng chất khác
-                        giúp nâng cao sức khỏe, cải thiện giấc ngủ. Đặc biệt thích hợp cho những người sức khỏe kém, ăn
-                        ngủ kém, người cần tăng cường hoặc phục hồi sức khỏe.
-                    </p>
-                    <img
-                        src="https://nhathuoclongchau.com.vn/upload/images/sanpham/32476/images/00032348-trung-thao-gold-thanh-cong-30v-5558-614d_large.jpg"
-                        alt="img"
-                        className="mx-auto my-0 flex "
-                    />
-                    <p className="text-center">Viên uống giúp ngủ ngon Trùng Thảo Gold Thành Công 30 viên.</p>
+                    <p className="mb-3 text-xl font-bold text-[#1e293b]">{props?.detail?.medicine?.name}</p>
+                    <p>{props?.detail?.benefit}</p>
+                    <img src={props?.detail?.medicine?.avatar} alt="avatar" className="mx-auto my-0 flex" />
                 </div>
 
                 <div className="ingredient mb-3" ref={refScrollIngredient}>
@@ -120,20 +110,17 @@ function DetailList() {
                             <p>Thành phần</p>
                             <p>Hàm lượng</p>
                         </div>
-                        <div className="ingredient-item flex justify-between border-b border-[#333] px-1 py-1">
-                            <p>Lá Neem</p>
-                            <p>300mg</p>
-                        </div>
-                        <div className="ingredient-item flex justify-between border-b border-[#333] px-1 py-1">
-                            <p>Kẽm</p>
-                            <p>1.5mg</p>
-                        </div>
-                        <div className="ingredient-item flex justify-between border-b border-[#333] px-1 py-1">
-                            <p>Sữa ong chúa</p>
-                            <p>80mcg</p>
-                        </div>
+                        {props?.ingredient?.map((e) => (
+                            <div
+                                className="ingredient-item flex justify-between border-b border-[#333] px-1 py-1"
+                                key={e.id}
+                            >
+                                <p>{e.ingredient.name}</p>
+                                <p>{e.content}</p>
+                            </div>
+                        ))}
                     </div>
-                    <div className="ingredient-desc">
+                    {/* <div className="ingredient-desc">
                         <p className="mb-4">
                             <span className="text-[#718198] ">Lysine</span>: Giúp ăn ngon miệng; giảm lo lắng do chặn
                             các thụ thể liên quan đến phản ứng căng thẳng; cải thiện hấp thụ canxi giúp tăng cường chiều
@@ -170,34 +157,30 @@ function DetailList() {
                             trình lành vết thương và liền xương, phục hồi nhanh các mô bị tổn thương, hư hỏng. Hạ huyết
                             áp, tăng tuần hoàn máu tới các tổ chức.
                         </p>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="uses" ref={refScrollUses}>
                     <h3 className="mb-3 text-2xl font-bold text-[#1e293b]">Công dụng</h3>
-                    <p className="mb-4">
-                        Trùng Thảo Gold hỗ trợ dễ ngủ, ngủ sâu giấc trong các trường hợp mất ngủ, ngủ kém.
-                    </p>
-                    <p className="mb-4">Hỗ trợ tăng cường sức khỏe, nâng cao sức đề kháng.</p>
+                    <p className="mb-4">{props?.detail?.benefit}</p>
                 </div>
                 <div className="dosage" ref={refScrollDosage}>
                     <h3 className="mb-3 text-2xl font-bold text-[#1e293b]">Liều Dùng</h3>
                     <p className="mb-4 font-bold">Cách dùng</p>
                     <ul>
-                        <li className="mb-4">Người lớn: Uống 2 viên/lần/ngày.</li>
-                        <li className="mb-4">Trẻ em từ 12 tuổi: Uống 1 viên/lần/ngày. </li>
-                        <li className="mb-4">Uống vào buổi tối trước khi đi ngủ.</li>
+                        <li className="mb-4">{props?.detail?.dosage}</li>
                     </ul>
                     <p className="mb-4 font-bold">Đối tượng sử dụng</p>
                     <ul>
-                        <li className="mb-4">
-                            Trùng Thảo Gold thích hợp dùng cho người ăn ngủ kém, sức khỏe kém, người mới ốm dậy, cần
-                            tăng cường sức khỏe.
-                        </li>
+                        <li className="mb-4">{props?.detail?.age}</li>
                     </ul>
                 </div>
                 <div className="effects mb-8 " ref={refScrollEffects}>
                     <h3 className="mt-12 mb-6  text-2xl font-bold text-[#1e293b]"> Tác Dụng Không Mong Muốn</h3>
-                    <p className="mb-4">Chưa có thông tin về tác dụng phụ của sản phẩm.</p>
+                    <p className="mb-4">
+                        {props?.detail?.handleSideEffect === 'null'
+                            ? 'Chưa có thông tin về tác dụng phụ của sản phẩm.'
+                            : props.detail?.handleSideEffect}
+                    </p>
                 </div>
                 <div className="note mb-6 rounded-lg border border-[#b6c0ce] px-3 py-3" ref={refScrollNote}>
                     <div className="flex items-center border-b border-[#e4eaf1] pb-2">
@@ -219,24 +202,20 @@ function DetailList() {
                         <h3>Lưu Ý</h3>
                     </div>
                     <ul className="pt-3">
-                        <li className="mb-2">Không dùng cho người mẫn cảm với bất kỳ thành phần nào của sản phẩm.</li>
+                        {/* <li className="mb-2">Không dùng cho người mẫn cảm với bất kỳ thành phần nào của sản phẩm.</li> */}
                         <li className="mb-2">
-                            Sản phẩm này không phải là thuốc và không có tác dụng thay thế thuốc chữa bệnh.
+                            {props?.detail?.note === null ? 'Không có ghi chú gì thêm' : props?.detail?.note}
                         </li>
-                        <li className="mb-2"> Đọc kỹ hướng dẫn sử dụng trước khi dùng.</li>
                     </ul>
                 </div>
                 <div className="mb-8" ref={refScrollPreserve}>
                     <h3 className="mb-3 text-2xl font-bold text-[#1e293b]">Bảo Quản</h3>
                     <ul>
-                        <li className="mb-4">
-                            Bảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp từ mặt trời.
-                        </li>
-                        <li className="mb-4">Để xa tầm tay trẻ em.</li>
+                        <li className="mb-4">{props?.detail?.storage}</li>
                     </ul>
                 </div>
                 <div className="label-detail rounded-r-lg border-l-2 border-[#1d48ba] bg-[#edf2f8] px-4 py-4">
-                    <p>Thực phẩm bảo vệ sức khoẻ, không phải là thuốc, không có tác dụng thay thế thuốc chữa bệnh.</p>
+                    <p>{props?.detail?.note === null ? 'Không có ghi chú gì thêm' : props?.detail?.note} </p>
                 </div>
                 <div className="approve mt-9 flex items-center rounded-lg border-[#bee3f8] bg-[#edf2f8]   py-3 px-4 ">
                     <img
@@ -246,7 +225,7 @@ function DetailList() {
                     />
                     <div className="approve-detail">
                         <div className="approve-detail__header flex items-center justify-between border-b pb-2">
-                            <p className="text-xl font-bold">Dược sĩ Đại học Nguyễn Thanh Hải</p>
+                            <p className="text-xl font-bold line-clamp-1">Dược sĩ Đại học Nguyễn Thanh Hải</p>
                             <div className="flex items-center">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -263,7 +242,7 @@ function DetailList() {
                                     />
                                 </svg>
 
-                                <p className="text-[#378f0b]">Đã duyệt nội dung</p>
+                                <p className="text-[#378f0b] line-clamp-1">Đã duyệt nội dung</p>
                             </div>
                         </div>
                         <p className="pt-2 line-clamp-2">
