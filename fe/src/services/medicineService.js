@@ -77,3 +77,20 @@ export const findMedicineByCategoryDetailId = async (categoryDetailId) => {
         console.log(error?.response?.data); // delete when deploy
     }
 };
+
+export const findMedicineDetailByMedicineId = async (medicineId) => {
+    try {
+        const res = await request.get(`findMedicineDetailByMedicineId/${medicineId}`);
+        return res?.data;
+    } catch (error) {
+        console.log(error?.response?.data); // delete when deploy
+    }
+};
+export const findMedicineIngredientByMedicineId = async (medicineId) => {
+    try {
+        const res = await request.get(`findMedicineIngredientByMedicineId/${medicineId}`);
+        return res?.data;
+    } catch (error) {
+        console.log(error?.response?.data); // delete when deploy
+    }
+};

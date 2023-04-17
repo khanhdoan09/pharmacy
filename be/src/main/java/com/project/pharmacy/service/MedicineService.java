@@ -1,7 +1,11 @@
 package com.project.pharmacy.service;
 
 import com.project.pharmacy.entity.Medicine;
+import com.project.pharmacy.entity.MedicineDetail;
+import com.project.pharmacy.entity.MedicineIngredient;
 import com.project.pharmacy.exception.CustomException;
+import com.project.pharmacy.repository.MedicineDetailRepository;
+import com.project.pharmacy.repository.MedicineIngredientRepository;
 import com.project.pharmacy.repository.MedicineRepostory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +20,12 @@ import java.util.Optional;
 public class MedicineService {
 
     @Autowired
-    private MedicineRepostory medicineRepostory;
+    MedicineRepostory medicineRepostory;
+    @Autowired
+    MedicineIngredientRepository medicineIngredientRepository;
+
+    @Autowired
+    MedicineDetailRepository medicineDetailRepository;
 
     public Medicine findById(int id) throws CustomException {
         Optional<Medicine> medicine = medicineRepostory.findById(id);
@@ -123,5 +132,24 @@ public class MedicineService {
         medicine.setTotalNumber(medicine.getTotalNumber() - numberToUpdate);
         medicine.setSaleNumber(medicine.getSaleNumber() + numberToUpdate);
         this.medicineRepostory.save(medicine);
+    }
+    public List<MedicineIngredient> findMedicineIngredientByMedicineId(int medicineId) throws CustomException {
+        List<MedicineIngredient> medicineIngredients =
+                medicineIngredientRepository.findMedicineIngredientByMedicineId(medicineId);
+        if (medicineIngredients == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't findIngredientByMedicineId = " + medicineId);
+        }else{
+            return medicineIngredients;
+        }
+    }
+
+
+    public MedicineDetail findMedicineDetailByMedicineId(int medicineId) throws CustomException {
+        MedicineDetail medicineDetail = medicineDetailRepository.findMedicineDetailByMedicineId(medicineId);
+        if (medicineDetail == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't findMedicineDetailByMedicineId = " + medicineId);
+        } else {
+            return medicineDetail;
+        }
     }
 }
