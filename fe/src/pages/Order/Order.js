@@ -71,11 +71,24 @@ function Order() {
         },
     });
     const [totalPrice, setTotalPrice] = useState(0);
+    const [totalPriceWithoutDiscount, setTotalPriceWithoutDiscount] = useState(0);
+    const [totalPriceByVoucher, setTotalPriceByVoucher] = useState(0);
 
     useEffect(() => {
         let totalPrice = 0;
-        cart?.forEach((e) => (totalPrice = e?.quantity * e?.unit?.price + totalPrice));
+        let tmpTotalPriceByVoucher = 0;
+        let tmpTotalPriceWithoutDiscount = 0;
+        console.log(cart);
+        cart?.medicines?.forEach((e) => {
+            totalPrice = e?.quantity * (e?.unit?.price - (e?.unit?.price * e?.medicine?.discount) / 100) + totalPrice;
+            tmpTotalPriceWithoutDiscount += e?.unit?.price * e?.quantity;
+        });
+        cart?.listVoucher?.forEach((e) => {
+            tmpTotalPriceByVoucher += e?.discount;
+        });
         setTotalPrice(totalPrice);
+        setTotalPriceWithoutDiscount(tmpTotalPriceWithoutDiscount);
+        setTotalPriceByVoucher((tmpTotalPriceWithoutDiscount * tmpTotalPriceByVoucher) / 100);
     }, []);
 
     return (
@@ -304,8 +317,39 @@ function Order() {
                         <p className="my-3 text-[1.1rem] font-[500] leading-[2rem] text-[#020b27]">
                             Danh sách sản phẩm (3)
                         </p>
+                        <div className="my-3 mt-2 block rounded-lg border bg-white py-5 px-3">
+                            <div className="flex justify-between bg-[rgb(255,243,225)] p-1 text-[13px]">
+                                <div>
+                                    <span className="flex items-center">
+                                        <span className="mx-2">
+                                            <i className="fa-solid fa-tag"></i>
+                                        </span>
+                                        <span className="font-medium">Khuyến mại</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="mx-2">
+                                {cart?.listVoucher?.map((e, i) => {
+                                    return (
+                                        <div className={i === 0 ? null : 'border-t'} key={i}>
+                                            <div className="flex items-center py-2">
+                                                <span className="rounded border p-1">
+                                                    <img
+                                                        src="https://s3-sgn09.fptcloud.com/lc-public/web-lc/default/promotion_used.webp"
+                                                        width="30"
+                                                        height="30"
+                                                        className="transparent"
+                                                    />
+                                                </span>
+                                                <span className="mx-2 text-[14px]">{e?.name}</span>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
                         <div className="rounded-xl bg-white px-3 py-5">
-                            {cart.map((e, i) => {
+                            {cart?.medicines.map((e, i) => {
                                 return (
                                     <div key={i} className={i === 0 ? null : 'border-t'}>
                                         <CheckoutItem
@@ -424,22 +468,28 @@ function Order() {
                                 <div className="my-2 flex justify-between">
                                     <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Tổng tiền</h5>
                                     <h5 className="max-sm:text-sm sm:text-[15px]">
-                                        {convertNumberToPrice(totalPrice)}đ
+                                        {convertNumberToPrice(totalPriceWithoutDiscount)}đ
                                     </h5>
                                 </div>
                                 <div className="my-2 flex justify-between">
                                     <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Giảm giá trực tiếp</h5>
-                                    <h5 className="max-sm:text-sm sm:text-[15px]">0đ</h5>
+                                    <h5 className="max-sm:text-sm sm:text-[15px]">
+                                        {convertNumberToPrice(totalPriceWithoutDiscount - totalPrice)}đ
+                                    </h5>
                                 </div>
                                 <div className="my-2 flex justify-between">
                                     <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">
                                         Giảm giá điểm thưởng
                                     </h5>
-                                    <h5 className="max-sm:text-sm sm:text-[15px]">824.400đ</h5>
+                                    <h5 className="max-sm:text-sm sm:text-[15px]">
+                                        {convertNumberToPrice(totalPriceByVoucher)}đ
+                                    </h5>
                                 </div>
                                 <div className="my-2 flex justify-between">
                                     <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Tiết kiệm được</h5>
-                                    <h5 className="max-sm:text-sm sm:text-[15px]">0đ</h5>
+                                    <h5 className="max-sm:text-sm sm:text-[15px]">
+                                        {convertNumberToPrice(totalPrice - totalPriceByVoucher)}đ
+                                    </h5>
                                 </div>
                                 <div className="mt-3 flex justify-between border-t py-2">
                                     <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Phí vận chuyển</h5>
@@ -463,7 +513,7 @@ function Order() {
                                         className="flex items-center text-base font-bold text-blue-700 "
                                         onClick={() => setShowModal(!showModal)}
                                     >
-                                        818.000đ
+                                        {convertNumberToPrice(totalPrice - totalPriceByVoucher)}đ
                                         <span
                                             className={`ml-2 duration-300 sm:hidden ${
                                                 showModal ? 'rotate-180' : 'rotate-0'

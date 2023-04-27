@@ -65,3 +65,23 @@ export const updateUnitMedicineInCart = async (cartId, unitId, token, account) =
         return Promise.reject(error?.response?.data);
     }
 };
+
+export const addNewMedicineInCart = async (medicineId, unitId, quantity, accessToken, accountType) => {
+    try {
+        const payload = {
+            userId: 2,
+            medicineId: medicineId,
+            unitId: unitId,
+            quantity: quantity,
+        };
+        const load = await request.post(`/${controller}/add`, payload, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                AccountType: accountType,
+            },
+        });
+        return load;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};

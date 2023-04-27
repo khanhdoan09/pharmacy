@@ -8,16 +8,20 @@ import { logoutSuccess } from '~/redux/authSlice';
 import * as searchService from '~/services/searchServices';
 import { logOut } from '~/services/userServices';
 import { getAuth, signOut } from 'firebase/auth';
+import CartHeader from '~/components/CartHeader/CartHeader';
+import { useCookies } from 'react-cookie';
 
 function HeaderSearch() {
     const navigate = useNavigate();
     const user = useSelector((state) => state.authentication.login.currentUser);
+    const cart = useSelector((state) => state.cart.medicines);
     const dispatch = useDispatch();
     const [showItemMobile, setShowItemMobile] = useState(false);
     const [showMenuMobiles, setShowMenuMobiles] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [lock, toogle] = useBodyScrollLock();
     const { instance } = useMsal();
+    const [cookies, setCookie] = useCookies(['access_token']);
 
     //search logic
     const [keyword, setKeyword] = useState('');
@@ -233,7 +237,11 @@ function HeaderSearch() {
                             onMouseLeave={() => setIsHovering(false)}
                         >
                             <img
-                                src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png"
+                                src={
+                                    user.avatar
+                                        ? user.avatar
+                                        : 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png'
+                                }
                                 alt="user-img"
                                 className="mr-1 h-10 w-10 object-cover"
                             />
@@ -290,7 +298,8 @@ function HeaderSearch() {
                                                         handleSignOutWithGoogleFirebase();
                                                         break;
                                                     default:
-                                                        navigate('/server_error');
+                                                        setCookie('accessToken', null);
+                                                        logOut();
                                                 }
                                             }}
                                         >
@@ -341,25 +350,7 @@ function HeaderSearch() {
                         </div>
                     )}
 
-                    <NavLink
-                        to="/cart"
-                        className="cart relative flex items-center before:absolute before:top-1 before:-right-1 before:flex before:h-5 before:w-5 before:items-center before:justify-center before:rounded-full before:bg-[#f59e0b] before:text-center before:text-[10px] before:content-['100']"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="h-10 w-10 "
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                            />
-                        </svg>
-                    </NavLink>
+                    <CartHeader></CartHeader>
                 </div>
             </div>
 
@@ -591,7 +582,7 @@ function HeaderSearch() {
                 </NavLink>
                 <NavLink
                     to="/cart"
-                    className="cart relative flex items-center before:absolute before:-top-2 before:-right-2 before:flex before:h-5 before:w-5 before:items-center before:justify-center before:rounded-full before:bg-[#f59e0b] before:text-center before:text-[10px] before:text-[#fff] before:content-['100']"
+                    className={`cart relative flex items-center before:absolute before:-top-2 before:-right-2 before:flex before:h-5 before:w-5 before:items-center before:justify-center before:rounded-full before:bg-[#f59e0b] before:text-center before:text-[10px] before:text-[#fff] before:content-['${cart?.medicines?.length}']`}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

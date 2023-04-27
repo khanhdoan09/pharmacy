@@ -27,11 +27,29 @@ function Cart() {
     const [checklist, setChecklist] = useState(0);
     const [cartChecked, setCartChecked] = useState([]);
     const [showLoading, setShowLoading] = useState(false);
+    const [chooseListVoucher, setChooseListVoucher] = useState([]);
+    const [totalPriceVoucher, setTotalPriceVoucher] = useState(0);
+    const [totalPriceWithoutDiscount, setTotalPriceWithoutDiscount] = useState(0);
     const navigate = useNavigate();
     const user = useSelector((state) => state.authentication.login.currentUser);
     const getNewAccessToken = useAcquireAccessToken();
 
     useEffect(() => {
+        // let dateObj = new Date();
+        // let month = dateObj.getUTCMonth() + 1;
+        // let day = dateObj.getUTCDate();
+        // let year = dateObj.getUTCFullYear();
+        // let toDay = year + '-' + month + '-' + day;
+        // getAllVouchersByToDay(toDay).then(
+        //     (e) => {
+        //         setVouchers(e?.data);
+        //         setShowVouchers(true);
+        //     },
+        //     (err) => {
+        //         navigate('/server_error');
+        //         console.log(err);
+        //     },
+        // );
         if (user == null) {
             navigate('/signIn');
         } else {
@@ -41,16 +59,21 @@ function Cart() {
                     if (e.status == 200) {
                         setData(e?.data);
                         let tmpTotalPrice = 0;
+                        let tmpTotalPriceWithoutDiscount = 0;
                         let num = 0;
+                        console.log(e);
                         e?.data?.data?.map((e2) => {
                             if (e2.medicine.active == 1) {
-                                tmpTotalPrice += e2?.unit?.price * e2?.quantity;
+                                tmpTotalPrice +=
+                                    (e2?.unit?.price - (e2?.unit?.price * e2?.medicine?.discount) / 100) * e2?.quantity;
                                 num += 1;
+                                tmpTotalPriceWithoutDiscount += e2?.unit?.price * e2?.quantity;
                                 cartChecked.push(e2);
                             }
                         });
                         setChecklist(num);
-                        setTotalPrice(convertNumberToPrice(tmpTotalPrice));
+                        setTotalPrice(tmpTotalPrice);
+                        setTotalPriceWithoutDiscount(tmpTotalPriceWithoutDiscount);
                     }
                 },
                 (err) => {
@@ -140,14 +163,19 @@ function Cart() {
 
     function setCheckAllCartItem() {
         let tmpTotalPrice = 0;
+        let tmpTotalPriceWithoutDiscount = 0;
         if (checkAll) {
             tmpTotalPrice = 0;
+            tmpTotalPriceWithoutDiscount = 0;
         } else {
             data?.data?.map((e) => {
-                tmpTotalPrice += convertPriceToNumber(e?.unit?.price) * e?.quantity;
+                tmpTotalPrice +=
+                    convertPriceToNumber(e?.unit?.price - (e?.unit?.price * e?.medicine?.discount) / 100) * e?.quantity;
+                tmpTotalPriceWithoutDiscount += convertPriceToNumber(e?.unit?.price) * e?.quantity;
             });
         }
-        setTotalPrice(convertNumberToPrice(tmpTotalPrice));
+        setTotalPrice(tmpTotalPrice);
+        setTotalPriceWithoutDiscount(tmpTotalPriceWithoutDiscount);
         if (checkAll) {
             setChecklist(0);
             setCartChecked([]);
@@ -169,7 +197,7 @@ function Cart() {
 
     const dispatch = useDispatch();
     function handleSubmit() {
-        dispatch(addMedicinesToCart(cartChecked));
+        dispatch(addMedicinesToCart({ medicines: cartChecked, listVoucher: chooseListVoucher }));
         navigate('/order');
     }
 
@@ -228,8 +256,8 @@ function Cart() {
                                         setShowVouchers(true);
                                     },
                                     (err) => {
-                                        navigate('/server_error');
                                         console.log(err);
+                                        navigate('/server_error');
                                     },
                                 );
                             }}
@@ -270,6 +298,40 @@ function Cart() {
                                 <div className="w-32 text-center text-sm font-[500] max-sm:hidden">Đơn vị</div>
                             </div>
                         </div>
+                        {chooseListVoucher.length > 0 ? (
+                            <div className="mt-2 block rounded-lg border">
+                                <div className="flex justify-between bg-[rgb(255,243,225)] p-1 text-[13px]">
+                                    <div>
+                                        <span className="flex items-center">
+                                            <span className="mx-2">
+                                                <i className="fa-solid fa-tag"></i>
+                                            </span>
+                                            <span className="font-medium">Khuyến mại</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="mx-2">
+                                    {chooseListVoucher.map((e, i) => {
+                                        return (
+                                            <div className={i === 0 ? null : 'border-t'} key={i}>
+                                                <div className="flex items-center py-2">
+                                                    <span className="rounded border p-1">
+                                                        <img
+                                                            src="https://s3-sgn09.fptcloud.com/lc-public/web-lc/default/promotion_used.webp"
+                                                            width="30"
+                                                            height="30"
+                                                            className="transparent"
+                                                        />
+                                                    </span>
+                                                    <span className="mx-2 text-[14px]">{e?.name}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        ) : null}
+
                         <div>
                             {data?.data?.map((e, i) => {
                                 return e?.medicine?.active == 0 ? (
@@ -285,6 +347,9 @@ function Cart() {
                                             cartChecked={cartChecked}
                                             setCartChecked={setCartChecked}
                                             setShowLoading={setShowLoading}
+                                            discount={e?.medicine?.discount}
+                                            totalPriceWithoutDiscount={totalPriceWithoutDiscount}
+                                            setTotalPriceWithoutDiscount={setTotalPriceWithoutDiscount}
                                         ></CartItem>
                                         {outOfStock()}
                                     </div>
@@ -300,6 +365,9 @@ function Cart() {
                                         cartChecked={cartChecked}
                                         setCartChecked={setCartChecked}
                                         setShowLoading={setShowLoading}
+                                        discount={e?.medicine?.discount}
+                                        totalPriceWithoutDiscount={totalPriceWithoutDiscount}
+                                        setTotalPriceWithoutDiscount={setTotalPriceWithoutDiscount}
                                     ></CartItem>
                                 );
                             })}
@@ -333,19 +401,21 @@ function Cart() {
                         <div className={`${showModal ? 'block' : 'hidden'} max-sm:text-sm sm:block sm:text-[16px]`}>
                             <div className="my-2 flex justify-between">
                                 <h5 className="text-slate-600">Tổng tiền</h5>
-                                <h5>{totalPrice}đ</h5>
+                                <h5>{convertNumberToPrice(totalPriceWithoutDiscount)}đ</h5>
                             </div>
                             <div className="my-2 flex justify-between">
                                 <h5 className="text-slate-600">Giảm giá trực tiếp</h5>
-                                <h5>0đ</h5>
+                                <h5>{convertNumberToPrice(totalPriceWithoutDiscount - totalPrice)}đ</h5>
                             </div>
                             <div className="my-2 flex justify-between">
                                 <h5 className="text-slate-600">Giảm giá voucher</h5>
-                                <h5>824.400đ</h5>
+                                <h5>{convertNumberToPrice(totalPriceVoucher)}đ</h5>
                             </div>
                             <div className="my-2 flex justify-between">
                                 <h5 className="text-slate-600">Tiết kiệm được</h5>
-                                <h5>0đ</h5>
+                                <h5>
+                                    {convertNumberToPrice(totalPriceWithoutDiscount - totalPrice + totalPriceVoucher)}đ
+                                </h5>
                             </div>
                         </div>
                         <div className="items-center justify-between max-sm:flex">
@@ -355,7 +425,7 @@ function Cart() {
                                     className="flex items-center text-[20px] font-[600] tracking-[.005em] text-[#1250dc]"
                                     onClick={() => setShowModal(!showModal)}
                                 >
-                                    818.000đ
+                                    {convertNumberToPrice(totalPrice - totalPriceVoucher)}đ
                                     <span
                                         className={`ml-2 duration-300 sm:hidden ${
                                             showModal ? 'rotate-180' : 'rotate-0'
@@ -430,7 +500,19 @@ function Cart() {
                     <p className="px-5 font-[600] text-[#4a4f63]">Khuyến mại đơn hàng</p>
                     <div className="h-3/4 overflow-auto px-5">
                         {vouchers?.data?.map((e, i) => {
-                            return <Voucher key={i} name={e?.name}></Voucher>;
+                            return (
+                                <Voucher
+                                    key={i}
+                                    voucher={e}
+                                    valid={true}
+                                    setChooseListVoucher={setChooseListVoucher}
+                                    chooseListVoucher={chooseListVoucher}
+                                    totalPrice={totalPrice}
+                                    setTotalPrice={setTotalPrice}
+                                    totalPriceVoucher={totalPriceVoucher}
+                                    setTotalPriceVoucher={setTotalPriceVoucher}
+                                ></Voucher>
+                            );
                         })}
                     </div>
                     <div className="flex h-1/5 w-full items-center rounded-2xl bg-white pb-10">

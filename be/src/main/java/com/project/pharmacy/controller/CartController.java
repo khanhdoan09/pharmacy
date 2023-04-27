@@ -2,24 +2,30 @@ package com.project.pharmacy.controller;
 
 import com.project.pharmacy.entity.Cart;
 import com.project.pharmacy.entity.Medicine;
+import com.project.pharmacy.entity.Unit;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.service.CartService;
 import com.project.pharmacy.service.MedicineService;
+import com.project.pharmacy.service.UnitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/api/v1/cart")
 public class CartController {
 
     @Autowired
@@ -27,6 +33,9 @@ public class CartController {
 
     @Autowired
     private MedicineService medicineService;
+
+    @Autowired
+    private UnitService unitService;
 
     @Autowired
     private ModelMapper mapper;
@@ -44,11 +53,28 @@ public class CartController {
     })
     @PostMapping("/add")
     public ResponseHandler addNewMedicineToCart(
-            @RequestParam("userId") int userId,
-            @RequestParam("medicineId") int medicineId) throws CustomException {
-        Medicine medicine = medicineService.findById(medicineId);
-        cartService.checkMedicineQuantityForSale(medicine, 1);
-        cartService.addNewMedicineToCart(userId, medicineId);
+            @RequestBody String data) throws CustomException {
+        JSONObject json = new JSONObject(data);
+        int userId = Integer.valueOf(json.get("userId").toString());
+        int medicineId = Integer.valueOf(json.get("medicineId").toString());
+        int unitId = Integer.valueOf(json.get("unitId").toString());
+        int quantity = Integer.valueOf(json.get("quantity").toString());
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+        Optional<Cart> checkCartExisted = cartService.findByMedicineIdAndUserId(medicineId, userId);
+        Unit unit = unitService.findUnitById(unitId);
+        if (checkCartExisted.isPresent()) {
+            Cart cartExisted = checkCartExisted.get();
+            cartExisted.setQuantity(quantity);
+            cartExisted.setCreateDate(date.format(cal.getTime()).toString());
+            cartExisted.setUnit(unit);
+            cartService.updateCart(cartExisted);
+        }
+        else {
+            Cart newMedicineInCart = new Cart(userId, medicineService.findById(medicineId), quantity, date.format(cal.getTime()).toString(), "", unit);
+            cartService.addNewMedicineToCart(newMedicineInCart);
+        }
+//        cartService.checkMedicineQuantityForSale(medicine, 1);
         ResponseHandler responseHandler = new ResponseHandler("server successfully add new medicine to cart",
                                                               HttpStatus.OK.value(), null);
         return responseHandler;

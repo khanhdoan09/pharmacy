@@ -8,7 +8,12 @@ function CheckoutItem({ avatar, medicine, quantity, unit }) {
             <div className="ml-5 flex w-4/5 flex-wrap items-center justify-between">
                 <h6>{medicine?.name}</h6>
                 <div className="flex justify-between pt-2 max-sm:w-full">
-                    <span className="mr-5 font-semibold">{convertNumberToPrice(quantity * unit?.price)}đ</span>
+                    <span className="font-semibold">
+                        {convertNumberToPrice(quantity * (unit?.price - (unit?.price * medicine?.discount) / 100))}đ
+                    </span>
+                    <span className="mx-3 text-slate-500 line-through">
+                        {convertNumberToPrice(quantity * unit?.price)}đ
+                    </span>
                     <span>
                         x{quantity} {unit?.name}
                     </span>

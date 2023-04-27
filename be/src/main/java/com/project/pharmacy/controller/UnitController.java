@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/unit")
+@RequestMapping("/api/v1/unit")
 public class UnitController {
 
     @Autowired

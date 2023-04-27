@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import SliderImageDetail from '../SliderImageDetail';
 import { Animation } from 'react-animate-style';
+import { addNewMedicineInCart, getAllMedicinesInCart } from '~/services/cartServices';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addMedicinesToCart, addMedicinesToCartAndShowCartInHeader } from '~/redux/cartSlice';
 
 function MainDetail(props) {
     const [toggleState, setToggleState] = useState(1);
@@ -8,6 +13,9 @@ function MainDetail(props) {
     const [priceWithUnit, setPriceWithUnit] = useState();
     const [nameUnit, setNameUnit] = useState();
     const [maxValue, setMaxValue] = useState(props?.detail?.medicine?.priceWithUnit[0]?.quantity);
+    const user = useSelector((state) => state.authentication.login.currentUser);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleIncrementQuantity = (maxQuantity) => {
         if (quantity === maxQuantity) {
@@ -27,6 +35,41 @@ function MainDetail(props) {
     const toggleTab = (index) => {
         setToggleState(index);
     };
+
+    function handleAddNewMedicineIntoCart() {
+        if (user == null) {
+            navigate('/signIn');
+        }
+        addNewMedicineInCart(props?.detail?.medicineId, toggleState, quantity, user?.accessToken, user?.account).then(
+            (e) => {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: 'smooth',
+                });
+                const load = getAllMedicinesInCart(user?.accessToken, user?.account);
+                load.then(
+                    (e) => {
+                        if (e.status == 200) {
+                            dispatch(addMedicinesToCartAndShowCartInHeader({ medicines: e?.data?.data }));
+                        }
+                    },
+                    (err) => {
+                        if (err?.status === 403) {
+                            navigate('/signIn');
+                        } else {
+                            console.log(err);
+                            navigate('/server_error');
+                        }
+                    },
+                );
+            },
+            (err) => {
+                console.log(err);
+                navigate('/server_error');
+            },
+        );
+    }
 
     return (
         <div className="main-detail !grid gap-6 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 ">
@@ -161,7 +204,10 @@ function MainDetail(props) {
                     </div>
                     {/* button buy */}
                     <div className="mt-4 flex items-center ">
-                        <button className="animate__fadeInUpBig mr-4 h-[56px] max-w-full grow basis-0 rounded-[100px] bg-[#1d48ba] text-[20px] font-bold uppercase	text-[#fff]">
+                        <button
+                            onClick={handleAddNewMedicineIntoCart}
+                            className="animate__fadeInUpBig mr-4 h-[56px] max-w-full grow basis-0 rounded-[100px] bg-[#1d48ba] text-[20px] font-bold uppercase	text-[#fff]"
+                        >
                             Chọn mua
                         </button>
                         <button className="h-[56px] rounded-[100px] bg-[#f59e0b] px-[36px] font-bold uppercase text-[#fff]">

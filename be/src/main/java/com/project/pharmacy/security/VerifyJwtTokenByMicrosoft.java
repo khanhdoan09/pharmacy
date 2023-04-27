@@ -66,7 +66,8 @@ public class VerifyJwtTokenByMicrosoft implements VerifyJwtToken {
     public User getUser() {
         String name = String.valueOf(jsonObject.get("name"));
         String email = String.valueOf(jsonObject.get("preferred_username"));
-        String password = String.valueOf(jsonObject.get("oid"));
+//        String password = String.valueOf(jsonObject.get("oid"));
+        String password = String.valueOf(jsonObject.get("preferred_username") + String.valueOf(jsonObject.get("name")));
         String role = null;
         if (jsonObject.get("scp").toString().contains("user.read"))
             role = "client";

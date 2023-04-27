@@ -6,6 +6,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import { logoutSuccess } from '~/redux/authSlice';
 import { logOut } from '~/services/userServices';
+import { useCookies } from 'react-cookie';
+import CartHeader from '~/components/CartHeader/CartHeader';
 
 function Header() {
     const [showItemMobile, setShowItemMobile] = useState(false);
@@ -14,6 +16,7 @@ function Header() {
     const { instance } = useMsal();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [cookies, setCookie] = useCookies(['access_token']);
 
     const toogleLock = () => {
         setShowMenuMobiles(!showMenuMobiles);
@@ -21,7 +24,7 @@ function Header() {
     };
     const [isHovering, setIsHovering] = useState(false);
     const user = useSelector((state) => state.authentication.login.currentUser);
-
+    const cart = useSelector((state) => state.cart.medicines);
     const auth = getAuth();
     const handleSignOutWithGoogleFirebase = async () => {
         await signOut(auth)
@@ -44,6 +47,7 @@ function Header() {
                 () => {
                     dispatch(logoutSuccess(null));
                     logOut();
+                    setCookie('accessToken', null);
                 },
                 (err) => {
                     navigate('/server_error');
@@ -146,7 +150,10 @@ function Header() {
                                                         handleSignOutWithGoogleFirebase();
                                                         break;
                                                     default:
-                                                        navigate('/server_error');
+                                                        dispatch(logoutSuccess(null));
+                                                        setCookie('accessToken', null);
+                                                        setCookie('accountType', null);
+                                                        logOut();
                                                 }
                                             }}
                                         >
@@ -229,25 +236,7 @@ function Header() {
                         </div>
                     )}
 
-                    <NavLink
-                        to="/cart"
-                        className="cart relative flex items-center before:absolute before:top-1 before:-right-1 before:flex before:h-5 before:w-5 before:items-center before:justify-center before:rounded-full before:bg-[#f59e0b] before:text-center before:text-[10px] before:content-['100']"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="h-10 w-10 "
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                            />
-                        </svg>
-                    </NavLink>
+                    <CartHeader></CartHeader>
                 </div>
             </div>
 
@@ -460,7 +449,7 @@ function Header() {
                 </NavLink>
                 <NavLink
                     to="/cart"
-                    className="cart relative flex items-center before:absolute before:-top-2 before:-right-2 before:flex before:h-5 before:w-5 before:items-center before:justify-center before:rounded-full before:bg-[#f59e0b] before:text-center before:text-[10px] before:text-[#fff] before:content-['100']"
+                    className={`cart relative flex items-center before:absolute before:-top-2 before:-right-2 before:flex before:h-5 before:w-5 before:items-center before:justify-center before:rounded-full before:bg-[#f59e0b] before:text-center before:text-[10px] before:text-[#fff] before:content-['${cart?.medicines?.length}']`}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

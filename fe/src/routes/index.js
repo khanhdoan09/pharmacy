@@ -30,7 +30,6 @@ const publicRoutes = [
     { path: config.routes.category, component: Category, layout: HeaderSearchLayout },
     { path: config.routes.categoryDetail, component: CategoryDetail, layout: HeaderSearchLayout },
 
-
     { path: config.routes.search, component: Search, layout: HeaderSearchLayout },
     { path: config.routes.user, component: User, layout: HeaderSearchLayout },
     { path: config.routes.filter, component: Filter, layout: HeaderSearchLayout },

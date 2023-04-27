@@ -33,4 +33,14 @@ public class Cart {
         this.updateDate = updateDate;
         this.unit = null;
     }
+
+    // for add new
+    public Cart(int userId, Medicine medicine, int quantity, String createDate, String updateDate, Unit unit) {
+        this.userId = userId;
+        this.medicine = medicine;
+        this.quantity = quantity;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.unit = unit;
+    }
 }

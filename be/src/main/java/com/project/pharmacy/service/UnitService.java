@@ -21,12 +21,16 @@ public class UnitService {
         }
         List<Unit> units = unitRepository.findByMedicineId(medicineId);
         if (units.isEmpty()) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "no units of a medicine were found");
+            throw new CustomException(HttpStatus.NOT_FOUND, "no units of a medicine were found " + medicineId);
         }
         return units;
     }
 
     public int findALLQuantityByLevelUnit(int unitId, int medicineId) {
         return unitRepository.findALLQuantityByLevelUnit(unitId, medicineId);
+    }
+
+    public Unit findUnitById(int unitId) {
+        return unitRepository.findById(unitId).get();
     }
 }

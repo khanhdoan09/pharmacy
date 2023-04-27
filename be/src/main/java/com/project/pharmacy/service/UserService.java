@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -73,11 +74,10 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    public User findByEmailAndAccountType(String email, String accountType) throws CustomException{
+    public User findByEmailAndAccountType(String email, String accountType) throws CustomException {
         Optional<User> user = userRepository.findByEmailAndAccountType(email, accountType);
         return user.map(u -> {
             return u;
         }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "not found user by email"));
     }
-
 }

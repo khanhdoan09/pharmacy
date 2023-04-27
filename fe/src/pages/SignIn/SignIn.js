@@ -12,6 +12,8 @@ import * as Yup from 'yup';
 import { loginRequest } from '~/config/authConfig';
 import { auth, provider } from '~/config/firebase';
 import { loginSuccess } from '~/redux/authSlice';
+import { addMedicinesToCart } from '~/redux/cartSlice';
+import { getAllMedicinesInCart } from '~/services/cartServices';
 import { loginWithAccessToken, registerWithAccessToken } from '~/services/userServices';
 
 function SignIn() {
@@ -65,7 +67,6 @@ function SignIn() {
         instance
             .loginPopup(loginRequest)
             .then((e) => {
-                console.log(accounts);
                 const name = e?.account?.name;
                 const email = e?.account?.username;
                 const accessToken = e?.accessToken;
@@ -79,6 +80,7 @@ function SignIn() {
                 );
                 setCookieLogin(accessToken, 'Microsoft');
                 registerWithAccessToken(accessToken, 'Microsoft');
+                setUpCartForUser();
                 navigate('/');
             })
             .catch(() => {
@@ -87,6 +89,7 @@ function SignIn() {
     };
 
     const handleErrorLoginWithFacebook = () => {
+        console.log(213);
         navigate('/server_error');
     };
 
@@ -102,22 +105,31 @@ function SignIn() {
         );
         setCookieLogin(response?.accessToken, 'Facebook');
         registerWithAccessToken(response?.accessToken, 'Facebook');
+        setUpCartForUser();
         navigate('/');
     };
 
     useEffect(() => {
         const accountType = cookies.accountType;
         const accessToken = cookies.accessToken;
-        console.log(accessToken);
-        console.log(accountType);
         if (accountType && accessToken) {
-            handleLoginWithAccessToken(accessToken, accountType).then(() => {
-                // navigate('/')
-            });
+            handleLoginWithAccessToken(accessToken, accountType).then(
+                () => {
+                    // navigate('/')
+                },
+                (e) => {
+                    console.log('cannot login with cookie');
+                },
+            );
         }
     }, []);
 
     function handleLoginWithAccessToken(accessToken, accountType) {
+        console.log(accessToken);
+        console.log(accountType);
+        if (accessToken === 'null' || accountType === 'null') {
+            return Promise.reject('fail');
+        }
         return loginWithAccessToken(accessToken, accountType).then(
             (response) => {
                 const statusCode = response?.data?.status;
@@ -174,6 +186,12 @@ function SignIn() {
     function setCookieLogin(accessToken, accountType) {
         setCookie('accessToken', accessToken, { path: '/', maxAge: 31536000 }); // 1 year
         setCookie('accountType', accountType, { path: '/', maxAge: 31536000 });
+    }
+
+    function setUpCartForUser() {
+        getAllMedicinesInCart().then((e) => {
+            dispatch(addMedicinesToCart({ medicines: e?.data?.data }));
+        });
     }
 
     return (

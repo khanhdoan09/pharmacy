@@ -46,10 +46,9 @@ public class CartService {
         return carts;
     }
 
-    public void addNewMedicineToCart(int userId, int medicineId) throws CustomException {
-        checkValidityIdOfUserIdAndMedicineId(userId, medicineId);
-        Cart newMedicineInCart = new Cart(userId, null, 1, "", "", 3);
-        cartRepository.save(newMedicineInCart);
+    public void addNewMedicineToCart(Cart cart) throws CustomException {
+        checkValidityIdOfUserIdAndMedicineId(cart.getUserId(), cart.getMedicine().getId());
+        cartRepository.save(cart);
     }
 
     private void checkValidityIdOfUserIdAndMedicineId(int userId, int medicineId) throws CustomException {
@@ -146,5 +145,13 @@ public class CartService {
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND, "medicine id was not found");
         }
+    }
+
+    public Optional<Cart> findByMedicineIdAndUserId(int medicineId, int userId) {
+        return cartRepository.findByMedicineIdAndUserId(medicineId, userId);
+    }
+
+    public void updateCart(Cart cart) {
+        cartRepository.save(cart);
     }
 }
