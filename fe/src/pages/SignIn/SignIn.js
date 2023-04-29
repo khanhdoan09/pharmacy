@@ -14,7 +14,8 @@ import { auth, provider } from '~/config/firebase';
 import { loginSuccess } from '~/redux/authSlice';
 import { addMedicinesToCart } from '~/redux/cartSlice';
 import { getAllMedicinesInCart } from '~/services/cartServices';
-import { loginWithAccessToken, registerWithAccessToken } from '~/services/userServices';
+import { loginNormal, loginWithAccessToken, registerWithAccessToken } from '~/services/userServices';
+const sign = require('jwt-encode');
 
 function SignIn() {
     const user = useSelector((state) => state.authentication.login.currentUser);
@@ -22,6 +23,7 @@ function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(['access_token']);
+    const [msgLoginFail, setMsgLoginFail] = useState('');
 
     const formik = useFormik({
         initialValues: {
@@ -29,11 +31,32 @@ function SignIn() {
             password: '',
         },
         validationSchema: Yup.object({
-            email: Yup.string().email('Email không hợp lệ').required('Thông tin bắt buộc'),
+            email: Yup.string().required('Thông tin bắt buộc'),
             password: Yup.string().required('Thông tin bắt buộc'),
         }),
         onSubmit: (values) => {
-            console.log(values);
+            const accessToken = sign(values, '372d84af4d2b2511f17388fd44f82e22a53e3a1b51abfd961136710a7fead146');
+            loginNormal(accessToken, 'Normal')
+                .then((response) => {
+                    setMsgLoginFail('');
+                    if (response?.data !== null) {
+                        dispatch(
+                            loginSuccess({
+                                username: response?.data?.email?.split('@')[0],
+                                email:response?.data?.email,
+                                accessToken:response?.data?.accessToken,
+                                account: 'Normal',
+                            }),
+                        );
+                        setCookieLogin(accessToken, 'Normal');
+                        navigate('/');
+                    }
+                    console.log(response?.data);
+                })
+                .catch((error) => {
+                    setMsgLoginFail('Sai thông tin đăng nhập');
+                    console.log(error);
+                });
         },
     });
 
@@ -55,6 +78,8 @@ function SignIn() {
                         account: 'Google',
                     }),
                 );
+                setCookieLogin(accessToken, 'Google');
+                registerWithAccessToken(accessToken, 'Google');
                 navigate('/');
             })
             .catch((error) => {
@@ -94,7 +119,6 @@ function SignIn() {
     };
 
     const handleLoginWithFacebook = (response) => {
-        console.log(response);
         dispatch(
             loginSuccess({
                 username: response?.name,
@@ -133,7 +157,7 @@ function SignIn() {
         return loginWithAccessToken(accessToken, accountType).then(
             (response) => {
                 const statusCode = response?.data?.status;
-                if (statusCode == 200) {
+                if (statusCode === 200) {
                     dispatch(
                         loginSuccess({
                             username: response?.data?.data,
@@ -227,13 +251,19 @@ function SignIn() {
                 <Animation animationIn="slideInRight" isVisible className=" rounded-xl">
                     <Formik className="my-3" initialValues={formik.initialValues} onSubmit={formik.handleSubmit}>
                         <Form className="my-3">
+                            {msgLoginFail.length > 0 ? (
+                                <div className="mb-2 flex h-10 items-center justify-center rounded-lg bg-[#f18b8b]">
+                                    <p className="text-center ">{msgLoginFail}</p>
+                                </div>
+                            ) : null}
+
                             <div className="pb-2">
                                 <label className="py-1 font-bold text-[#016cc9]">Email</label>
                                 <input
                                     autoComplete="off"
                                     className={
                                         formik.touched.email && formik.errors.email
-                                            ? 'focus:shadow-input transition-basic h-12 w-full  rounded-lg  border border-[#ff4742] bg-[#eaf0f7] px-4 py-1 outline-none focus:border-[#ff4742]'
+                                            ? 'focus:shadow-input transition-basic h-12 w-full rounded-lg  border border-[#ff4742] bg-[#eaf0f7] px-4 py-1 outline-none focus:border-[#ff4742]'
                                             : 'focus:shadow-input transition-basic h-12 w-full  rounded-lg  border border-[#f5f5f5] bg-[#eaf0f7] px-4 py-1 outline-none focus:border-[#d6d0d0]'
                                     }
                                     placeholder="Ví dụ: user@gmail.com"

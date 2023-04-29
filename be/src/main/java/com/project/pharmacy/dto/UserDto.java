@@ -15,4 +15,5 @@ public class UserDto {
     private String createDate;
     private String avatar;
     private String role;
+    private String accessToken;
 }
