@@ -3,10 +3,7 @@ package com.project.pharmacy.service;
 import com.project.pharmacy.entity.User;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.repository.UserRepository;
-import com.project.pharmacy.security.CustomUserDetails;
-import com.project.pharmacy.security.VerifyJwtToken;
-import com.project.pharmacy.security.VerifyJwtTokenByFacebook;
-import com.project.pharmacy.security.VerifyJwtTokenByMicrosoft;
+import com.project.pharmacy.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +37,8 @@ public class UserService implements UserDetailsService {
         }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "not found user by email and password"));
     }
 
-    public void saveNewClientUser(String name, String email, String password, String phoneNumber, String methodLogin, String avatar) {
+    public void saveNewClientUser(String name, String email, String password, String phoneNumber, String methodLogin,
+                                  String avatar) {
         User user = new User(name, email, password, phoneNumber, null, methodLogin, avatar, "client");
         userRepository.save(user);
     }
@@ -61,6 +59,10 @@ public class UserService implements UserDetailsService {
                 return new VerifyJwtTokenByMicrosoft();
             case "Facebook":
                 return new VerifyJwtTokenByFacebook();
+            case "Google":
+                return new VerifyJwtTokenByGoogle();
+            case "Normal":
+                return new VerifyJwtTokenByNormal();
             default:
                 throw new CustomException(HttpStatus.UNAUTHORIZED, "wrong account type");
         }
@@ -79,5 +81,34 @@ public class UserService implements UserDetailsService {
         return user.map(u -> {
             return u;
         }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "not found user by email"));
+    }
+
+
+
+    public User changePassword(String email, String oldPassword, String newPassword) throws CustomException {
+        Optional<User> user = userRepository.findByEmailAndPassword(email, oldPassword);
+        return user.map(u -> {
+            u.setPassword(newPassword);
+            userRepository.save(u);
+            return u;
+        }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Incorrect password"));
+    }
+
+    public User findByEmail(String email) throws CustomException {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.map(u -> {
+            return u;
+        }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Can't found user by email = " + email));
+    }
+
+    public User updateInformation(String email, String name, String phone) throws CustomException {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.map(u -> {
+            u.setName(name);
+            u.setPhoneNumber(phone);
+            userRepository.save(u);
+            return u;
+        }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account by email = " + email + " is " +
+                "unregister in system"));
     }
 }

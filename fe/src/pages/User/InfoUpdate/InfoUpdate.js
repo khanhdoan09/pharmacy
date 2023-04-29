@@ -1,29 +1,68 @@
-import { Formik, Form, useFormik } from 'formik';
+import { Form, Formik, useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
 import * as Yup from 'yup';
-import { useState } from 'react';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
-
+import { findUserByEmail, updateInformation } from '~/services/userServices';
+const sign = require('jwt-encode');
 function InfoUpdate() {
     const [showModal, setShowModal] = useState(false);
     const [lock, toggle] = useBodyScrollLock();
+    const user = useSelector((state) => state.authentication.login.currentUser);
+    const [dataInfoUser, setDataInfoUser] = useState();
+    useEffect(() => {
+        const fetchApi = async () => {
+            const result = await findUserByEmail(user?.email)
+                .then((response) => {
+                    setDataInfoUser(response.data.data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+        fetchApi();
+    }, [user?.email]);
 
     const formik = useFormik({
         initialValues: {
+            email: user?.email,
             name: '',
-            email: '',
             phone: '',
             birthday: '',
         },
         validationSchema: Yup.object({
             name: Yup.string().required('Thông tin bắt buộc').min(4, 'Tên quá ngắn').max(16, 'Tên quá dài'),
-            email: Yup.string().email('Email không hợp lệ').required('Thông tin bắt buộc'),
             phone: Yup.string().required('Thông tin bắt buộc'),
-            birthday: Yup.string().required('Thông tin bắt buộc'),
+            birthday: Yup.string(),
         }),
         onSubmit: (values) => {
-            console.log(values);
+            updateInformation(user?.accessToken, user?.account, user?.email, values.name, values.phone)
+                .then((response) => {
+                    if (response?.data !== null) {
+                        notifySuccess('Thay đổi thông tin thành công');
+                        toggle();
+                        setShowModal(!showModal);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
     });
+    const notifySuccess = (msg) => {
+        toast.success(msg, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+        });
+    };
+
     return (
         <div className="-mt-10 flex flex-col items-center justify-center ">
             <div className="flex h-[120px] w-[120px] justify-center rounded-full bg-[#b6c0ce]">
@@ -40,8 +79,8 @@ function InfoUpdate() {
                     />
                 </svg>
             </div>
-            <p className="mt-3 text-xl font-bold text-[#072d94]">Danh</p>
-            <p className="mt-1 text-base text-[#334155]">032xxxxx79</p>
+            <p className="mt-3 text-xl font-bold text-[#072d94]">{dataInfoUser?.name}</p>
+            <p className="mt-1 text-base text-[#334155]">{dataInfoUser?.phoneNumber}</p>
             <button
                 className="mt-1 flex items-center rounded-xl border border-[#d8e0e8] bg-transparent px-4 py-1 leading-6 text-[#52637a] hover:bg-[#718198] hover:text-[#fff]"
                 onClick={() => {
@@ -60,10 +99,23 @@ function InfoUpdate() {
                 </svg>
                 <span>Chỉnh sửa</span>
             </button>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+            <ToastContainer />
 
             {showModal ? (
                 <Formik initialValues={formik.initialValues} onSubmit={formik.handleSubmit}>
-                    <Form className="modal-update-info fixed left-0 top-0 h-full w-full animate-fadeBottomMobile">
+                    <Form className="modal-update-info fixed left-0 top-0 z-50 h-full w-full animate-fadeBottomMobile">
                         <div
                             className="overlay fixed inset-0 h-screen w-screen bg-[#020202] opacity-25"
                             onClick={() => {
@@ -90,7 +142,7 @@ function InfoUpdate() {
                                             : 'mb-1 h-10 rounded-md border border-[#bebebe] px-4 py-1 outline-0'
                                     }
                                     onChange={formik.handleChange}
-                                    value={formik.values.name}
+                                    value={formik.values.name || dataInfoUser?.name}
                                     placeholder="ví dụ: lê minh chánh"
                                 />
                                 {formik.touched.name && formik.errors.name ? (
@@ -99,29 +151,7 @@ function InfoUpdate() {
                                     </span>
                                 ) : null}
                             </div>
-                            <div className="mb-1 flex flex-col">
-                                <label htmlFor="email" className="text-base">
-                                    Địa chỉ email
-                                </label>
-                                <input
-                                    name="email"
-                                    id="email"
-                                    type="text"
-                                    className={
-                                        formik.touched.email && formik.errors.email
-                                            ? 'mb-1 h-10 rounded-md border border-[#ff4742] px-4 py-1 outline-0'
-                                            : 'mb-1 h-10 rounded-md border border-[#bebebe] px-4 py-1 outline-0'
-                                    }
-                                    onChange={formik.handleChange}
-                                    value={formik.values.email}
-                                    placeholder="ví dụ: abc@gmail.com"
-                                />
-                                {formik.touched.email && formik.errors.email ? (
-                                    <span className="flex items-center text-sm font-bold text-[#ff4742]">
-                                        {formik.errors.email}
-                                    </span>
-                                ) : null}
-                            </div>
+
                             <div className="mb-1 flex flex-col">
                                 <label htmlFor="phone" className="text-base">
                                     Số điện thoại
@@ -136,7 +166,7 @@ function InfoUpdate() {
                                             : 'mb-1 h-10 rounded-md border border-[#bebebe] px-4 py-1 outline-0'
                                     }
                                     onChange={formik.handleChange}
-                                    value={formik.values.phone}
+                                    value={formik.values.phone || dataInfoUser?.phoneNumber}
                                 />
                                 {formik.touched.phone && formik.errors.phone ? (
                                     <span className="flex items-center text-sm font-bold text-[#ff4742]">
@@ -169,12 +199,6 @@ function InfoUpdate() {
                             <button
                                 type="submit"
                                 className="mx-auto mt-8 flex rounded-xl bg-[#016cc9] px-12 py-2 font-bold uppercase text-[#fff]"
-                                onClick={() => {
-                                    setTimeout(() => {
-                                        toggle();
-                                        setShowModal(!showModal);
-                                    }, 1000);
-                                }}
                             >
                                 Cập nhật
                             </button>

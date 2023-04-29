@@ -1,13 +1,13 @@
 import { useMsal } from '@azure/msal-react';
 import { getAuth, signOut } from 'firebase/auth';
 import { useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
+import CartHeader from '~/components/CartHeader/CartHeader';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import { logoutSuccess } from '~/redux/authSlice';
 import { logOut } from '~/services/userServices';
-import { useCookies } from 'react-cookie';
-import CartHeader from '~/components/CartHeader/CartHeader';
 
 function Header() {
     const [showItemMobile, setShowItemMobile] = useState(false);
@@ -17,6 +17,7 @@ function Header() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(['access_token']);
+
 
     const toogleLock = () => {
         setShowMenuMobiles(!showMenuMobiles);
@@ -30,12 +31,22 @@ function Header() {
         await signOut(auth)
             .then(() => {
                 dispatch(logoutSuccess(null));
+                setCookie('accessToken', null);
             })
             .catch((err) => {
                 console.log('Lỗi đăng xuất google');
                 console.log(err?.code);
                 navigate('/server_error');
             });
+    };
+    const handleSignOutWithNormal = async () => {
+        dispatch(logoutSuccess(null));
+        setCookie('accessToken', null);
+        setCookie('accountType', null);
+        await logOut().then((response) => {
+            console.log(response);
+        });
+       
     };
 
     function handleSignOutWithMicrosoft() {
@@ -59,7 +70,7 @@ function Header() {
         <div className="wrapper h-20 bg-[#072d94]">
             <div className="padding-responsive m-auto h-20 max-w-[1200px] items-center justify-between cs:hidden xs:hidden sm:hidden md:hidden lg:flex xl:flex 2xl:flex ">
                 <NavLink to="/">
-                    <img src="https://nhathuoclongchau.com.vn/frontend_v3/images/longchau-logo.svg" alt="logo" />
+                    <img src="https://cdn1.nhathuoclongchau.com.vn/logo_front_big_c58fec2dc9.svg" alt="logo" />
                 </NavLink>
                 <div className="right flex text-white ">
                     {!user ? (
@@ -149,6 +160,9 @@ function Header() {
                                                     case 'Google':
                                                         handleSignOutWithGoogleFirebase();
                                                         break;
+                                                    case 'Normal':
+                                                        handleSignOutWithNormal();
+                                                        break;
                                                     default:
                                                         dispatch(logoutSuccess(null));
                                                         setCookie('accessToken', null);
@@ -221,6 +235,12 @@ function Header() {
                                                 switch (user?.account) {
                                                     case 'Microsoft':
                                                         handleSignOutWithMicrosoft();
+                                                        break;
+                                                    case 'Google':
+                                                        handleSignOutWithGoogleFirebase();
+                                                        break;
+                                                    case 'Normal':
+                                                        handleSignOutWithNormal();
                                                         break;
                                                     default:
                                                         dispatch(logoutSuccess(null));

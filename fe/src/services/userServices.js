@@ -38,3 +38,67 @@ export const registerWithAccessToken = async (accessToken, accountType) => {
         return Promise.reject(error?.response?.data);
     }
 };
+export const loginNormal = async (accessToken, accountType) => {
+    try {
+        const load = await request.get(`/${controller}/loginNormal`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                AccountType: accountType,
+            },
+        });
+        return load.data;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+export const changePassword = async (accessToken, accountType, email, oldPassword, newPassword) => {
+    try {
+        const load = await request.put(
+            `/${controller}/changePassword`,
+            {
+                email,
+                oldPassword,
+                newPassword,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    AccountType: accountType,
+                },
+            },
+        );
+        return load;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
+export const findUserByEmail = async (email) => {
+    try {
+        const load = await request.get(`/${controller}/findUserByEmail/${email}`);
+        return load;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+export const updateInformation = async (accessToken, accountType, email, name, phone) => {
+    try {
+        const load = await request.put(
+            `/${controller}/updateInformation`,
+            {
+                email,
+                name,
+                phoneNumber: phone,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    AccountType: accountType,
+                },
+            },
+        );
+        return load;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};

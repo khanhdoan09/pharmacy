@@ -3,7 +3,10 @@ package com.project.pharmacy.controller;
 import com.project.pharmacy.dto.UserDto;
 import com.project.pharmacy.entity.User;
 import com.project.pharmacy.exception.CustomException;
+import com.project.pharmacy.request.PasswordRequest;
+import com.project.pharmacy.request.UserRequest;
 import com.project.pharmacy.response.ResponseHandler;
+import com.project.pharmacy.security.JwtTokenProvider;
 import com.project.pharmacy.security.VerifyJwtToken;
 import com.project.pharmacy.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +37,9 @@ public class UserController {
     private ModelMapper mapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     @Operation(description = "find user by id")
     @ApiResponses({
@@ -94,6 +100,24 @@ public class UserController {
         return responseHandler;
     }
 
+    @GetMapping("/loginNormal")
+    public ResponseHandler loginNormal(HttpServletRequest request) throws CustomException {
+        String accessToken = userService.getAccessTokenFromRequest(request);
+        VerifyJwtToken verifyJwtToken = userService.getVerifyJwtToken(request);
+        verifyJwtToken.verifyJwtToken(accessToken);
+        User user = userService.findByEmailAndPassword(
+                verifyJwtToken.getUser().getEmail(),
+                verifyJwtToken.getUser().getPassword());
+        String jwt = jwtTokenProvider.generateToken(user.getEmail());
+        UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getPhoneNumber(), user.getCreateDate(),
+                                      user.getAvatar(), user.getRole(), jwt);
+        ResponseHandler responseHandler = new ResponseHandler<>(
+                "login successfully",
+                HttpStatus.OK.value(),
+                userDto);
+        return responseHandler;
+    }
+
     @Operation(description = "register with access token")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "request successfully"),
@@ -106,17 +130,48 @@ public class UserController {
         User user = verifyJwtToken.getUser();
 
         try {
-            System.out.println(user.getEmail()+" ~ " + user.getAccountType());
+            System.out.println(user.getEmail() + " ~ " + user.getAccountType());
             userService.findByEmailAndAccountType(user.getEmail(), user.getAccountType());
             // if user is not existed so throw an exception then catch it and save new user
-        }
-        catch (CustomException e) {
+        } catch (CustomException e) {
             userService.saveNewClientUser(user.getName(), user.getEmail(),
                                           passwordEncoder.encode(user.getPassword()), null,
-                                          verifyJwtToken.getAccountType(), null);
+                                          verifyJwtToken.getAccountType(), user.getAvatar());
         }
         ResponseHandler<String> responseHandler = new ResponseHandler<String>(
                 "request successfully", HttpStatus.OK.value(), user.getName());
+        return responseHandler;
+    }
+
+    @GetMapping("/findUserByEmail/{email}")
+    public ResponseHandler findUserByEmail(@PathVariable("email") String email) throws CustomException {
+        User user = userService.findByEmail(email);
+        ResponseHandler responseHandler = new ResponseHandler<>(
+                "Find user by email successfully",
+                HttpStatus.OK.value(),
+                user);
+        return responseHandler;
+    }
+
+    @PutMapping("/updateInformation")
+    public ResponseHandler updateInformation(HttpServletRequest request, @RequestBody UserRequest userRequest) throws CustomException {
+        User user = userService.updateInformation(userRequest.getEmail(), userRequest.getName(),
+                                                  userRequest.getPhoneNumber());
+        ResponseHandler responseHandler = new ResponseHandler<>(
+                "Update information successfully",
+                HttpStatus.OK.value(),
+                userRequest);
+        return responseHandler;
+    }
+
+    @PutMapping("/changePassword")
+    public ResponseHandler changePassword( @RequestBody PasswordRequest passwordRequest) throws CustomException {
+        User user = userService.changePassword(passwordRequest.getEmail(), passwordRequest.getOldPassword(),
+                                               passwordRequest.getNewPassword());
+        ResponseHandler responseHandler = new ResponseHandler<>(
+                "Change password successfully",
+                HttpStatus.OK.value(),
+                user);
         return responseHandler;
     }
 }

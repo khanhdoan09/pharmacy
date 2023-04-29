@@ -1,13 +1,25 @@
+import { Form, Formik, useFormik } from 'formik';
 import { useState } from 'react';
-import { Formik, Form, useFormik } from 'formik';
+import { useCookies } from 'react-cookie';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { logoutSuccess } from '~/redux/authSlice';
+import { changePassword, logOut } from '~/services/userServices';
 
 function PasswordUser() {
     const [oldpwdShow, setOldPwdShow] = useState(false);
     const [newPwdShow, setNewPwdShow] = useState(false);
     const [confirmPwdShow, setConfirmPwdShow] = useState(false);
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.authentication.login.currentUser);
+    const navigate = useNavigate();
+    const [cookies, setCookie] = useCookies(['access_token']);
+
     const formik = useFormik({
         initialValues: {
+            email: user?.email,
             opwd: '',
             pwd: '',
             cpwd: '',
@@ -20,12 +32,72 @@ function PasswordUser() {
                 .oneOf([Yup.ref('pwd')], 'Xác nhận mật khẩu không đúng.'),
         }),
         onSubmit: (values) => {
-            console.log(values);
+            changePassword(user?.accessToken, user?.account, user?.email, values.opwd, values.cpwd)
+                .then((response) => {
+                    if (response?.data !== null) {
+                        notifySuccess('Đổi mật khẩu thành công.');
+                        setOldPwdShow('');
+                        setNewPwdShow('');
+                        setConfirmPwdShow('');
+                        values.opwd = '';
+                        values.pwd = '';
+                        values.cpwd = '';
+                        setTimeout(()=>{
+                            dispatch(logoutSuccess(null));
+                            setCookie('accessToken', null);
+                            setCookie('accountType', null);
+                             logOut().then((response) => {
+                                console.log(response);
+                            });
+                            navigate('/');
+                        },3000)
+                    }
+                })
+                .catch((err) => {
+                    notifyWarning('Mật khẩu cũ không chính xác');
+                });
         },
     });
+    const notifySuccess = (msg) => {
+        toast.success(msg, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+        });
+    };
+    const notifyWarning = (msg) => {
+        toast.warn(msg, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+        });
+    };
     return (
         <>
             <h1 className="mb-4 text-[28px] font-bold text-[#1e293b]">Thay đổi mật khẩu</h1>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+            <ToastContainer />
             <Formik initialValues={formik.initialValues} onSubmit={formik.handleSubmit}>
                 <Form className="relative  max-w-xl flex-auto animate-fadeBottomMobile">
                     <div className="relative mb-2 flex flex-col ">
