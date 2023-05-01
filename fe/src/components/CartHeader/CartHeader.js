@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import useAcquireAccessToken from '~/hooks/useAcquireAcessToken';
 import { getAllMedicinesInCart } from '~/services/cartServices';
 import { useDispatch } from 'react-redux';
-import { addMedicinesToCart, unShowCartInHeader } from '~/redux/cartSlice';
+import { addMedicinesToCart, removeMedicinesFromCart, unShowCartInHeader } from '~/redux/cartSlice';
 
 function CartHeader() {
     const cart = useSelector((state) => state.cart.medicines);
@@ -44,9 +44,9 @@ function CartHeader() {
     }, []);
 
     useEffect(() => {
-        console.log(123);
-        setMedicineInCart(cart.medicines);
-        setTotalMedicine(cart.medicines?.length);
+        // dispatch(removeMedicinesFromCart());
+        setMedicineInCart(cart?.medicines);
+        setTotalMedicine(cart?.medicines?.length);
         setShowCart(isShowCart);
     }, [useSelector((state) => state.cart)]);
 

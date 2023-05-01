@@ -83,8 +83,6 @@ public class UserService implements UserDetailsService {
         }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "not found user by email"));
     }
 
-
-
     public User changePassword(String email, String oldPassword, String newPassword) throws CustomException {
         Optional<User> user = userRepository.findByEmailAndPassword(email, oldPassword);
         return user.map(u -> {
@@ -110,5 +108,15 @@ public class UserService implements UserDetailsService {
             return u;
         }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account by email = " + email + " is " +
                 "unregister in system"));
+    }
+
+    public void updateRewardPoint(User user, int newRewardPoint) {
+        user.setRewardPoint(user.getRewardPoint() +  newRewardPoint);
+        userRepository.save(user);
+    }
+
+    public int getRewardPoint(int userId) {
+        User user =  userRepository.findById(userId).get();
+        return user.getRewardPoint();
     }
 }

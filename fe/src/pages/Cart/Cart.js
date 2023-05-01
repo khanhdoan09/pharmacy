@@ -57,6 +57,7 @@ function Cart() {
             load.then(
                 (e) => {
                     if (e.status == 200) {
+                        console.log(e?.data);
                         setData(e?.data);
                         let tmpTotalPrice = 0;
                         let tmpTotalPriceWithoutDiscount = 0;
@@ -471,7 +472,7 @@ function Cart() {
             ></div>
             <div
                 ref={voucherRef}
-                className={`absolute	right-0 top-0 z-40 h-full bg-white opacity-100 max-sm:w-full ${
+                className={`absolute right-0 top-0 z-40 h-full bg-white opacity-100 max-sm:w-full ${
                     showVouchers ? 'block' : 'hidden'
                 }`}
             >

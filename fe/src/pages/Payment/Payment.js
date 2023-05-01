@@ -4,7 +4,7 @@ import { PayPalButton } from 'react-paypal-button-v2';
 import { useSelector, useDispatch } from 'react-redux';
 import { convertNumberToPrice } from '~/utils/currency';
 import PaymentMethodItem from '~/components/PaymentMethodItem/PaymentMethodItem';
-import { addNewOrder } from '~/services/orderServices';
+import { addNewOrder, getRewardPointById } from '~/services/orderServices';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { removeAddress } from '~/redux/addressSlice';
 import { removeMedicinesFromCart } from '~/redux/cartSlice';
@@ -17,14 +17,42 @@ function Payment() {
     const address = useSelector((state) => state.address?.detail);
     const [showModal, setShowModal] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState(undefined);
+    const [totalPriceWithDiscount, setTotalPriceWithDiscount] = useState(0);
+    const [moneySaved, setMoneySaved] = useState(0);
 
     const [totalPrice, setTotalPrice] = useState(0);
     const [exchangeRate, setExchangeRate] = useState(23000);
+    const [rewardPoint, setRewardPoint] = useState(100);
+    const [isUseRewardPoint, setIsUseRewardPoint] = useState(false);
+    const [renderRewardPoint, setRenderRewardPoint] = useState(0);
+
+    useEffect(() => {
+        getRewardPointById(user?.accessToken, user?.account, 2).then(
+            (e) => {
+                if (e?.data == 200) {
+                    setRewardPoint(e?.data);
+                } else {
+                    navigate('/server_error');
+                }
+            },
+            (err) => {
+                console.log(err);
+                navigate('/server_error');
+            },
+        );
+    }, []);
 
     useEffect(() => {
         let totalPriceTmp = 0;
-        cart?.forEach((e) => (totalPriceTmp = e?.quantity * e?.unit?.price + totalPriceTmp));
+        let totalPriceWithDiscountTmp = 0;
+        cart?.medicines?.forEach((e) => {
+            totalPriceTmp = e?.quantity * e?.unit?.price + totalPriceTmp;
+            totalPriceWithDiscountTmp +=
+                (e?.unit?.price - (e?.unit?.price * e?.medicine?.discount) / 100) * e?.quantity;
+        });
         setTotalPrice(totalPriceTmp);
+        setTotalPriceWithDiscount(totalPriceWithDiscountTmp);
+        setMoneySaved(totalPrice - totalPriceWithDiscount);
         getCurrentExchangeRate().then((e) => setExchangeRate(e));
     }, []);
     const dispatch = useDispatch();
@@ -44,7 +72,7 @@ function Payment() {
                                 </span>
                                 <button
                                     onClick={() => {
-                                        const listOrderDetail = cart.map((e) => {
+                                        const listOrderDetail = cart?.medicines.map((e) => {
                                             return {
                                                 cartId: e?.id,
                                                 quantity: e?.quantity,
@@ -65,6 +93,8 @@ function Payment() {
                                             addressee: address?.name,
                                             phoneNumber: address?.phoneNumber,
                                         };
+                                        console.log(newOrder);
+                                        console.log(listOrderDetail);
                                         const load = addNewOrder(newOrder, listOrderDetail);
                                         load.then((e) => {
                                             console.log(e);
@@ -105,11 +135,11 @@ function Payment() {
                             Danh sách sản phẩm (3)
                         </p>
                         <div className="rounded-xl bg-white px-3 py-5">
-                            {cart.map((e, i) => {
+                            {cart?.medicines?.map((e, i) => {
                                 return (
                                     <div key={i} className={i === 0 ? null : 'border-t'}>
                                         <CheckoutItem
-                                            avatar={e?.avatar}
+                                            avatar={e?.medicine?.avatar}
                                             medicine={e?.medicine}
                                             quantity={e?.quantity}
                                             unit={e?.unit}
@@ -143,17 +173,44 @@ function Payment() {
                                 </div>
                                 <div className="my-2 flex justify-between">
                                     <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Giảm giá trực tiếp</h5>
-                                    <h5 className="max-sm:text-sm sm:text-[15px]">0đ</h5>
-                                </div>
-                                <div className="my-2 flex justify-between">
-                                    <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">
-                                        Giảm giá điểm thưởng
+                                    <h5 className="max-sm:text-sm sm:text-[15px]">
+                                        {convertNumberToPrice(totalPrice - totalPriceWithDiscount)}đ
                                     </h5>
-                                    <h5 className="max-sm:text-sm sm:text-[15px]">824.400đ</h5>
                                 </div>
+                                {rewardPoint > 5 && totalPrice - totalPriceWithDiscount > 100 ? (
+                                    <div className="my-2 flex justify-between">
+                                        <h5 className="relative text-slate-600 max-sm:text-sm sm:text-[15px]">
+                                            Giảm giá điểm thưởng
+                                            <span
+                                                onClick={() => {
+                                                    setIsUseRewardPoint(!isUseRewardPoint);
+                                                    if (isUseRewardPoint) {
+                                                        setRenderRewardPoint(0);
+                                                        setMoneySaved(moneySaved - 100);
+                                                    } else {
+                                                        setRenderRewardPoint(100);
+                                                        setMoneySaved(100 + moneySaved);
+                                                    }
+                                                }}
+                                                className="absolute mx-1"
+                                                data-tooltip-target="tooltip-dark"
+                                            >
+                                                <input
+                                                    className="checked:bg-primary checked:after:bg-primary checked:focus:border-primary checked:focus:bg-primary dark:checked:bg-primary dark:checked:after:bg-primary mr-2 mt-[0.3rem] h-3.5 w-8 appearance-none rounded-[0.4375rem] bg-neutral-300 before:pointer-events-none before:absolute before:h-3.5 before:w-3.5 before:rounded-full before:bg-transparent before:content-[''] after:absolute after:z-[2] after:-mt-[0.1875rem] after:h-5 after:w-5 after:rounded-full after:border-none after:bg-neutral-100 after:shadow-[0_0px_3px_0_rgb(0_0_0_/_7%),_0_2px_2px_0_rgb(0_0_0_/_4%)] after:transition-[background-color_0.2s,transform_0.2s] after:content-[''] checked:after:absolute checked:after:z-[2] checked:after:-mt-[3px] checked:after:ml-[1.0625rem] checked:after:h-5 checked:after:w-5 checked:after:rounded-full checked:after:border-none checked:after:shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),_0_2px_2px_0_rgba(0,0,0,0.14),_0_1px_5px_0_rgba(0,0,0,0.12)] checked:after:transition-[background-color_0.2s,transform_0.2s] checked:after:content-[''] hover:cursor-pointer focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[3px_-1px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-5 focus:after:w-5 focus:after:rounded-full focus:after:content-[''] checked:focus:before:ml-[1.0625rem] checked:focus:before:scale-100 checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:bg-neutral-600 dark:after:bg-neutral-400 dark:focus:before:shadow-[3px_-1px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca]"
+                                                    type="checkbox"
+                                                    role="switch"
+                                                    id="flexSwitchCheckDefault"
+                                                />
+                                            </span>
+                                        </h5>
+                                        <h5 className="max-sm:text-sm sm:text-[15px]">
+                                            {convertNumberToPrice(renderRewardPoint)}đ
+                                        </h5>
+                                    </div>
+                                ) : null}
                                 <div className="my-2 flex justify-between">
                                     <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Tiết kiệm được</h5>
-                                    <h5 className="max-sm:text-sm sm:text-[15px]">0đ</h5>
+                                    <h5 className="max-sm:text-sm sm:text-[15px]">{moneySaved}đ</h5>
                                 </div>
                                 <div className="mt-3 flex justify-between border-t py-2">
                                     <h5 className="text-slate-600 max-sm:text-sm sm:text-[15px]">Phí vận chuyển</h5>
@@ -170,7 +227,7 @@ function Payment() {
                                         className="flex items-center text-base font-bold text-blue-700 "
                                         onClick={() => setShowModal(!showModal)}
                                     >
-                                        {convertNumberToPrice(totalPrice)} đ
+                                        {convertNumberToPrice(totalPrice - moneySaved)}đ
                                         <span
                                             className={`ml-2 duration-300 sm:hidden ${
                                                 showModal ? 'rotate-180' : 'rotate-0'
@@ -207,7 +264,7 @@ function Payment() {
                                         amount={Math.ceil(totalPrice / exchangeRate)}
                                         onSuccess={(details, data) => {
                                             if (details?.status === 'COMPLETED') {
-                                                const listOrderDetail = cart.map((e) => {
+                                                const listOrderDetail = cart?.medicines.map((e) => {
                                                     return {
                                                         quantity: e?.quantity,
                                                         unitId: e?.unit?.id,
@@ -220,7 +277,7 @@ function Payment() {
                                                 const newOrder = {
                                                     id: 10,
                                                     userId: 2,
-                                                    totalPayment: totalPrice,
+                                                    totalPayment: totalPrice - moneySaved,
                                                     createDate: '01/01/2000',
                                                     paymentMethod: 'paypal',
                                                     address: `${address?.city} / ${address?.district} / ${address?.ward} / ${address?.detailAddress}`,
@@ -228,13 +285,16 @@ function Payment() {
                                                     addressee: address?.name,
                                                     phoneNumber: address?.phoneNumber,
                                                 };
+                                                console.log(newOrder);
+                                                console.log(listOrderDetail);
                                                 addNewOrder(newOrder, listOrderDetail)
                                                     .then(() => {
                                                         dispatch(removeAddress());
                                                         dispatch(removeMedicinesFromCart());
                                                         navigate('/');
                                                     })
-                                                    .catch(() => {
+                                                    .catch((err) => {
+                                                        console.log(err);
                                                         navigate('/server_error');
                                                     });
                                             }

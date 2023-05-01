@@ -19,6 +19,6 @@ public interface UnitRepository extends JpaRepository<Unit, Long> {
             ":medicineId group by medicine_id " +
             "having 'level' <=\n" +
             " (select 'level' from pharmacy.unit where medicine_id = :medicineId and id = :unitId)")
-    int findALLQuantityByLevelUnit(@Param("unitId") int unitId,
-                                   @Param("medicineId") int medicineId);
+    int findALLQuantityByLevelUnit(@Param("unitId") Integer unitId,
+                                   @Param("medicineId") Integer medicineId);
 }

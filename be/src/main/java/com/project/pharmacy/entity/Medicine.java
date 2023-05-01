@@ -1,10 +1,12 @@
 package com.project.pharmacy.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -47,5 +49,12 @@ public class Medicine {
     private List<MedicineIngredient> ingredient;
     @OneToMany(mappedBy = "medicineId", cascade = CascadeType.ALL)
     private List<Unit> priceWithUnit;
+
+
+    @OneToMany(mappedBy = "medicine")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
+    private Set<OrderDetail> medicine;
 
 }
