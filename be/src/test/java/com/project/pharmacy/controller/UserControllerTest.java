@@ -48,7 +48,7 @@ public class UserControllerTest {
 
     @Before
     public void setUp() {
-        UserDto userDto = new UserDto(1, "", "", "", "", "");
+        UserDto userDto = new UserDto(1, "", "", "", "", "", "");
         Mockito.when(mapper.map(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any())).thenReturn(userDto);
     }
 
