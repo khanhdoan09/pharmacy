@@ -11,7 +11,7 @@ function HistoryImage({ productId, avatar }) {
     });
     return (
         <div>
-            <img src={urlImage} width={60} height={60}></img>
+            <img src={urlImage} width={60} height={60} alt=""></img>
         </div>
     );
 }

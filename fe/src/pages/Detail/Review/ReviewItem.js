@@ -1,3 +1,4 @@
+
 function ReviewItem({ avatar, name, time, content, children }) {
     return (
         <div className="review-item flex">
@@ -6,10 +7,10 @@ function ReviewItem({ avatar, name, time, content, children }) {
             </p>
             <div className="flex flex-col">
                 <div className="flex items-center">
-                    <span className="mr-4">{name}</span>
+                    <span className="mr-4 font-bold">{name}</span>
                     <span>{time}</span>
                 </div>
-                <div className="flex items-center ">
+                {/* <div className="flex items-center ">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -70,10 +71,10 @@ function ReviewItem({ avatar, name, time, content, children }) {
                             clipRule="evenodd"
                         />
                     </svg>
-                </div>
-                <div className="mt-1">
-                    <p>{content}</p>
+                </div> */}
+                <div className="">
                     <div className="mt-1 flex items-center">{children}</div>
+                    <p>{content}</p>
                 </div>
             </div>
         </div>

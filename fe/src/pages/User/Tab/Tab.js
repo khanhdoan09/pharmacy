@@ -22,7 +22,7 @@ function Tab() {
         const load = getOrderByUserId();
         load.then(
             (e) => {
-                if ((e?.data?.status == 200) | (e?.data?.status == 404)) {
+                if ((e?.data?.status === 200) | (e?.data?.status === 404)) {
                     console.log(e?.data?.data);
                     setListOrder(e?.data?.data);
                     setListOrderAll(e?.data?.data);
@@ -57,8 +57,8 @@ function Tab() {
                 <li
                     onClick={() => {
                         toggleTab(2);
-                        if (listOrderUnFinish.length == 0) {
-                            const tmp = listOrder.filter((e) => e?.status == 'unFinish');
+                        if (listOrderUnFinish.length === 0) {
+                            const tmp = listOrder.filter((e) => e?.status === 'unFinish');
                             setListOrderUnFinish(tmp);
                         } else {
                             setListOrder(listOrderUnFinish);
@@ -76,8 +76,8 @@ function Tab() {
                     onClick={() => {
                         toggleTab(3);
                         console.log(listOrderFinish.length);
-                        if (listOrderFinish.length == 0) {
-                            const tmp = listOrder.filter((e) => e?.status == 'finish');
+                        if (listOrderFinish.length === 0) {
+                            const tmp = listOrder.filter((e) => e?.status === 'finish');
                             setListOrderFinish(tmp);
                         } else {
                             setListOrder(listOrderFinish);
@@ -95,8 +95,8 @@ function Tab() {
                     onClick={() => {
                         toggleTab(4);
                         console.log(listOrderCancel.length);
-                        if (listOrderCancel.length == 0) {
-                            const tmp = listOrder.filter((e) => e?.status == 'cancel');
+                        if (listOrderCancel.length === 0) {
+                            const tmp = listOrder.filter((e) => e?.status === 'cancel');
                             console.log(tmp);
                             setListOrderCancel(tmp);
                         } else {
@@ -114,8 +114,8 @@ function Tab() {
                 <li
                     onClick={() => {
                         toggleTab(5);
-                        if (listOrderReturn == 0) {
-                            const tmp = listOrder.filter((e) => e?.status == 'return');
+                        if (listOrderReturn === 0) {
+                            const tmp = listOrder.filter((e) => e?.status === 'return');
                             setListOrderReturn(tmp);
                         } else {
                             setListOrder(listOrderReturn);
@@ -138,7 +138,7 @@ function Tab() {
                             : 'hidden'
                     }
                 >
-                    {listOrder.length == 0 ? (
+                    {listOrder.length === 0 ? (
                         <div>
                             <img
                                 src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"
@@ -157,7 +157,7 @@ function Tab() {
                             : 'hidden'
                     }
                 >
-                    {listOrder.length == 0 ? (
+                    {listOrder.length === 0 ? (
                         <div>
                             <img
                                 src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"
@@ -176,7 +176,7 @@ function Tab() {
                             : 'hidden'
                     }
                 >
-                    {listOrder.length == 0 ? (
+                    {listOrder.length === 0 ? (
                         <div>
                             <img
                                 src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"
@@ -195,7 +195,7 @@ function Tab() {
                             : 'hidden'
                     }
                 >
-                    {listOrder.length == 0 ? (
+                    {listOrder.length === 0 ? (
                         <div>
                             <img
                                 src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"
@@ -214,7 +214,7 @@ function Tab() {
                             : 'hidden'
                     }
                 >
-                    {listOrder.length == 0 ? (
+                    {listOrder.length === 0 ? (
                         <div>
                             <img
                                 src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"

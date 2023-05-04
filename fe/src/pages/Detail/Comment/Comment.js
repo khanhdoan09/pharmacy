@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import * as commentService from '~/services/commentService';
 import CommentItem from './CommentItem';
 import Reply from './Reply';
-import { logOut } from '~/services/userServices';
 
 function Comment(props) {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +18,7 @@ function Comment(props) {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const resultAllCommentss = await commentService.findCommentsByMedicineIdOrderByCreateDate(medicineId);
+            const resultAllCommentss = await commentService.findCommentsByMedicineIdOrderByCreateDate(1);
             setCommentByMedicineId(resultAllCommentss.data);
         };
         fetchApi();
