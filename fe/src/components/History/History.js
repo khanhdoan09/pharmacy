@@ -14,6 +14,7 @@ function OrderItem(props) {
                 <span className="w-1/5 border py-3 text-center font-bold">Tổng giá</span>
                 <span className="w-1/5 border py-3 text-center font-bold">Chọn</span>
             </div>
+            
             {orders?.map((e, i) => {
                 const order = e;
                 return (

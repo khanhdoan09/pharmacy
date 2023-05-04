@@ -10,7 +10,7 @@ function ItemCartHeader(props) {
     const navigate = useNavigate();
     const user = useSelector((state) => state.authentication.login.currentUser);
     const dispatch = useDispatch();
-    const cart = useSelector((state) => state.cart.medicines);
+    const cart = useSelector((state) => state.cart?.medicines);
     function removeInCart(id) {
         deleteAMedicineInCart(id, user?.accessToken, user?.account).then(
             () => {

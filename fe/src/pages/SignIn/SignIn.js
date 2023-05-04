@@ -42,6 +42,7 @@ function SignIn() {
                     if (response?.data !== null) {
                         dispatch(
                             loginSuccess({
+                                id: response?.data?.id,
                                 username: response?.data?.email?.split('@')[0],
                                 email:response?.data?.email,
                                 accessToken:response?.data?.accessToken,

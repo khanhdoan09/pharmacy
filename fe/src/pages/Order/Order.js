@@ -39,7 +39,7 @@ const validate = (values) => {
 
 function Order() {
     const dispatch = useDispatch();
-    const cart = useSelector((state) => state.cart.medicines);
+    const cart = useSelector((state) => state.cart?.medicines);
     const [showModal, setShowModal] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState(undefined);
     const navigate = useNavigate();

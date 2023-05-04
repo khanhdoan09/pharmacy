@@ -25,7 +25,7 @@ function Header() {
     };
     const [isHovering, setIsHovering] = useState(false);
     const user = useSelector((state) => state.authentication.login.currentUser);
-    const cart = useSelector((state) => state.cart.medicines);
+    const cart = useSelector((state) => state.cart?.medicines);
     const auth = getAuth();
     const handleSignOutWithGoogleFirebase = async () => {
         await signOut(auth)

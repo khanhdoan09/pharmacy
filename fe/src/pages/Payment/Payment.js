@@ -13,7 +13,7 @@ import { getCurrentExchangeRate } from '~/services/paymentServices';
 function Payment() {
     const navigate = useNavigate();
     const user = useSelector((state) => state.authentication.login.currentUser);
-    const cart = useSelector((state) => state.cart.medicines);
+    const cart = useSelector((state) => state.cart?.medicines);
     const address = useSelector((state) => state.address?.detail);
     const [showModal, setShowModal] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState(undefined);

@@ -97,9 +97,9 @@ function MainDetail(props) {
                 <div className="center-text pt-4">
                     <div className="price">
                         <h3 className="text-[32px] font-bold">
-                            {priceWithUnit || props?.detail?.medicine?.priceWithUnit[0].price} &#8260;{' '}
+                            {priceWithUnit || props?.detail?.medicine?.priceWithUnit[0]?.price} &#8260;{' '}
                             <span className="text-2xl font-normal text-[#1e293b]">
-                                {nameUnit || props?.detail?.medicine?.priceWithUnit[0].name}
+                                {nameUnit || props?.detail?.medicine?.priceWithUnit[0]?.name}
                             </span>
                         </h3>
                     </div>
@@ -114,7 +114,7 @@ function MainDetail(props) {
                                         onClick={() => {
                                             toggleTab(u.id);
                                             setNameUnit(u.name);
-                                            setPriceWithUnit(u.price);
+                                            setPriceWithUnit(u?.price);
                                             setMaxValue(u.quantity);
                                             setQuantity(1);
                                         }}

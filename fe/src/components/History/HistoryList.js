@@ -4,7 +4,7 @@ import HistoryItem from './HistoryItem';
 function HistoryList(props) {
     return (
         <div className="flex w-full">
-            {props?.index == props?.showDetail ? (
+            {props?.index === props?.showDetail ? (
                 <HistoryItem
                     setShowDetail={props?.setShowDetail}
                     orderDetails={props?.order?.orderDetail}

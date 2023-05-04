@@ -14,7 +14,7 @@ import { logOut } from '~/services/userServices';
 function HeaderSearch() {
     const navigate = useNavigate();
     const user = useSelector((state) => state.authentication.login.currentUser);
-    const cart = useSelector((state) => state.cart.medicines);
+    const cart = useSelector((state) => state.cart?.medicines);
     const dispatch = useDispatch();
     const [showItemMobile, setShowItemMobile] = useState(false);
     const [showMenuMobiles, setShowMenuMobiles] = useState(false);
