@@ -52,6 +52,7 @@ function SignIn() {
                                 email: response?.data?.email,
                                 accessToken: response?.data?.jwt,
                                 account: 'Normal',
+                                role: response?.data?.role,
                             }),
                         );
                         setCookieLogin(response?.data?.jwt, 'Normal');
@@ -84,6 +85,7 @@ function SignIn() {
                         accessToken: accessToken,
                         idToken: idToken,
                         account: 'Google',
+                        role: 'Client',
                     }),
                 );
                 setCookieLogin(accessToken, 'Google');

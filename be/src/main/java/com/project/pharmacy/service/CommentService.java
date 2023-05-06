@@ -30,15 +30,16 @@ public class CommentService {
     }
 
 
-    public void postComment(int userId, int medicineId, String content) {
+    public void postComment(String userEmail, int medicineId, String content) {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        User user = userRepository.findUserById(userId);
-        List<Likes> likes  = new ArrayList<>();
+        User user =
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().get();
+        List<Likes> likes = new ArrayList<>();
 
 
-        Comment comment = new Comment(0, userId, medicineId, content, 0, dateFormat.format(cal.getTime()), 0,
-                                      user,likes);
+        Comment comment = new Comment(0, user.getId(), medicineId, content, 0, dateFormat.format(cal.getTime()), 0,
+                                      user, likes);
         commentRepository.save(comment);
 
     }
@@ -53,8 +54,9 @@ public class CommentService {
         return comments;
     }
 
-    public void responseComment(int userId, int commentId, int medicineId, String content) throws CustomException {
-        User user = userRepository.findUserById(userId);
+    public void responseComment(String userEmail, int commentId, int medicineId, String content) throws CustomException {
+        User user =
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().get();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String roleUser = user.getRole().trim();
@@ -63,20 +65,16 @@ public class CommentService {
             case "client":
                 throw new CustomException(HttpStatus.UNAUTHORIZED, "You do not have permission to use this function");
             case "staff":
-                List<Likes> likes  = new ArrayList<>();
+                List<Likes> likes = new ArrayList<>();
                 Comment comment = new Comment(0, user.getId(), medicineId, content, commentId,
                                               dateFormat.format(cal.getTime()), 0,
-                                              user,likes);
+                                              user, likes);
                 commentRepository.save(comment);
                 break;
             case "admin":
                 System.out.println("Handle admin response function");
         }
     }
-
-
-
-
 
 
 }

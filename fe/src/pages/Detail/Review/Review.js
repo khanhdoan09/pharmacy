@@ -1,28 +1,15 @@
-import { useEffect, useState } from 'react';
 import Rating from 'react-rating';
-import * as rateService from '~/services/rateService';
+import { NavLink } from 'react-router-dom';
 import ReviewItem from './ReviewItem';
-import { NavLink, useParams } from 'react-router-dom';
 
-function Review() {
-    const [dataReview, setDataReview] = useState();
-    const { medicineId } = useParams();
-    const mid = medicineId.split('=')[1];
-    useEffect(() => {
-        const fetchApi = async () => {
-            const re = await rateService.findRateByMedicineId(mid);
-            setDataReview(re?.data);
-        };
-        fetchApi();
-    }, [mid]);
-
+function Review(props) {
     const handleSumStar = (num) => {
-        return dataReview?.reduce((sum, re) => {
+        return props?.dataReview?.reduce((sum, re) => {
             return re.star === num ? sum + 1 : sum;
         }, 0);
     };
-    const sumStar = dataReview?.reduce((sum, re) => sum + re.star, 0);
-    const average = sumStar / dataReview?.length;
+    const sumStar = props?.dataReview?.reduce((sum, re) => sum + re.star, 0);
+    const average = sumStar / props?.dataReview?.length;
 
     return (
         <div className="max-w-full bg-[#edf2f8] px-1 pb-8">
@@ -43,7 +30,7 @@ function Review() {
                                 className="mr-2"
                             />
                         </div>
-                        <p className="text-sm text-[#718198]">{dataReview?.length} đánh giá</p>
+                        <p className="text-sm text-[#718198]">{props?.dataReview?.length} đánh giá</p>
                     </div>
                     <div className="grid grid-cols-1 gap-1 px-4">
                         <div className="mb-1 flex items-center">
@@ -166,7 +153,7 @@ function Review() {
                        </NavLink>
                     </div>
                 </div>
-                {dataReview?.map((e) => (
+                {props?.dataReview?.map((e) => (
                     <div className="px-4 py-3" key={e?.id}>
                         <ReviewItem
                             avatar={e?.user?.name?.slice(0, 1).toUpperCase()}

@@ -77,10 +77,9 @@ function MainDetail(props) {
             },
         );
     }
-
     return (
         <div className="main-detail !grid gap-6 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 ">
-            <SliderImageDetail />
+            <SliderImageDetail imageList={props?.imageList}/>
 
             <div className="text animate-fadeBottomMobile px-1">
                 <div className="header-text border-b pb-4 ">
@@ -93,10 +92,10 @@ function MainDetail(props) {
                         <span className="text-[#b6c0d7]">Mã sản phẩm: ({props?.detail?.id})</span>
                         <div className="text-sm">
                             <span className="cursor-pointer border-r border-[#bb91a5] px-2 hover:underline">
-                                {props?.detail?.rateNumber} đánh giá
+                                {props?.dataReview?.length} đánh giá
                             </span>
                             <span className="cursor-pointer px-2 hover:underline">
-                                {props?.detail?.commentNumber} bình luận
+                                {props?.commentByMedicineId?.length} bình luận
                             </span>
                         </div>
                     </div>
@@ -115,30 +114,35 @@ function MainDetail(props) {
 
                         <div className="select-unit">
                             <div className="unit-item flex flex-wrap items-center">
-                                {props?.detail?.medicine?.priceWithUnit?.map((u) => (
-                                    <div
-                                        key={u.id}
-                                        onClick={() => {
-                                            toggleTab(u.id);
-                                            setNameUnit(u.name);
-                                            setPriceWithUnit(u?.price);
-                                            setMaxValue(u.quantity);
-                                            setQuantity(1);
-                                        }}
-                                        className={
-                                            toggleState === u.id
-                                                ? ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1'
-                                                : ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1'
-                                        }
-                                    >
-                                        {/* <img
+                                {props?.detail?.medicine?.priceWithUnit?.map((u) => {
+                                    if (maxValue === undefined) {
+                                        setMaxValue(props?.detail?.medicine?.priceWithUnit[0]?.quantity);
+                                    }
+                                    return (
+                                        <div
+                                            key={u.id}
+                                            onClick={() => {
+                                                toggleTab(u.id);
+                                                setNameUnit(u.name);
+                                                setPriceWithUnit(u?.price);
+                                                setMaxValue(u.quantity);
+                                                setQuantity(1);
+                                            }}
+                                            className={
+                                                toggleState === u.id
+                                                    ? ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1'
+                                                    : ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1'
+                                            }
+                                        >
+                                            {/* <img
                                             src="https://cdn-icons-png.flaticon.com/512/2800/2800607.png"
                                             className="mr-2 h-5 w-5 select-none object-cover"
                                             alt=""
                                         /> */}
-                                        <p className="capitalize">{u.name}</p>
-                                    </div>
-                                ))}
+                                            <p className="capitalize">{u.name}</p>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
