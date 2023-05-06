@@ -17,44 +17,56 @@ export const findCommentsByMedicineIdOrderByCreateDate = async (medicineId) => {
         console.log(error?.response);
     }
 };
-export const postComment = async (userId, medicineId, content) => {
+export const postComment = async (userEmail, medicineId, content) => {
     try {
-        const res = await request.post(`postComment/${userId}/${medicineId}/${content}`);
+        const res = await request.post(`postComment`, {
+            email: userEmail,
+            medicineId,
+            content,
+        });
         return res?.data;
     } catch (error) {
         console.log(error?.response);
     }
 };
 
-export const responseComment = async (userId, commentId, medicineId, content) => {
+export const responseComment = async (userEmail, commentId, medicineId, content) => {
     try {
-        const res = await request.post(`responseComment/${userId}/${commentId}/${medicineId}/${content}`);
+        const res = await request.post(`responseComment`, {
+            email: userEmail,
+            commentId,
+            medicineId,
+            content,
+        });
         return res?.data;
     } catch (error) {
         console.log(error?.response);
     }
 };
 
-export const findLikeByCommentIdAndUserId = async (commentId, userId) => {
+export const findLikeByCommentIdAndUserId = async (commentId, userEmail) => {
     try {
-        const res = await request.get(`findLikeByCommentIdAndUserId/${commentId}/${userId}`);
+        const res = await request.get(`findLikeByCommentIdAndUserId/${commentId}/${userEmail}`);
         return res?.data;
     } catch (error) {
         // console.log(error?.response?.data);
     }
 };
 
-export const likeComment = async (commentId, userId) => {
+export const likeComment = async (commentId, userEmail) => {
     try {
-        const res = await request.post(`addLike/${commentId}/${userId}`);
+        const res = await request.post(`addLike`,{
+            commentId,
+            email:userEmail
+        });
         return res?.data;
     } catch (error) {
         // console.log(error?.response?.data);
     }
 };
-export const unLikeComment = async (commentId, userId) => {
+export const unLikeComment = async (commentId, userEmail) => {
     try {
-        const res = await request.delete(`unLikeComment/${commentId}/${userId}`);
+        const res = await request.delete(`unLikeComment/${commentId}/${userEmail}`);
         return res?.data;
     } catch (error) {
         // console.log(error?.response?.data);

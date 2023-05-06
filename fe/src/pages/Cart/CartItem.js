@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { deleteAMedicineInCart, updateMedicineQuantityInCart, updateUnitMedicineInCart } from '~/services/cartServices';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { addMedicinesToCart } from '~/redux/cartSlice';
+import { deleteAMedicineInCart, updateMedicineQuantityInCart, updateUnitMedicineInCart } from '~/services/cartServices';
+import { getAllUnitsInAMedicine } from '~/services/unitServices';
 import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
 import { getImageFromFirebase } from '~/utils/firebase';
-import { getAllUnitsInAMedicine } from '~/services/unitServices';
-import { useSelector, useDispatch } from 'react-redux';
-import { addMedicinesToCart } from '~/redux/cartSlice';
 
 function CartItem({
     checkAll,

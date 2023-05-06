@@ -24,6 +24,7 @@ public class Comment {
     private String createDate;
     private int likeNumber;
 
+
     @ManyToOne
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @EqualsAndHashCode.Exclude

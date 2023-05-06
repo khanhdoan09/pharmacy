@@ -1,5 +1,6 @@
 package com.project.pharmacy.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,6 +19,8 @@ public class Likes {
     private int commentId;
     private String createDate;
     private int userId;
+
+
 
 
 }
