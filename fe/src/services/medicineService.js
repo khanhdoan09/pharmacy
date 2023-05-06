@@ -94,3 +94,30 @@ export const findMedicineIngredientByMedicineId = async (medicineId) => {
         console.log(error?.response?.data); // delete when deploy
     }
 };
+
+export const findBestMedicinesInHistory = async () => {
+    try {
+        const res = await request.get(`findBestMedicinesInHistory`);
+        return res?.data;
+    } catch (error) {
+        console.log(error?.response?.data);
+    }
+};
+
+export const findMedicinesByObject = async (object) => {
+    try {
+        const res = await request.get(`findMedicinesByObject/${object}`);
+        return res?.data;
+    } catch (error) {
+        console.log(error?.response?.data);
+    }
+};
+
+export const findMedicinesRelated = async (categoryDetailId) => {
+    try {
+        const res = await request.get(`findMedicinesByCategoryDetailId/${categoryDetailId}`);
+        return res?.data;
+    } catch (error) {
+        console.log(error?.response?.data);
+    }
+};

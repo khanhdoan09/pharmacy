@@ -1,9 +1,20 @@
+import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import ProductMain from '~/components/ProductMain';
+import { findMedicineByCategoryDetailId } from '~/services/medicineService';
+import { convertNumberToPrice } from '~/utils/currency';
 
-function RelatedProduct() {
+function RelatedProduct({ categoryDetailId, medicineId }) {
+    const [medicinesRelated, setMedicinesRelated] = useState([]);
+    useEffect(() => {
+        if (categoryDetailId !== undefined) {
+            findMedicineByCategoryDetailId(categoryDetailId).then((e) => {
+                setMedicinesRelated(e?.data?.filter((e) => e?.id != medicineId));
+            });
+        }
+    }, [categoryDetailId]);
     const settings3 = {
-        infinite: true,
+        infinite: false,
         speed: 500,
         slidesToShow: 5,
         slidesToScroll: 1,
@@ -49,23 +60,23 @@ function RelatedProduct() {
         ],
     };
     return (
-        <div className="bg-[#edf2f8] max-w-full ">
-            <div className="max-w-[1200px] mx-auto my-0 py-8 padding-responsive">
+        <div className="max-w-full bg-[#edf2f8] ">
+            <div className="padding-responsive mx-auto my-0 max-w-[1200px] py-8">
                 <div className="flex flex-wrap ">
-                    <div className="flex-[0_0_100%] max-w-full flex items-center mb-4">
+                    <div className="mb-4 flex max-w-full flex-[0_0_100%] items-center">
                         <img
                             src="https://cdn-icons-png.flaticon.com/512/3140/3140341.png"
                             alt="related-img"
-                            className="w-7 h-7"
+                            className="h-7 w-7"
                         />
 
-                        <h3 className="px-1  text-[20px] text-[#000] font-bold capitalize">Sản phẩm liên quan</h3>
+                        <h3 className="px-1  text-[20px] font-bold capitalize text-[#000]">Sản phẩm liên quan</h3>
                     </div>
                 </div>
 
                 <div className="pb-8">
                     <Slider {...settings3}>
-                        <div className=" px-1">
+                        {/* <div className=" px-1">
                             <ProductMain
                                 to=""
                                 label="Hộp 2 Vỉ x 15 Viên"
@@ -119,18 +130,24 @@ function RelatedProduct() {
                                 oldPrice=""
                                 unit="hộp"
                             />
-                        </div>
-                        <div className="max-w-full px-1">
-                            <ProductMain
-                                to=""
-                                label="Hộp 2 Vỉ x 15 Viên"
-                                img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/10/00031036-omexxel-ginkgo-120-2x15-5958-633e_large.jpg"
-                                title="Viên uống Omexxel Ginkgo 120 Excelife hỗ trợ tăng cường tuần hoàn máu não, tốt cho tim mạch (30 viên)"
-                                newPrice="364.000đ"
-                                oldPrice=""
-                                unit="hộp"
-                            />
-                        </div>
+                        </div> */}
+                        {medicinesRelated?.map((e, i) => {
+                            const price = e?.priceWithUnit?.[0]?.price;
+                            return (
+                                <div className="max-w-full px-1" key={i}>
+                                    <ProductMain
+                                        to={`detail/medicine=${e?.id}`}
+                                        id={e?.id}
+                                        label={e?.priceWithUnit?.[0]?.name}
+                                        img={e?.avatar}
+                                        title={e?.name}
+                                        newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
+                                        oldPrice={`${convertNumberToPrice(price)}đ`}
+                                        unit={e?.priceWithUnit?.[0]?.name}
+                                    />
+                                </div>
+                            );
+                        })}
                     </Slider>
                 </div>
             </div>

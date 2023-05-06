@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -46,16 +48,17 @@ public class OrderController {
     })
     @PostMapping("/add")
     public ResponseHandler addNewOrder(@RequestBody OrderRequest data) throws CustomException {
+        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar cal = Calendar.getInstance();
         Orders newOrder = new Orders();
-        newOrder.setCreateDate(data.getOrder().getCreateDate());
+        newOrder.setCreateDate(date.format(cal.getTime()).toString());
         newOrder.setMessage(data.getOrder().getMessage());
         newOrder.setPaymentMethod(data.getOrder().getPaymentMethod());
         newOrder.setAddressee(data.getOrder().getAddressee());
         newOrder.setPhoneNumber(data.getOrder().getPhoneNumber());
         newOrder.setAddress(data.getOrder().getAddress());
         newOrder.setTotalPayment(data.getOrder().getTotalPayment());
-        User user = new User();
-        user.setId(data.getOrder().getUserId());
+        User user = userService.findByEmail(data.getOrder().getEmail());
         newOrder.setUser(user);
         List<OrderDetail> orderDetailList = new ArrayList<OrderDetail>();
 
@@ -92,9 +95,9 @@ public class OrderController {
                                                 5;
     }
 
-    @GetMapping("/get/{userId}")
-    public ResponseHandler<List<Orders>> getOrderByUserId(@PathVariable long userId) throws CustomException {
-        List<Orders> result = orderService.getOrderByUserId(userId);
+    @GetMapping("/get/{email}")
+    public ResponseHandler<List<Orders>> getOrderByUserId(@PathVariable String email) throws CustomException {
+        List<Orders> result = orderService.getOrderByEmail(email);
         ResponseHandler<List<Orders>> responseHandler = new ResponseHandler<List<Orders>>(
                 "get orders by user id " +
                         "successfully",
@@ -107,8 +110,8 @@ public class OrderController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "request successfully"),
     })
-    @GetMapping("/getRewardPoint/{userId}")
-    public int getRewardPoint(@PathVariable int userId) {
-        return userService.getRewardPoint(userId);
+    @GetMapping("/getRewardPoint/{email}")
+    public int getRewardPoint(@PathVariable String email) {
+        return userService.getRewardPoint(email);
     }
 }

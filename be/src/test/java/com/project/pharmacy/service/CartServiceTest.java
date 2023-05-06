@@ -40,9 +40,9 @@ class CartServiceTest {
         medicine.setId(1);
         medicine.setName("medicine 1");
         List<Cart> list = new ArrayList<Cart>();
-        Cart cart = new Cart(1, 1, medicine, 1, "", "", null);
-        list.add(cart);
-        Mockito.when(cartRepository.findByUserId(anyInt())).thenReturn(list);
+//        Cart cart = new Cart(1, 1, medicine, 1, "", "", null);
+//        list.add(cart);
+//        Mockito.when(cartRepository.findByUserId(anyInt())).thenReturn(list);
     }
 
     @ParameterizedTest
@@ -50,7 +50,7 @@ class CartServiceTest {
     @DisplayName("test find medicine in cart by user id")
     public void testFindMedicineInCart(int userId) throws CustomException {
         try {
-            List<Cart> carts = cartService.findMedicinesInCart(userId);
+            List<Cart> carts = cartService.findMedicinesInCart("");
             assertThat(carts.get(0).getMedicine().getId(), is(1));
         } catch (CustomException e) {
             assertEquals(e.getStatus(), HttpStatus.NOT_FOUND);

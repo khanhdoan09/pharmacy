@@ -7,12 +7,14 @@ import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.repository.MedicineDetailRepository;
 import com.project.pharmacy.repository.MedicineIngredientRepository;
 import com.project.pharmacy.repository.MedicineRepostory;
+import com.project.pharmacy.repository.OrderDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +25,10 @@ public class MedicineService {
     MedicineRepostory medicineRepostory;
     @Autowired
     MedicineIngredientRepository medicineIngredientRepository;
-
     @Autowired
     MedicineDetailRepository medicineDetailRepository;
+    @Autowired
+    OrderDetailRepository orderDetailRepository;
 
     public Medicine findById(int id) throws CustomException {
         Optional<Medicine> medicine = medicineRepostory.findById(id);
@@ -151,5 +154,31 @@ public class MedicineService {
         } else {
             return medicineDetail;
         }
+    }
+
+    public List<Medicine> findBestMedicinesInHistory() {
+        List<Integer> medicineIdList = orderDetailRepository.findBestMedicinesInHistory();
+        List<Medicine> medicines = new ArrayList<Medicine>();
+        for (int i = 0; i < medicineIdList.size() &&  i < 5; i++) {
+            try {
+                Medicine medicine = medicineRepostory.findById(medicineIdList.get(i)).get();
+                medicines.add(medicine);
+            }
+            catch (Exception e) {
+                continue;
+            }
+        }
+        return medicines;
+    }
+
+    public List<Medicine> findMedicinesByObject(String object) {
+        List<Medicine> medicines = medicineDetailRepository.findMedicinesByObject(object);
+        return medicines;
+    }
+
+    public List<Medicine> findMedicinesByCategoryDetailId(int categoryDetailId) {
+        List<Medicine> medicines = medicineRepostory.findMedicineByCategoryDetailId(categoryDetailId);
+        System.out.println(medicines.size());
+        return medicines;
     }
 }

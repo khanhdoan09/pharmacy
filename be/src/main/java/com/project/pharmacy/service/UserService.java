@@ -13,8 +13,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -22,6 +26,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
     public User findById(int id) throws CustomException {
         Optional<User> user = userRepository.findById(id);
@@ -115,8 +121,37 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public int getRewardPoint(int userId) {
-        User user =  userRepository.findById(userId).get();
+    public int getRewardPoint(String email) {
+        User user = userRepository.findByEmail(email).get();
         return user.getRewardPoint();
+    }
+
+    public UserDetails getUserByEmail(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.map(u -> new CustomUserDetails(u)).orElseThrow(() -> new UsernameNotFoundException("not found by " + email));
+    }
+
+    public String decryptedPasswordFromClient(String password) {
+        try
+        {
+            String key = "1234567812345678";
+            String iv = "1234567812345678";
+
+            Base64.Decoder decoder = Base64.getDecoder();
+            byte[] encrypted1 = decoder.decode(password);
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+            SecretKeySpec keyspec = new SecretKeySpec(key.getBytes(), "AES");
+            IvParameterSpec ivspec = new IvParameterSpec(iv.getBytes());
+            cipher.init(Cipher.DECRYPT_MODE, keyspec, ivspec);
+
+            byte[] original = cipher.doFinal(encrypted1);
+            String originalString = new String(original);
+            return originalString.trim();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

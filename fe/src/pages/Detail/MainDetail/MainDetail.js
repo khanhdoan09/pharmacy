@@ -40,14 +40,21 @@ function MainDetail(props) {
         if (user == null) {
             navigate('/signIn');
         }
-        addNewMedicineInCart(props?.detail?.medicineId, toggleState, quantity, user?.accessToken, user?.account).then(
+        addNewMedicineInCart(
+            props?.detail?.medicineId,
+            toggleState,
+            quantity,
+            user?.email,
+            user?.accessToken,
+            user?.account,
+        ).then(
             (e) => {
                 window.scrollTo({
                     top: 0,
                     left: 0,
                     behavior: 'smooth',
                 });
-                const load = getAllMedicinesInCart(user?.accessToken, user?.account);
+                const load = getAllMedicinesInCart(user?.accessToken, user?.account, user?.email);
                 load.then(
                     (e) => {
                         if (e.status == 200) {

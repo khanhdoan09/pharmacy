@@ -1,7 +1,17 @@
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
+import { getImageFromFirebase } from '~/utils/firebase';
 
-function ProductMain({ to, label, img, title, newPrice, oldPrice, unit }) {
+function ProductMain({ id, to, label, img, title, newPrice, oldPrice, unit }) {
+    const [urlAvatar, setUrlAvatar] = useState(null);
+    useEffect(() => {
+        const imagePromise = getImageFromFirebase(`product/${id}`, `${img}`);
+        imagePromise.then((urlAvatar) => {
+            setUrlAvatar(urlAvatar);
+        });
+    }, []);
     return (
         <div className="transition-basic relative mb-4 h-full rounded-md border bg-[#fff] px-3 pt-3 pb-2 hover:border-[#4f71d0]">
             <NavLink to={to || '/detail'}>
@@ -9,7 +19,7 @@ function ProductMain({ to, label, img, title, newPrice, oldPrice, unit }) {
                     <p className="text-xs capitalize">{label}</p>
                 </div>
                 <img
-                    src={img}
+                    src={urlAvatar}
                     alt="main-img"
                     className="mb-3 max-w-full object-cover px-2 py-2"
                     onError={({ currentTarget }) => {

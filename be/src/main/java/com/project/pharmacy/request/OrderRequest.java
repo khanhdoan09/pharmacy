@@ -21,8 +21,7 @@ public class OrderRequest {
         private String message;
         private String paymentMethod;
         private int id;
-        private int userId;
-        private String createDate;
+        private String email;
     }
 
     @Getter

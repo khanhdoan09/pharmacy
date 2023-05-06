@@ -8,6 +8,7 @@ import CartHeader from '~/components/CartHeader/CartHeader';
 import ResultSearchItem from '~/components/ResultSearchItem';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import { logoutSuccess } from '~/redux/authSlice';
+import { removeMedicinesFromCart } from '~/redux/cartSlice';
 import * as searchService from '~/services/searchServices';
 import { logOut } from '~/services/userServices';
 
@@ -61,6 +62,9 @@ function HeaderSearch() {
         await signOut(auth)
             .then(() => {
                 dispatch(logoutSuccess(null));
+                dispatch(removeMedicinesFromCart());
+                setCookie('accessToken', null);
+                setCookie('accountType', null);
             })
             .catch((err) => {
                 console.log('Lỗi đăng xuất google');
@@ -71,6 +75,7 @@ function HeaderSearch() {
 
     const handleSignOutWithNormal = async () => {
         dispatch(logoutSuccess(null));
+        dispatch(removeMedicinesFromCart());
         setCookie('accessToken', null);
         setCookie('accountType', null);
         await logOut().then((response) => {
@@ -86,6 +91,9 @@ function HeaderSearch() {
             .then(
                 () => {
                     dispatch(logoutSuccess(null));
+                    dispatch(removeMedicinesFromCart());
+                    setCookie('accessToken', null);
+                    setCookie('accountType', null);
                     logOut();
                 },
                 (err) => {
@@ -311,7 +319,9 @@ function HeaderSearch() {
                                                         handleSignOutWithNormal();
                                                         break;
                                                     default:
+                                                        dispatch(removeMedicinesFromCart());
                                                         setCookie('accessToken', null);
+                                                        setCookie('accountType', null);
                                                         logOut();
                                                 }
                                             }}

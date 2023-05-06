@@ -366,7 +366,7 @@ function Order() {
                             Chọn hình thức thanh toán
                         </p>
                         <div className="rounded-xl bg-white px-3 py-1">
-                            <div
+                            {/* <div
                                 className="flex cursor-pointer items-center p-3"
                                 onClick={() =>
                                     paymentMethod === 'vnpay' ? setPaymentMethod(undefined) : setPaymentMethod('vnpay')
@@ -387,8 +387,8 @@ function Order() {
                                     urlImg={'https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/vnpay.png'}
                                     name={'Thanh toán bằng thẻ ATM nội địa (Qua VNPay)'}
                                 ></PaymentMethodItem>
-                            </div>
-                            <div
+                            </div> */}
+                            {/* <div
                                 className="flex cursor-pointer items-center border-t p-3"
                                 onClick={() =>
                                     paymentMethod === 'moca' ? setPaymentMethod(undefined) : setPaymentMethod('moca')
@@ -409,9 +409,9 @@ function Order() {
                                     urlImg={'https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/card.png'}
                                     name={'Thanh toán bằng thẻ quốc tế Visa, Master, JCB'}
                                 ></PaymentMethodItem>
-                            </div>
+                            </div> */}
                             <div
-                                className="flex cursor-pointer items-center border-t p-3"
+                                className="flex cursor-pointer items-center p-3"
                                 onClick={() =>
                                     paymentMethod === 'paypal'
                                         ? setPaymentMethod(undefined)
@@ -436,7 +436,7 @@ function Order() {
                                     name={'Thanh toán bằng paypal'}
                                 ></PaymentMethodItem>
                             </div>
-                            <div
+                            {/* <div
                                 className="flex cursor-pointer items-center border-t p-3"
                                 onClick={() =>
                                     paymentMethod === 'zalopay'
@@ -459,7 +459,7 @@ function Order() {
                                     urlImg={'https://s3-sgn09.fptcloud.com/lc-public/app-lc/payment/zalopay.png'}
                                     name={'Thanh toán bằng ví ZaloPay'}
                                 ></PaymentMethodItem>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="sticky top-0 mx-2 flex h-fit">

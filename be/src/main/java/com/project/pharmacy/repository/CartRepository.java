@@ -12,10 +12,12 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    List<Cart> findByUserId(int medicineId);
+    @Query("select c from Cart c where c.user.email = :email")
+    List<Cart> findByUserEmail(String email);
     @Query( "select c from Cart c where c.id in :cartIds" )
     List<Cart> findByCartId(@Param("cartIds") List<Integer> cartIds);
     Optional<Cart> findById(int id);
     void deleteById(int id);
-    Optional<Cart> findByMedicineIdAndUserId(int medicineId, int userId);
+    @Query("select c from Cart c where c.medicine.id = :medicineId and c.user.email = :email")
+    Optional<Cart> findByMedicineIdAndEmail(int medicineId, String email);
 }

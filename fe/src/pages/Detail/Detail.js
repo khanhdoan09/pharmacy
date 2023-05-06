@@ -39,9 +39,7 @@ function Detail() {
             </div>
 
             {/* related products */}
-            <div className="overflow-x-hidden">
-                <RelatedProduct />
-            </div>
+            <div className="overflow-x-hidden">{/* <RelatedProduct /> */}</div>
 
             {/* comment section  */}
             <div className="padding-responsive bg-[#edf2f8]">
@@ -49,7 +47,10 @@ function Detail() {
             </div>
 
             <div className="overflow-x-hidden">
-                <RelatedProduct />
+                <RelatedProduct
+                    medicineId={handleMedicineId}
+                    categoryDetailId={dataDetail?.medicine?.categoryDetail?.id}
+                />
             </div>
 
             <div className="padding-responsive bg-[#edf2f8]">

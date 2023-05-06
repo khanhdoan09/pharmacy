@@ -2,7 +2,7 @@ import request from '~/utils/request';
 
 const controller = 'order';
 
-export const addNewOrder = async (newOrder, listOrderDetail) => {
+export const addNewOrder = async (token, account, newOrder, listOrderDetail) => {
     try {
         const load = await request.post(
             `/${controller}/add`,
@@ -10,13 +10,12 @@ export const addNewOrder = async (newOrder, listOrderDetail) => {
                 order: newOrder,
                 list: listOrderDetail,
             },
-            // {
-            //     headers: {
-            //         Authorization: `Bearer ${token}`,
-            //         Account: account,
-            //         AddNew: 'false',
-            //     },
-            // },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Account: account,
+                },
+            },
         );
         return load;
     } catch (error) {
@@ -24,9 +23,9 @@ export const addNewOrder = async (newOrder, listOrderDetail) => {
     }
 };
 
-export const getOrderByUserId = async (accessToken, accountType) => {
+export const getOrderByUserId = async (accessToken, accountType, email) => {
     try {
-        const load = await request.get(`/${controller}/get/84`, {
+        const load = await request.get(`/${controller}/get/${email}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 AccountType: accountType,
@@ -38,9 +37,9 @@ export const getOrderByUserId = async (accessToken, accountType) => {
     }
 };
 
-export const getRewardPointById = async (accessToken, accountType, userId) => {
+export const getRewardPointById = async (accessToken, accountType, email) => {
     try {
-        const load = await request.get(`/${controller}/getRewardPoint/${userId}`, {
+        const load = await request.get(`/${controller}/getRewardPoint/${email}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 AccountType: accountType,

@@ -14,7 +14,7 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int userId;
+//    private int userId;
     @OneToOne
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
@@ -24,9 +24,12 @@ public class Cart {
     @OneToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Cart(int userId, Medicine medicine, int quantity, String createDate, String updateDate, int unitId) {
-        this.userId = userId;
+//        this.userId = userId;
         this.medicine = medicine;
         this.quantity = quantity;
         this.createDate = createDate;
@@ -35,8 +38,8 @@ public class Cart {
     }
 
     // for add new
-    public Cart(int userId, Medicine medicine, int quantity, String createDate, String updateDate, Unit unit) {
-        this.userId = userId;
+    public Cart(User user, Medicine medicine, int quantity, String createDate, String updateDate, Unit unit) {
+        this.user = user;
         this.medicine = medicine;
         this.quantity = quantity;
         this.createDate = createDate;

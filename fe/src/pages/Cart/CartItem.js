@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
 import { getImageFromFirebase } from '~/utils/firebase';
 import { getAllUnitsInAMedicine } from '~/services/unitServices';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { addMedicinesToCart } from '~/redux/cartSlice';
 
 function CartItem({
     checkAll,
@@ -35,6 +36,8 @@ function CartItem({
     const navigate = useNavigate();
     const medicineInCartRef = useRef({});
     const user = useSelector((state) => state.authentication.login.currentUser);
+    let cart = useSelector((state) => state.cart.medicines);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (!active) {
@@ -74,28 +77,33 @@ function CartItem({
     }, []);
 
     function handlerDeleteThisMedicineInCart() {
-        deleteAMedicineInCart(data?.id, user?.accessToken, user?.account).then(
-            () => {
-                medicineInCartRef.current.remove();
-                activeShowLoading();
-                let newPrice =
-                    convertPriceToNumber(data?.unit?.price - (data?.unit?.price * discount) / 100) * quantity;
-                let newTotalPrice = totalPrice - newPrice;
-                setTotalPrice(newTotalPrice);
-                let newPriceWithoutDiscount = convertPriceToNumber(data?.unit?.price) * quantity;
-                let newTotalPriceWithoutDiscount = totalPriceWithoutDiscount - newPriceWithoutDiscount;
-                setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
-                unActiveShowLoading();
-            },
-            (err) => {
-                if (err?.status === 403 || err?.status === 401) {
-                    navigate('/signIn');
-                } else {
-                    console.log(err);
-                    navigate('/server_error');
-                }
-            },
-        );
+        activeShowLoading();
+
+        setTimeout(() => {
+            deleteAMedicineInCart(data?.id, user?.accessToken, user?.account).then(
+                () => {
+                    medicineInCartRef.current.remove();
+                    activeShowLoading();
+                    let newPrice =
+                        convertPriceToNumber(data?.unit?.price - (data?.unit?.price * discount) / 100) * quantity;
+                    let newTotalPrice = totalPrice - newPrice;
+                    setTotalPrice(newTotalPrice);
+                    let newPriceWithoutDiscount = convertPriceToNumber(data?.unit?.price) * quantity;
+                    let newTotalPriceWithoutDiscount = totalPriceWithoutDiscount - newPriceWithoutDiscount;
+                    setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
+                    dispatch(addMedicinesToCart({ medicines: cart?.medicines?.filter((e) => e?.id != data?.id) }));
+                    unActiveShowLoading();
+                },
+                (err) => {
+                    if (err?.status === 403 || err?.status === 401) {
+                        navigate('/signIn');
+                    } else {
+                        console.log(err);
+                        navigate('/server_error');
+                    }
+                },
+            );
+        }, 1000);
     }
 
     function updateQuantity(quantity) {
@@ -119,9 +127,17 @@ function CartItem({
                     setQuantity(quantity);
                     setShowLoading(false);
                     unActiveShowLoading();
+                    let arr = [];
+                    cart?.medicines?.forEach((e) => {
+                        let t = { ...e };
+                        arr.push(t);
+                    });
+                    arr[0].quantity = quantity;
+                    dispatch(addMedicinesToCart({ medicines: arr }));
                 },
                 (err) => {
                     const statusCode = err?.status;
+                    unActiveShowLoading();
                     if (statusCode === 413) {
                         alert('not enough');
                     } else if (statusCode === 410) {
@@ -143,34 +159,44 @@ function CartItem({
             let e = units?.data[i];
             if (e?.level === level) {
                 activeShowLoading();
-                updateUnitMedicineInCart(data?.id, e?.id, user?.accessToken, user?.account).then(
-                    () => {
-                        setCurrentUnit(e);
-                        setPrice((e?.price - (e?.price * discount) / 100) * quantity);
-                        let newPrice = convertPriceToNumber(e?.price - (e?.price * discount) / 100) * quantity;
-                        let newTotalPrice = totalPrice - price + newPrice;
-                        setPrice((e?.price - (e?.price * discount) / 100) * quantity);
-                        setTotalPrice(newTotalPrice);
-                        let newPriceWithoutDiscount = convertPriceToNumber(e?.price) * quantity;
-                        let newTotalPriceWithoutDiscount =
-                            totalPriceWithoutDiscount - priceWithoutDiscount + newPriceWithoutDiscount;
-                        setPriceWithoutDiscount(newPriceWithoutDiscount);
-                        setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
-                        unActiveShowLoading();
-                    },
-                    (err) => {
-                        const statusCode = err?.status;
-                        if (statusCode === 413) {
-                            alert('not enough');
-                        } else if (statusCode === 410) {
-                            alert('not active');
-                        } else if (statusCode === 403 || statusCode === 401) {
-                            navigate('/signIn');
-                        } else {
-                            navigate('/server_error');
-                        }
-                    },
-                );
+                setTimeout(() => {
+                    updateUnitMedicineInCart(data?.id, e?.id, user?.accessToken, user?.account).then(
+                        () => {
+                            setCurrentUnit(e);
+                            setPrice((e?.price - (e?.price * discount) / 100) * quantity);
+                            let newPrice = convertPriceToNumber(e?.price - (e?.price * discount) / 100) * quantity;
+                            let newTotalPrice = totalPrice - price + newPrice;
+                            setPrice((e?.price - (e?.price * discount) / 100) * quantity);
+                            setTotalPrice(newTotalPrice);
+                            let newPriceWithoutDiscount = convertPriceToNumber(e?.price) * quantity;
+                            let newTotalPriceWithoutDiscount =
+                                totalPriceWithoutDiscount - priceWithoutDiscount + newPriceWithoutDiscount;
+                            setPriceWithoutDiscount(newPriceWithoutDiscount);
+                            setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
+                            let arr = [];
+                            cart?.medicines?.forEach((e) => {
+                                let t = { ...e };
+                                arr.push(t);
+                            });
+                            arr[0].unit = e;
+                            dispatch(addMedicinesToCart({ medicines: arr }));
+                            unActiveShowLoading();
+                        },
+                        (err) => {
+                            const statusCode = err?.status;
+                            unActiveShowLoading();
+                            if (statusCode === 413) {
+                                alert('không đủ sản phẩm để bán');
+                            } else if (statusCode === 410) {
+                                alert('sản phẩm không còn được bán');
+                            } else if (statusCode === 403 || statusCode === 401) {
+                                navigate('/signIn');
+                            } else {
+                                navigate('/server_error');
+                            }
+                        },
+                    );
+                }, 1000);
                 break;
             }
         }

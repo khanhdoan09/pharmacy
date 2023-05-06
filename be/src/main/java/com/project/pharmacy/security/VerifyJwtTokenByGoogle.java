@@ -25,10 +25,15 @@ public class VerifyJwtTokenByGoogle implements VerifyJwtToken {
         byte[] claims = new byte[1000000];
         claims = DatatypeConverter.parseBase64Binary(base64EncodedClaims);
         String s = new String(claims);
+        s += "}";
+        StringBuilder b = new StringBuilder(s);
+        b.insert(s.length() -  33, "}");
+        System.out.println(b.toString());
         if (s != null) {
-            jsonObject = new JSONObject(s);
+            jsonObject = new JSONObject(b.toString());
             return true;
         }
+        System.out.println(jsonObject);
         return false;
     }
 

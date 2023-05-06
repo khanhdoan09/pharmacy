@@ -21,9 +21,9 @@ public class OrderService {
         return newOrder.getId();
     }
 
-    public List<Orders> getOrderByUserId(long userId) throws CustomException {
+    public List<Orders> getOrderByEmail(String email) throws CustomException {
         List<Orders> orders =
-                orderRepository.findAll().stream().filter(o -> o.getUser().getId() == userId).collect(Collectors.toList());
+                orderRepository.findAll().stream().filter(o -> o.getUser().getEmail().equals(email)).collect(Collectors.toList());
         if (orders.size() == 0) {
             throw new CustomException(HttpStatus.NOT_FOUND, "not found orders by user id");
         }

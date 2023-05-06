@@ -27,9 +27,9 @@ function Payment() {
     const [renderRewardPoint, setRenderRewardPoint] = useState(0);
 
     useEffect(() => {
-        getRewardPointById(user?.accessToken, user?.account, 2).then(
+        getRewardPointById(user?.accessToken, user?.account, user?.email).then(
             (e) => {
-                if (e?.data == 200) {
+                if (e?.status == 200) {
                     setRewardPoint(e?.data);
                 } else {
                     navigate('/server_error');
@@ -84,9 +84,8 @@ function Payment() {
                                         });
                                         const newOrder = {
                                             id: 10,
-                                            userId: 2,
+                                            email: user?.email,
                                             totalPayment: totalPrice,
-                                            createDate: '01/01/2000',
                                             paymentMethod: 'paypal',
                                             address: `${address?.city} / ${address?.district} / ${address?.ward} / ${address?.detailAddress}`,
                                             message: address?.message,
@@ -95,7 +94,12 @@ function Payment() {
                                         };
                                         console.log(newOrder);
                                         console.log(listOrderDetail);
-                                        const load = addNewOrder(newOrder, listOrderDetail);
+                                        const load = addNewOrder(
+                                            user?.accessToken,
+                                            user?.account,
+                                            newOrder,
+                                            listOrderDetail,
+                                        );
                                         load.then((e) => {
                                             console.log(e);
                                         }).catch((err) => {
@@ -276,9 +280,8 @@ function Payment() {
                                                 });
                                                 const newOrder = {
                                                     id: 10,
-                                                    userId: 2,
+                                                    email: user?.email,
                                                     totalPayment: totalPrice - moneySaved,
-                                                    createDate: '01/01/2000',
                                                     paymentMethod: 'paypal',
                                                     address: `${address?.city} / ${address?.district} / ${address?.ward} / ${address?.detailAddress}`,
                                                     message: address?.message,
@@ -287,7 +290,7 @@ function Payment() {
                                                 };
                                                 console.log(newOrder);
                                                 console.log(listOrderDetail);
-                                                addNewOrder(newOrder, listOrderDetail)
+                                                addNewOrder(user?.accessToken, user?.account, newOrder, listOrderDetail)
                                                     .then(() => {
                                                         dispatch(removeAddress());
                                                         dispatch(removeMedicinesFromCart());

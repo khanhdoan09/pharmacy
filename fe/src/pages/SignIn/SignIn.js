@@ -15,6 +15,8 @@ import { loginSuccess } from '~/redux/authSlice';
 import { addMedicinesToCart } from '~/redux/cartSlice';
 import { getAllMedicinesInCart } from '~/services/cartServices';
 import { loginNormal, loginWithAccessToken, registerWithAccessToken } from '~/services/userServices';
+import CryptoJS from 'crypto-js';
+
 const sign = require('jwt-encode');
 
 function SignIn() {
@@ -35,21 +37,24 @@ function SignIn() {
             password: Yup.string().required('Thông tin bắt buộc'),
         }),
         onSubmit: (values) => {
-            const accessToken = sign(values, '372d84af4d2b2511f17388fd44f82e22a53e3a1b51abfd961136710a7fead146');
-            loginNormal(accessToken, 'Normal')
+            const encryptedPassword = '' + encrypt(values?.password);
+            loginNormal(values?.email, encryptedPassword)
                 .then((response) => {
                     setMsgLoginFail('');
+                    console.log(response?.data);
+                    console.log(response?.data?.email);
+                    console.log(response?.data?.name);
                     if (response?.data !== null) {
                         dispatch(
                             loginSuccess({
                                 id: response?.data?.id,
-                                username: response?.data?.email?.split('@')[0],
-                                email:response?.data?.email,
-                                accessToken:response?.data?.accessToken,
+                                username: response?.data?.name,
+                                email: response?.data?.email,
+                                accessToken: response?.data?.jwt,
                                 account: 'Normal',
                             }),
                         );
-                        setCookieLogin(accessToken, 'Normal');
+                        setCookieLogin(response?.data?.jwt, 'Normal');
                         navigate('/');
                     }
                     console.log(response?.data);
@@ -66,10 +71,12 @@ function SignIn() {
     const handleLoginWithGoogleFirebase = async () => {
         await signInWithPopup(auth, provider)
             .then((data) => {
+                console.log(data);
                 const name = data?.user?.displayName;
                 const email = data?.user?.email;
                 const accessToken = data?.user?.accessToken;
                 const idToken = data?.user?.uid;
+                const avatar = data?.user?.photoURL;
                 dispatch(
                     loginSuccess({
                         username: name,
@@ -109,7 +116,8 @@ function SignIn() {
                 setUpCartForUser();
                 navigate('/');
             })
-            .catch(() => {
+            .catch((e) => {
+                console.log(e);
                 navigate('/server_error');
             });
     };
@@ -138,14 +146,14 @@ function SignIn() {
         const accountType = cookies.accountType;
         const accessToken = cookies.accessToken;
         if (accountType && accessToken) {
-            handleLoginWithAccessToken(accessToken, accountType).then(
-                () => {
-                    // navigate('/')
-                },
-                (e) => {
-                    console.log('cannot login with cookie');
-                },
-            );
+            // handleLoginWithAccessToken(accessToken, accountType).then(
+            //     () => {
+            //         navigate('/');
+            //     },
+            //     (e) => {
+            //         console.log('cannot login with cookie');
+            //     },
+            // );
         }
     }, []);
 
@@ -217,6 +225,17 @@ function SignIn() {
         getAllMedicinesInCart().then((e) => {
             dispatch(addMedicinesToCart({ medicines: e?.data?.data }));
         });
+    }
+
+    function encrypt(password) {
+        const key = CryptoJS.enc.Latin1.parse('1234567812345678');
+        const iv = CryptoJS.enc.Latin1.parse('1234567812345678');
+        var encrypted = CryptoJS.AES.encrypt(password, key, {
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.ZeroPadding,
+        });
+        return encrypted;
     }
 
     return (

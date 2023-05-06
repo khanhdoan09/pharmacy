@@ -38,13 +38,13 @@ export const registerWithAccessToken = async (accessToken, accountType) => {
         return Promise.reject(error?.response?.data);
     }
 };
-export const loginNormal = async (accessToken, accountType) => {
+export const loginNormal = async (email, encryptedPassword) => {
+    console.log(email);
+    console.log(encryptedPassword);
     try {
-        const load = await request.get(`/${controller}/loginNormal`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                AccountType: accountType,
-            },
+        const load = await request.post(`/${controller}/loginNormal`, {
+            email: email,
+            password: encryptedPassword,
         });
         return load.data;
     } catch (error) {

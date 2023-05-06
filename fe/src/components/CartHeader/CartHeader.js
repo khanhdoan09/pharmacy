@@ -21,7 +21,7 @@ function CartHeader() {
 
     useEffect(() => {
         dispatch(unShowCartInHeader());
-        const load = getAllMedicinesInCart(user?.accessToken, user?.account);
+        const load = getAllMedicinesInCart(user?.accessToken, user?.account, user?.email);
         load.then(
             (e) => {
                 if (e.status == 200) {

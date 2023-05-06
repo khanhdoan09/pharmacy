@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getOrderByUserId } from '~/services/orderServices';
 import { useNavigate } from 'react-router-dom';
 import History from '~/components/History/History';
+import { useSelector } from 'react-redux';
 
 function Tab() {
     const [toggleState, setToggleState] = useState(1);
@@ -11,6 +12,7 @@ function Tab() {
     const [listOrderFinish, setListOrderFinish] = useState([]);
     const [listOrderCancel, setListOrderCancel] = useState([]);
     const [listOrderReturn, setListOrderReturn] = useState([]);
+    const user = useSelector((state) => state.authentication.login.currentUser);
 
     const navigate = useNavigate();
 
@@ -19,7 +21,7 @@ function Tab() {
     };
 
     useEffect(() => {
-        const load = getOrderByUserId();
+        const load = getOrderByUserId(user?.accessToken, user?.account, user?.email);
         load.then(
             (e) => {
                 if ((e?.data?.status === 200) | (e?.data?.status === 404)) {
@@ -35,7 +37,7 @@ function Tab() {
             },
             (error) => {
                 console.log(error);
-                navigate('/server_error');
+                if (error?.status !== 404) navigate('/server_error');
             },
         );
     }, []);

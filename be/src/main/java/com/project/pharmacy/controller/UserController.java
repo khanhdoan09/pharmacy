@@ -1,6 +1,8 @@
 package com.project.pharmacy.controller;
 
+import com.google.gson.Gson;
 import com.project.pharmacy.dto.UserDto;
+import com.project.pharmacy.dto.UserInfoJwtDto;
 import com.project.pharmacy.entity.User;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.request.PasswordRequest;
@@ -100,21 +102,18 @@ public class UserController {
         return responseHandler;
     }
 
-    @GetMapping("/loginNormal")
-    public ResponseHandler loginNormal(HttpServletRequest request) throws CustomException {
-        String accessToken = userService.getAccessTokenFromRequest(request);
-        VerifyJwtToken verifyJwtToken = userService.getVerifyJwtToken(request);
-        verifyJwtToken.verifyJwtToken(accessToken);
-        User user = userService.findByEmailAndPassword(
-                verifyJwtToken.getUser().getEmail(),
-                verifyJwtToken.getUser().getPassword());
-        String jwt = jwtTokenProvider.generateToken(user.getEmail());
-        UserDto userDto = new UserDto(user.getId(), user.getEmail(), user.getPhoneNumber(), user.getCreateDate(),
-                                      user.getAvatar(), user.getRole(), jwt);
-        ResponseHandler responseHandler = new ResponseHandler<>(
+    @PostMapping("/loginNormal")
+    public ResponseHandler loginNormal(@RequestBody User userData) throws CustomException {
+        String password = userService.decryptedPasswordFromClient(userData.getPassword());
+        // this will update when register function by form is done
+        User user = userService.findByEmailAndPassword(userData.getEmail(), password);
+        String jwt = jwtTokenProvider.generateToken(user.getEmail(), user.getName(), user.getAvatar());
+        UserInfoJwtDto userInfoJwtDto = new UserInfoJwtDto(user);
+        userInfoJwtDto.setJwt(jwt);
+        ResponseHandler<UserInfoJwtDto> responseHandler = new ResponseHandler<UserInfoJwtDto>(
                 "login successfully",
                 HttpStatus.OK.value(),
-                userDto);
+                userInfoJwtDto);
         return responseHandler;
     }
 
@@ -128,12 +127,11 @@ public class UserController {
         VerifyJwtToken verifyJwtToken = userService.getVerifyJwtToken(request);
         verifyJwtToken.verifyJwtToken(accessToken);
         User user = verifyJwtToken.getUser();
-
         try {
-            System.out.println(user.getEmail() + " ~ " + user.getAccountType());
-            userService.findByEmailAndAccountType(user.getEmail(), user.getAccountType());
-            // if user is not existed so throw an exception then catch it and save new user
+            userService.findByEmail(user.getEmail());
+            // if user is not existed so throw an exception then catch it and save a new user
         } catch (CustomException e) {
+            System.out.println(user.getPassword());
             userService.saveNewClientUser(user.getName(), user.getEmail(),
                                           passwordEncoder.encode(user.getPassword()), null,
                                           verifyJwtToken.getAccountType(), user.getAvatar());

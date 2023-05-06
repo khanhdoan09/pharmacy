@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -29,8 +30,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    private Set<String> skipUrls = new HashSet<>(Arrays.asList("/api/cart/**"));
+    private Set<String> skipUrls = new HashSet<>(Arrays.asList( "/api/v1/auth/**", "/api/v1/unit/**", "/api/**"));
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
@@ -45,23 +48,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authentication = null;
                     User user = verifyJwtToken.getUser();
                     try {
-                        UserDetails userDetails = userService.loadUserByUsername(user.getName());
+                        UserDetails userDetails = userService.getUserByEmail(user.getEmail());
                         authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
                                                                                  userDetails.getAuthorities());
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         filterChain.doFilter(request, response);
                     } catch (UsernameNotFoundException u) {
-                        request.setAttribute("exception message", "user is not registered");
-                        request.getRequestDispatcher("/api/auth/unauthorized").forward(request, response);
+                        request.setAttribute("exception message", u.getMessage());
+                        request.getRequestDispatcher("/api/v1/auth/unauthorized").forward(request, response);
                     }
                 } else {
                     request.setAttribute("exception message", "token is invalid");
-                    request.getRequestDispatcher("/api/auth/unauthorized").forward(request, response);
+                    request.getRequestDispatcher("/api/v1/auth/unauthorized").forward(request, response);
                 }
             } catch (CustomException e) {
                 request.setAttribute("exception message", e.getMessage());
-                request.getRequestDispatcher("/api/auth/unauthorized").forward(request, response);
+                request.getRequestDispatcher("/api/v1/auth/unauthorized").forward(request, response);
             }
         }
 //        filterChain.doFilter(request, response);
@@ -71,6 +74,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return skipUrls.stream()
-                .noneMatch(p -> pathMatcher.match(p, request.getServletPath()));
+                .anyMatch(p -> pathMatcher.match(p, request.getServletPath()));
     }
 }

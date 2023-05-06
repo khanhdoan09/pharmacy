@@ -4,6 +4,9 @@ export function convertPriceToNumber(price) {
 }
 
 export function convertNumberToPrice(number) {
+    if (number === undefined) {
+        return;
+    }
     let result = '';
     let str = JSON.stringify(number);
     for (let i = 0; i < str.length; i++) {

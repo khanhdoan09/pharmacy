@@ -7,6 +7,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import CartHeader from '~/components/CartHeader/CartHeader';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import { logoutSuccess } from '~/redux/authSlice';
+import { removeMedicinesFromCart } from '~/redux/cartSlice';
 import { logOut } from '~/services/userServices';
 
 function Header() {
@@ -17,7 +18,6 @@ function Header() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(['access_token']);
-
 
     const toogleLock = () => {
         setShowMenuMobiles(!showMenuMobiles);
@@ -31,7 +31,9 @@ function Header() {
         await signOut(auth)
             .then(() => {
                 dispatch(logoutSuccess(null));
+                dispatch(removeMedicinesFromCart());
                 setCookie('accessToken', null);
+                setCookie('accountType', null);
             })
             .catch((err) => {
                 console.log('Lỗi đăng xuất google');
@@ -41,12 +43,12 @@ function Header() {
     };
     const handleSignOutWithNormal = async () => {
         dispatch(logoutSuccess(null));
+        dispatch(removeMedicinesFromCart());
         setCookie('accessToken', null);
         setCookie('accountType', null);
         await logOut().then((response) => {
             console.log(response);
         });
-       
     };
 
     function handleSignOutWithMicrosoft() {
@@ -57,8 +59,10 @@ function Header() {
             .then(
                 () => {
                     dispatch(logoutSuccess(null));
+                    dispatch(removeMedicinesFromCart());
                     logOut();
                     setCookie('accessToken', null);
+                    setCookie('accountType', null);
                 },
                 (err) => {
                     navigate('/server_error');
@@ -244,6 +248,9 @@ function Header() {
                                                         break;
                                                     default:
                                                         dispatch(logoutSuccess(null));
+                                                        dispatch(removeMedicinesFromCart());
+                                                        setCookie('accessToken', null);
+                                                        setCookie('accountType', null);
                                                         logOut();
                                                 }
                                             }}
