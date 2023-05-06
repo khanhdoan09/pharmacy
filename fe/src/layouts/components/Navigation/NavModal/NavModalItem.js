@@ -1,7 +1,11 @@
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
+import { getImageFromFirebase } from '~/utils/firebase';
 
 function NavModalItem({ to = '/filter', img, title, onMouseOver, onMouseOut }) {
+ 
     return (
         <NavLink
             onMouseOver={onMouseOver}

@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import * as rateService from '~/services/rateService';
 import { convertNumberToPrice } from '~/utils/currency';
 import HistoryImage from './HistoryImage';
+import { encrypt } from '~/utils/cryptoUtils';
 
 function HistoryItem(props) {
     const orderDetails = props?.orderDetails;
@@ -37,11 +38,11 @@ function HistoryItem(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (comment.length > 0 && medicineId !== undefined) {
-            await rateService.saveRate(medicineId, user?.id, rating, comment);
+            await rateService.saveRate(medicineId, encrypt(user?.email), rating, encrypt(comment));
             notifySuccessRate('Đánh giá thành công');
             setIsOpen(false);
-            setComment("")
-            setRating(5)
+            setComment('');
+            setRating(5);
         } else {
             notifyWarningRate('Vui lòng điền nội dung đánh giá');
         }

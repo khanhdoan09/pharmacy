@@ -8,11 +8,11 @@ export const findRateByMedicineId = async (medicineId) => {
         console.log(error?.response);
     }
 };
-export const saveRate = async (medicineId, userId, star, content) => {
+export const saveRate = async (medicineId, userEmail, star, content) => {
     try {
         const res = await request.post(`saveRate`, {
             medicineId,
-            userId,
+            userEmail,
             star,
             content,
         });

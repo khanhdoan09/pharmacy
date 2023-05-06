@@ -7,7 +7,7 @@ import { getImageFromFirebase } from '~/utils/firebase';
 function ProductMain({ id, to, label, img, title, newPrice, oldPrice, unit }) {
     const [urlAvatar, setUrlAvatar] = useState(null);
     useEffect(() => {
-        const imagePromise = getImageFromFirebase(`product/${id}`, `${img}`);
+        const imagePromise = getImageFromFirebase("product",`${id}`, `avatar`);
         imagePromise.then((urlAvatar) => {
             setUrlAvatar(urlAvatar);
         });

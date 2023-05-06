@@ -9,6 +9,7 @@ import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.service.MedicineService;
 import com.project.pharmacy.service.RateService;
 import com.project.pharmacy.service.UserService;
+import com.project.pharmacy.utils.CryptoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -37,15 +38,19 @@ public class RateController {
 
     @PostMapping("/saveRate")
     public ResponseHandler saveRate(@RequestBody RateRequest rateRequest) throws CustomException {
-        User user = userService.findById(rateRequest.getUserId());
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        User user = userService.findByEmail(cryptoUtils.decrypted(rateRequest.getUserEmail()));
         Medicine medicine = medicineService.findById(rateRequest.getMedicineId());
-
+        if (user == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't save rate because user null");
+        } else if (medicine == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't save rate because medicine null");
+        }
         Rate rate = new Rate();
         rate.setUser(user);
         rate.setMedicine(medicine);
         rate.setStar(rateRequest.getStar());
-        rate.setContent(rateRequest.getContent());
-
+        rate.setContent(cryptoUtils.decrypted(rateRequest.getContent()));
         rateService.saveRate(rate);
 
         ResponseHandler responseHandler = new ResponseHandler("Save rate successfully", HttpStatus.OK.value(), null);

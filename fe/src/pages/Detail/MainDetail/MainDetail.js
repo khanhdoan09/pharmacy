@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import SliderImageDetail from '../SliderImageDetail';
-import { Animation } from 'react-animate-style';
-import { addNewMedicineInCart, getAllMedicinesInCart } from '~/services/cartServices';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addMedicinesToCart, addMedicinesToCartAndShowCartInHeader } from '~/redux/cartSlice';
+import { addMedicinesToCartAndShowCartInHeader } from '~/redux/cartSlice';
+import { addNewMedicineInCart, getAllMedicinesInCart } from '~/services/cartServices';
+import SliderImageDetail from '../SliderImageDetail';
 
 function MainDetail(props) {
     const [toggleState, setToggleState] = useState(1);
@@ -92,10 +90,10 @@ function MainDetail(props) {
                         <span className="text-[#b6c0d7]">Mã sản phẩm: ({props?.detail?.id})</span>
                         <div className="text-sm">
                             <span className="cursor-pointer border-r border-[#bb91a5] px-2 hover:underline">
-                                {props?.dataReview?.length} đánh giá
+                                {props?.dataReview?.length || 0} đánh giá
                             </span>
                             <span className="cursor-pointer px-2 hover:underline">
-                                {props?.commentByMedicineId?.length} bình luận
+                                {props?.commentByMedicineId?.length || 0} bình luận
                             </span>
                         </div>
                     </div>

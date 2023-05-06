@@ -15,4 +15,5 @@ public class RateRequest {
     private int userId;
     private int star;
     private String content;
+    private String userEmail;
 }

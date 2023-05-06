@@ -4,6 +4,7 @@ import { storage } from '~/config/firebase';
 export let getImageFromFirebase = (folder, id, name) => {
     return getDownloadURL(ref(storage, `${folder}/${id}/${name}.png`));
 };
+
 export const getImageList = async (folder) => {
     const imagesRef = ref(storage, folder);
     const imageList = await listAll(imagesRef);
@@ -13,6 +14,5 @@ export const getImageList = async (folder) => {
             return downloadURL;
         }),
     );
-    console.log(imageURLs[0]);
     return imageURLs;
 };

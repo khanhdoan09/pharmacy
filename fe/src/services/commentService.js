@@ -1,3 +1,4 @@
+import { encrypt } from '~/utils/cryptoUtils';
 import request from '~/utils/request';
 
 export const findAllComments = async () => {
@@ -20,9 +21,9 @@ export const findCommentsByMedicineIdOrderByCreateDate = async (medicineId) => {
 export const postComment = async (userEmail, medicineId, content) => {
     try {
         const res = await request.post(`postComment`, {
-            email: userEmail,
+            email: encrypt(userEmail),
             medicineId,
-            content,
+            content: encrypt(content),
         });
         return res?.data;
     } catch (error) {
@@ -33,10 +34,10 @@ export const postComment = async (userEmail, medicineId, content) => {
 export const responseComment = async (userEmail, commentId, medicineId, content) => {
     try {
         const res = await request.post(`responseComment`, {
-            email: userEmail,
-            commentId,
-            medicineId,
-            content,
+            email: encrypt(userEmail),
+            commentId: encrypt(commentId),
+            medicineId: encrypt(medicineId),
+            content: encrypt(content),
         });
         return res?.data;
     } catch (error) {
@@ -46,7 +47,7 @@ export const responseComment = async (userEmail, commentId, medicineId, content)
 
 export const findLikeByCommentIdAndUserId = async (commentId, userEmail) => {
     try {
-        const res = await request.get(`findLikeByCommentIdAndUserId/${commentId}/${userEmail}`);
+        const res = await request.get(`findLikeByCommentIdAndUserId/${commentId}/${encrypt(userEmail)}`);
         return res?.data;
     } catch (error) {
         // console.log(error?.response?.data);
@@ -55,9 +56,9 @@ export const findLikeByCommentIdAndUserId = async (commentId, userEmail) => {
 
 export const likeComment = async (commentId, userEmail) => {
     try {
-        const res = await request.post(`addLike`,{
+        const res = await request.post(`addLike`, {
             commentId,
-            email:userEmail
+            email: encrypt(userEmail),
         });
         return res?.data;
     } catch (error) {
@@ -66,7 +67,7 @@ export const likeComment = async (commentId, userEmail) => {
 };
 export const unLikeComment = async (commentId, userEmail) => {
     try {
-        const res = await request.delete(`unLikeComment/${commentId}/${userEmail}`);
+        const res = await request.delete(`unLikeComment/${commentId}/${encrypt(userEmail)}`);
         return res?.data;
     } catch (error) {
         // console.log(error?.response?.data);

@@ -11,6 +11,7 @@ import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.security.JwtTokenProvider;
 import com.project.pharmacy.security.VerifyJwtToken;
 import com.project.pharmacy.service.UserService;
+import com.project.pharmacy.utils.CryptoUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -107,7 +108,7 @@ public class UserController {
         String password = userService.decryptedPasswordFromClient(userData.getPassword());
         // this will update when register function by form is done
         User user = userService.findByEmailAndPassword(userData.getEmail(), password);
-        String jwt = jwtTokenProvider.generateToken(user.getEmail(), user.getName(), user.getAvatar());
+        String jwt = jwtTokenProvider.generateToken(user.getEmail(), user.getName(), user.getAvatar(), user.getRole());
         UserInfoJwtDto userInfoJwtDto = new UserInfoJwtDto(user);
         userInfoJwtDto.setJwt(jwt);
         ResponseHandler<UserInfoJwtDto> responseHandler = new ResponseHandler<UserInfoJwtDto>(
@@ -143,7 +144,8 @@ public class UserController {
 
     @GetMapping("/findUserByEmail/{email}")
     public ResponseHandler findUserByEmail(@PathVariable("email") String email) throws CustomException {
-        User user = userService.findByEmail(email);
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        User user = userService.findByEmail(cryptoUtils.decrypted(email));
         ResponseHandler responseHandler = new ResponseHandler<>(
                 "Find user by email successfully",
                 HttpStatus.OK.value(),
@@ -153,8 +155,10 @@ public class UserController {
 
     @PutMapping("/updateInformation")
     public ResponseHandler updateInformation(HttpServletRequest request, @RequestBody UserRequest userRequest) throws CustomException {
-        User user = userService.updateInformation(userRequest.getEmail(), userRequest.getName(),
-                                                  userRequest.getPhoneNumber());
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        User user = userService.updateInformation(cryptoUtils.decrypted(userRequest.getEmail()),
+                                                  cryptoUtils.decrypted(userRequest.getName()),
+                                                  cryptoUtils.decrypted(userRequest.getPhoneNumber()));
         ResponseHandler responseHandler = new ResponseHandler<>(
                 "Update information successfully",
                 HttpStatus.OK.value(),
@@ -163,13 +167,15 @@ public class UserController {
     }
 
     @PutMapping("/changePassword")
-    public ResponseHandler changePassword( @RequestBody PasswordRequest passwordRequest) throws CustomException {
-        User user = userService.changePassword(passwordRequest.getEmail(), passwordRequest.getOldPassword(),
-                                               passwordRequest.getNewPassword());
+    public ResponseHandler changePassword(@RequestBody PasswordRequest passwordRequest) throws CustomException {
+        CryptoUtils cryptoUtils = new CryptoUtils();
+
+        User user = userService.changePassword(cryptoUtils.decrypted(passwordRequest.getEmail()), cryptoUtils.decrypted(passwordRequest.getOldPassword()),
+                                               cryptoUtils.decrypted(passwordRequest.getNewPassword()));
         ResponseHandler responseHandler = new ResponseHandler<>(
                 "Change password successfully",
                 HttpStatus.OK.value(),
-                user);
+                null);
         return responseHandler;
     }
 }

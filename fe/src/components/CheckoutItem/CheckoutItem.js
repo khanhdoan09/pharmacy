@@ -5,7 +5,7 @@ function CheckoutItem({ avatar, medicine, quantity, unit }) {
     const [urlImage, setUrlImage] = useState(
         'https://localhost:3000/static/media/placeholder600x600.8239fe13708c0a4484a8.png',
     );
-    const imagePromise = getImageFromFirebase(`product/${medicine?.id}`, `${avatar}`);
+    const imagePromise = getImageFromFirebase('product', medicine?.id, 'avatar');
     imagePromise.then((url) => {
         setUrlImage(url);
     });

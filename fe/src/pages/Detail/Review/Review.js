@@ -30,7 +30,7 @@ function Review(props) {
                                 className="mr-2"
                             />
                         </div>
-                        <p className="text-sm text-[#718198]">{props?.dataReview?.length} đánh giá</p>
+                        <p className="text-sm text-[#718198]">{props?.dataReview?.length || 0} đánh giá</p>
                     </div>
                     <div className="grid grid-cols-1 gap-1 px-4">
                         <div className="mb-1 flex items-center">

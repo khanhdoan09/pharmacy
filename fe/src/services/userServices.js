@@ -1,4 +1,5 @@
 import request from '~/utils/request';
+import { encrypt } from '~/utils/cryptoUtils';
 
 const controller = 'auth';
 
@@ -56,9 +57,9 @@ export const changePassword = async (accessToken, accountType, email, oldPasswor
         const load = await request.put(
             `/${controller}/changePassword`,
             {
-                email,
-                oldPassword,
-                newPassword,
+                email: encrypt(email),
+                oldPassword: encrypt(oldPassword),
+                newPassword: encrypt(newPassword),
             },
             {
                 headers: {
@@ -75,7 +76,7 @@ export const changePassword = async (accessToken, accountType, email, oldPasswor
 
 export const findUserByEmail = async (email) => {
     try {
-        const load = await request.get(`/${controller}/findUserByEmail/${email}`);
+        const load = await request.get(`/${controller}/findUserByEmail/${encrypt(email)}`);
         return load;
     } catch (error) {
         return Promise.reject(error?.response?.data);
@@ -86,9 +87,9 @@ export const updateInformation = async (accessToken, accountType, email, name, p
         const load = await request.put(
             `/${controller}/updateInformation`,
             {
-                email,
-                name,
-                phoneNumber: phone,
+                email: encrypt(email),
+                name: encrypt(name),
+                phoneNumber: encrypt(phone),
             },
             {
                 headers: {

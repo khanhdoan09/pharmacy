@@ -24,10 +24,10 @@ function LikeButton(props) {
             setOpenModal(true);
         } else {
             if (liked === false) {
-                const result = await commentService.likeComment(props.itemId, user?.email);
+                await commentService.likeComment(props.itemId, user?.email);
                 setLiked(true);
             } else {
-                const result = await commentService.unLikeComment(props.itemId, user?.email);
+                 await commentService.unLikeComment(props.itemId, user?.email);
                 setLiked(false);
             }
         }
