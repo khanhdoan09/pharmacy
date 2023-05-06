@@ -47,7 +47,7 @@ function CartItem({
     }, [checkAll]);
 
     useEffect(() => {
-        const imagePromise = getImageFromFirebase(`product/${data?.medicine?.id}`, `${data?.medicine?.avatar}`);
+        const imagePromise = getImageFromFirebase('product', data?.medicine?.id, 'avatar');
         imagePromise.then((url) => {
             setImage(url);
             let tmp = cartChecked.map((e) => {

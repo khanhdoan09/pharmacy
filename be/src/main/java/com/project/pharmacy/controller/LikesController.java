@@ -5,6 +5,7 @@ import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.request.CommentRequest;
 import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.service.LikesService;
+import com.project.pharmacy.utils.CryptoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,8 @@ public class LikesController {
     @GetMapping("/findLikeByCommentIdAndUserId/{commentId}/{userEmail}")
     public ResponseHandler findLikeByCommentIdAndUserId(@PathVariable("commentId") int commentId, @PathVariable(
             "userEmail") String userEmail) throws CustomException {
-        Likes like = likeService.findLikeByCommentIdAndUserId(commentId, userEmail);
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        Likes like = likeService.findLikeByCommentIdAndUserId(commentId, cryptoUtils.decrypted(userEmail));
         ResponseHandler responseHandler;
         if (like == null) {
             responseHandler = new ResponseHandler("fail",
@@ -34,7 +36,8 @@ public class LikesController {
 
     @PostMapping("/addLike")
     public ResponseHandler addLike(@RequestBody CommentRequest commentRequest) throws CustomException {
-        likeService.addLike(commentRequest.getCommentId(), commentRequest.getEmail());
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        likeService.addLike(commentRequest.getCommentId(), cryptoUtils.decrypted(commentRequest.getEmail()));
         ResponseHandler responseHandler = new ResponseHandler("Successfully add like",
                                                               HttpStatus.OK.value(), null);
         return responseHandler;
@@ -43,7 +46,8 @@ public class LikesController {
     @DeleteMapping("/unLikeComment/{commentId}/{userEmail}")
     public ResponseHandler unLikeComment(@PathVariable("commentId") int commentId,
                                          @PathVariable("userEmail") String userEmail) throws CustomException {
-        likeService.unLikeComment(commentId, userEmail);
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        likeService.unLikeComment(commentId, cryptoUtils.decrypted(userEmail));
         ResponseHandler responseHandler = new ResponseHandler("Successfully unlike comment",
                                                               HttpStatus.OK.value(), null);
         return responseHandler;

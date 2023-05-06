@@ -85,7 +85,7 @@ function SignIn() {
                         accessToken: accessToken,
                         idToken: idToken,
                         account: 'Google',
-                        role: 'Client',
+                        role: 'client',
                     }),
                 );
                 setCookieLogin(accessToken, 'Google');

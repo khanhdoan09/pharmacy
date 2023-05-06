@@ -21,7 +21,7 @@ public class JwtTokenProvider {
     private final long JWT_EXPIRATION = 604800000L;
 
     // Tạo ra jwt từ thông tin user
-    public String generateToken(String email, String name, String avatar) {
+    public String generateToken(String email, String name, String avatar,String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
         // Tạo chuỗi json web token từ id của user.
@@ -29,6 +29,7 @@ public class JwtTokenProvider {
                 .claim("email", email)
                 .claim("name", name)
                 .claim("avatar", avatar)
+                .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)

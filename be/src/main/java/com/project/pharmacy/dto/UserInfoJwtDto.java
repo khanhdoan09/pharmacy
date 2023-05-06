@@ -13,10 +13,12 @@ public class UserInfoJwtDto {
     private String name;
     private String avatar;
     private String jwt;
+    private String role;
 
     public UserInfoJwtDto(User user) {
         this.email = user.getEmail();
         this.name = user.getName();
         this.avatar = user.getAvatar();
+        this.role = user.getRole();
     }
 }

@@ -5,8 +5,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as commentService from '~/services/commentService';
 import CommentItem from './CommentItem';
-import Reply from './Reply';
 import LikeButton from './LikeButton';
+import Reply from './Reply';
 
 function Comment(props) {
     const [isOpen, setIsOpen] = useState(false);
@@ -32,51 +32,7 @@ function Comment(props) {
         }
     };
 
-    const handleLikeComment = async (commentId) => {
-        if (user?.id === undefined) {
-            setOpenModal(true);
-        } else {
-            const result = await commentService.likeComment(commentId, user?.id);
-            notifySuccessLikeComment(result?.message);
-        }
-    };
-    const handleUnLikeComment = async (commentId) => {
-        if (user?.id === undefined) {
-            setOpenModal(true);
-        } else {
-            const result = await commentService.unLikeComment(commentId, user?.id);
-            notifySuccessUnLikeComment(result?.message);
-        }
-    };
-
-    const handleFindLikeByCommentIdAndUserId = async (commentId, userEmail) => {
-        return await commentService.findLikeByCommentIdAndUserId(commentId, userEmail).then((result) => {
-            if (result !== undefined) {
-                return result.data;
-            } else {
-                console.log('không tìm thấy like');
-            }
-        });
-    };
-
     const handleLoadReplyComment = (array) => {
-        const comments = [];
-        // for (let comment of array) {
-        //     //duyệt all phần tử
-        //     if (comment.replyId) {
-        //         // check phần tử có replyId
-        //         const index = comments.findIndex((i) => i.id === 23);
-        //         console.log(index);
-
-        //         // comments[index].abc.push(comment);
-        //         // console.log(comment.id);
-        //     } else {
-        //         // console.log('gốc' + comment.id);
-        //         comments.push({ ...comment, responses: [] });
-        //     }
-        // }
-
-        // return comments;
         const re = {};
         if (props?.commentByMedicineId !== undefined) {
             for (let comment of array) {
@@ -162,7 +118,7 @@ function Comment(props) {
     };
 
     const [commentId, setCommentId] = useState('');
-    const [slideCount, setSlideCount] = useState(1);
+    const [slideCount, setSlideCount] = useState(5);
 
     const [openModal, setOpenModal] = useState(false);
     useEffect(() => {
@@ -176,32 +132,6 @@ function Comment(props) {
         };
     }, [openModal]);
 
-    // useEffect(() => {
-    //     const fetchApi = async () => {
-    //         const re = await commentService.findLikeByCommentIdAndUserId(2, user?.id);
-    //         console.log(re);
-    //         setLiked(re);
-    //     };
-    //     fetchApi();
-    // }, []);
-
-    // const handleLikeClick = async (commentId) => {
-    //     if (liked) {
-    //         if (user?.id === undefined) {
-    //             setOpenModal(true);
-    //         } else {
-    //             const result = await commentService.likeComment(commentId, user?.id);
-    //             notifySuccessLikeComment(result?.message);
-    //         }
-    //     } else {
-    //         if (user?.id === undefined) {
-    //             setOpenModal(true);
-    //         } else {
-    //             const result = await commentService.unLikeComment(commentId, user?.id);
-    //             notifySuccessUnLikeComment(result?.message);
-    //         }
-    //     }
-    // };
     return (
         <div className="comment max-w-full bg-[#edf2f8] px-1 pb-8 ">
             <div className="mx-auto  my-0 max-w-[1200px] rounded-3xl border ">
@@ -449,7 +379,7 @@ function Comment(props) {
                         <button
                             className="mx-auto mt-8 flex h-8 w-[192px] items-center justify-center rounded-lg border border-[#d8e0e8] hover:bg-[#777272] hover:text-[#fff]"
                             onClick={() => {
-                                setSlideCount((prev) => prev + 1);
+                                setSlideCount((prev) => prev + 5);
                             }}
                         >
                             <p className="mr-1 font-bold"> Xem thêm bình luận</p>

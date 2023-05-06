@@ -5,6 +5,7 @@ import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.request.CommentRequest;
 import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.service.CommentService;
+import com.project.pharmacy.utils.CryptoUtils;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,8 +34,9 @@ public class CommentController {
 
     @PostMapping("/postComment")
     public ResponseHandler postComment(@RequestBody CommentRequest commentRequest) {
-        commentService.postComment(commentRequest.getEmail(), commentRequest.getMedicineId(),
-                                   commentRequest.getContent());
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        commentService.postComment(cryptoUtils.decrypted(commentRequest.getEmail()), commentRequest.getMedicineId(),
+                                   cryptoUtils.decrypted(commentRequest.getContent()));
         ResponseHandler responseHandler = new ResponseHandler("Successfully post comment",
                                                               HttpStatus.OK.value(), commentRequest);
         return responseHandler;
@@ -50,8 +52,10 @@ public class CommentController {
 
     @PostMapping("/responseComment")
     public ResponseHandler responseComment(@RequestBody CommentRequest commentRequest) throws CustomException {
-        commentService.responseComment(commentRequest.getEmail(), commentRequest.getCommentId(),
-                                       commentRequest.getMedicineId(), commentRequest.getContent());
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        commentService.responseComment(cryptoUtils.decrypted(commentRequest.getEmail()), commentRequest.getCommentId(),
+                                       commentRequest.getMedicineId(),
+                                       cryptoUtils.decrypted(commentRequest.getContent()));
         ResponseHandler responseHandler = new ResponseHandler("Successfully response comment",
                                                               HttpStatus.OK.value(), null);
         return responseHandler;

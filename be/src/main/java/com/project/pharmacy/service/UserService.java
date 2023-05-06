@@ -18,7 +18,10 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Optional;
 
 @Service
@@ -45,7 +48,9 @@ public class UserService implements UserDetailsService {
 
     public void saveNewClientUser(String name, String email, String password, String phoneNumber, String methodLogin,
                                   String avatar) {
-        User user = new User(name, email, password, phoneNumber, null, methodLogin, avatar, "client");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        User user = new User(name, email, password, phoneNumber,  dateFormat.format(cal.getTime()), methodLogin, avatar, "client");
         userRepository.save(user);
     }
 
