@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private Set<String> skipUrls = new HashSet<>(Arrays.asList( "/api/v1/auth/**", "/api/v1/unit/**", "/api/**"));
+    private Set<String> skipUrls = new HashSet<>(Arrays.asList( "/api/v1/auth/**", "/api/v1/unit/**", "/api/**", "/**"));
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override

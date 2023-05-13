@@ -9,10 +9,14 @@ import * as Yup from 'yup';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
 import { auth, provider } from '~/config/firebase';
 import { loginSuccess } from '~/redux/authSlice';
+import { registerByForm } from '~/services/userServices';
+import { encrypt } from '~/utils/cryptoUtils';
 
 function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [messageEmailExists, setMessageEmailExist] = useState(null);
+
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -28,7 +32,23 @@ function SignUp() {
                 .required('Yêu cầu xác nhận mật khẩu')
                 .oneOf([Yup.ref('password')], 'Xác nhận mật khẩu không đúng.'),
         }),
-        onSubmit: (values) => {},
+        onSubmit: (values) => {
+            registerByForm(values?.name, values?.email, encrypt(values?.password)).then(
+                (e) => {
+                    if (e?.status === 200) {
+                        localStorage.setItem('encryptedEmail', encrypt(values?.email));
+                        navigate('/activeAccount');
+                    }
+                },
+                (err) => {
+                    if (err?.status === 409) {
+                        setMessageEmailExist('email đã tồn tại');
+                    } else {
+                        navigate('/serverError');
+                    }
+                },
+            );
+        },
     });
     const settings = {
         dots: false,
@@ -109,7 +129,7 @@ function SignUp() {
                                 <input
                                     autoComplete="off"
                                     className={
-                                        formik.touched.email && formik.errors.email
+                                        (formik.touched.email && formik.errors.email) || messageEmailExists
                                             ? 'focus:shadow-input transition-basic h-12 w-full rounded-lg  border border-[#ff4742] bg-[#eaf0f7] px-4 py-1 outline-none focus:border-[#ff4742]'
                                             : 'focus:shadow-input transition-basic h-12 w-full  rounded-lg  border border-[#f5f5f5] bg-[#eaf0f7] px-4 py-1 outline-none focus:border-[#d6d0d0]'
                                     }
@@ -119,9 +139,11 @@ function SignUp() {
                                     onChange={formik.handleChange}
                                     value={formik.values.email}
                                 ></input>
-                                {formik.touched.email && formik.errors.email ? (
+                                {(formik.touched.email && formik.errors.email) || messageEmailExists ? (
                                     <div className="mt-2 flex items-center text-sm font-bold text-red-600">
-                                        <span className="mx-1">{formik.errors.email}</span>
+                                        <span className="mx-1">
+                                            {formik.errors.email ? formik.errors.email : messageEmailExists}{' '}
+                                        </span>
                                     </div>
                                 ) : null}
                             </div>

@@ -103,3 +103,40 @@ export const updateInformation = async (accessToken, accountType, email, name, p
         return Promise.reject(error?.response?.data);
     }
 };
+
+export const registerByForm = async (username, email, encryptedPassword) => {
+    try {
+        const load = await request.post(`/${controller}/registerWithForm`, {
+            name: username,
+            email: email,
+            password: encryptedPassword,
+        });
+        return load.data;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
+export const activeCode = async (email, code) => {
+    try {
+        const load = await request.post(`/${controller}/activeAccount`, {
+            email: email,
+            activeCodeValue: code,
+        });
+        return load.data;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
+export const sendActiveCodeAgain = async (email) => {
+    alert(email);
+    try {
+        const load = await request.post(`/${controller}/sendActiveCodeAgain`, {
+            email,
+        });
+        return load.data;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};

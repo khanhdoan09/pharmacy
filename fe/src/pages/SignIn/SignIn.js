@@ -41,9 +41,6 @@ function SignIn() {
             loginNormal(values?.email, encryptedPassword)
                 .then((response) => {
                     setMsgLoginFail('');
-                    console.log(response?.data);
-                    console.log(response?.data?.email);
-                    console.log(response?.data?.name);
                     if (response?.data !== null) {
                         dispatch(
                             loginSuccess({

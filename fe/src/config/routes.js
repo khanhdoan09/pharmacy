@@ -16,5 +16,6 @@ const routes = {
     serverError: 'server_error',
     notFound: '*',
     payment: 'payment',
+    activeAccount: 'activeAccount',
 };
 export default routes;

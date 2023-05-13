@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -18,8 +19,15 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotNull
+    @NotEmpty
+    @Size(min = 4, max = 16)
     private String name;
+    @Email
     private String email;
+    @NotNull
+    @NotEmpty
     private String password;
     private String phoneNumber;
     private String createDate;
@@ -27,6 +35,9 @@ public class User {
     private String accountType;
     private String role;
     private int rewardPoint;
+    private boolean active;
+    private String codeActiveValue;
+    private String codeActiveTime;
 
     // for save a new user
     public User(String name, String email, String password, String phoneNumber, String createDate, String accountType
@@ -40,6 +51,9 @@ public class User {
         this.accountType = accountType;
         this.role = role;
         this.rewardPoint = 0;
+        this.active = false;
+        this.codeActiveValue = null;
+        this.codeActiveTime = null;
     }
 
     ////////////
