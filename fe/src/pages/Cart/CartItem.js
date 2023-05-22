@@ -215,8 +215,8 @@ function CartItem({
         setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
         if (check) {
             setChecklist(checklist - 1);
-            const tmpChecked = cartChecked.filter((e) => e?.id !== data?.id);
-            const tmpUnChecked = cartChecked.filter((e) => e?.id === data?.id);
+            const tmpChecked = cartChecked?.filter((e) => e?.id !== data?.id);
+            const tmpUnChecked = cartChecked?.filter((e) => e?.id === data?.id);
             setCartChecked(tmpChecked);
             setListMedicinesUnchecked(tmpUnChecked);
         } else {

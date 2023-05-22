@@ -1,10 +1,5 @@
 import { useState } from 'react';
 import ProductMain from '~/components/ProductMain';
-import n1 from '~/assets/img/nav/n1.png';
-import n2 from '~/assets/img/nav/n2.png';
-import n3 from '~/assets/img/nav/n3.png';
-import n4 from '~/assets/img/nav/n4.png';
-import n5 from '~/assets/img/nav/n5.png';
 
 function FamousProducts(props) {
     const [active, setActive] = useState('2');
@@ -84,7 +79,7 @@ function FamousProducts(props) {
             {active === '2' && (
                 <>
                     <div className="grid animate-fadeBottomMobile gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 ">
-                        {props?.medicineByNewRelease?.data?.slice(0, countViewNewRelease).map((e) => (
+                        {props?.medicineByNewRelease?.data?.slice(0, countViewNewRelease)?.map((e) => (
                             <ProductMain
                                 key={e.id}
                                 to=""
@@ -113,7 +108,7 @@ function FamousProducts(props) {
             {active === '3' && (
                 <>
                     <div className="grid animate-fadeBottomMobile gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 ">
-                        {props?.medicineByCheapPrice?.data?.slice(0, countViewCheap).map((e) => (
+                        {props?.medicineByCheapPrice?.data?.slice(0, countViewCheap)?.map((e) => (
                             <ProductMain
                                 key={e.id}
                                 to=""
@@ -142,7 +137,7 @@ function FamousProducts(props) {
             {active === '4' && (
                 <>
                     <div className="grid animate-fadeBottomMobile gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 ">
-                        {props?.medicineByExpensivePrice?.data?.slice(0, countViewExpensive).map((e) => (
+                        {props?.medicineByExpensivePrice?.data?.slice(0, countViewExpensive)?.map((e) => (
                             <ProductMain
                                 key={e.id}
                                 to=""

@@ -25,6 +25,7 @@ public class Category {
     private String category;
     private String image;
     private String slug;
+
     @OneToMany(targetEntity = CategoryDetail.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryId", referencedColumnName = "id")
     private List<CategoryDetail> categoryDetails;

@@ -16,3 +16,11 @@ export const findCategoryDetailBySlugCategory = async (slugCategory) => {
         console.log(error?.response?.data);
     }
 };
+export const getCategoryDetails = async () => {
+    try {
+        const res = await request.get(`getCategoryDetails`);
+        return res?.data;
+    } catch (error) {
+        console.log(error?.response);
+    }
+};

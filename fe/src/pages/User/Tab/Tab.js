@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getOrderByUserId } from '~/services/orderServices';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import History from '~/components/History/History';
-import { useSelector } from 'react-redux';
+import { getOrderByUserId } from '~/services/orderServices';
 
 function Tab() {
     const [toggleState, setToggleState] = useState(1);
@@ -25,7 +25,6 @@ function Tab() {
         load.then(
             (e) => {
                 if ((e?.data?.status === 200) | (e?.data?.status === 404)) {
-                    console.log(e?.data?.data);
                     setListOrder(e?.data?.data);
                     setListOrderAll(e?.data?.data);
                 } else if (e?.status === 403) {
@@ -36,7 +35,6 @@ function Tab() {
                 }
             },
             (error) => {
-                console.log(error);
                 if (error?.status !== 404) navigate('/server_error');
             },
         );
@@ -60,7 +58,7 @@ function Tab() {
                     onClick={() => {
                         toggleTab(2);
                         if (listOrderUnFinish.length === 0) {
-                            const tmp = listOrder.filter((e) => e?.status === 'unFinish');
+                            const tmp = listOrder?.filter((e) => e?.status === 'unFinish');
                             setListOrderUnFinish(tmp);
                         } else {
                             setListOrder(listOrderUnFinish);
@@ -79,7 +77,7 @@ function Tab() {
                         toggleTab(3);
                         console.log(listOrderFinish.length);
                         if (listOrderFinish.length === 0) {
-                            const tmp = listOrder.filter((e) => e?.status === 'finish');
+                            const tmp = listOrder?.filter((e) => e?.status === 'finish');
                             setListOrderFinish(tmp);
                         } else {
                             setListOrder(listOrderFinish);
@@ -117,7 +115,7 @@ function Tab() {
                     onClick={() => {
                         toggleTab(5);
                         if (listOrderReturn === 0) {
-                            const tmp = listOrder.filter((e) => e?.status === 'return');
+                            const tmp = listOrder?.filter((e) => e?.status === 'return');
                             setListOrderReturn(tmp);
                         } else {
                             setListOrder(listOrderReturn);

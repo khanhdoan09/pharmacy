@@ -4,15 +4,20 @@ import com.google.gson.Gson;
 import com.project.pharmacy.dto.UserDto;
 import com.project.pharmacy.dto.UserInfoJwtDto;
 import com.project.pharmacy.entity.User;
+import com.project.pharmacy.entity.VerificationCode;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.request.ActiveAccountRequest;
 import com.project.pharmacy.request.PasswordRequest;
+import com.project.pharmacy.request.ResetAccountRequest;
 import com.project.pharmacy.request.UserRequest;
 import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.security.JwtTokenProvider;
 import com.project.pharmacy.security.VerifyJwtToken;
 import com.project.pharmacy.service.UserService;
+import com.project.pharmacy.service.VerificationCodeService;
 import com.project.pharmacy.utils.CryptoUtils;
+import com.project.pharmacy.utils.MailUtils;
+import com.project.pharmacy.utils.RandomUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +44,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class UserController {
+
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
@@ -48,7 +55,19 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private RandomUtils randomUtils;
+
+    @Autowired
+    VerificationCodeService verificationCodeService;
+
+    @Autowired
     JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    CryptoUtils cryptoUtils;
+
+    @Autowired
+    MailUtils mailUtils;
+
 
     @Operation(description = "find user by id")
     @ApiResponses({
@@ -165,10 +184,10 @@ public class UserController {
 
     @PutMapping("/updateInformation")
     public ResponseHandler updateInformation(HttpServletRequest request, @RequestBody UserRequest userRequest) throws CustomException {
-        CryptoUtils cryptoUtils = new CryptoUtils();
-        User user = userService.updateInformation(cryptoUtils.decrypted(userRequest.getEmail()),
-                                                  cryptoUtils.decrypted(userRequest.getName()),
-                                                  cryptoUtils.decrypted(userRequest.getPhoneNumber()));
+        User user = userService.updateInformation(
+                cryptoUtils.decrypted(userRequest.getEmail()),
+                cryptoUtils.decrypted(userRequest.getName()),
+                cryptoUtils.decrypted(userRequest.getPhoneNumber()));
         ResponseHandler responseHandler = new ResponseHandler<>(
                 "Update information successfully",
                 HttpStatus.OK.value(),
@@ -178,10 +197,11 @@ public class UserController {
 
     @PutMapping("/changePassword")
     public ResponseHandler changePassword(@RequestBody PasswordRequest passwordRequest) throws CustomException {
-        CryptoUtils cryptoUtils = new CryptoUtils();
 
-        User user = userService.changePassword(cryptoUtils.decrypted(passwordRequest.getEmail()), cryptoUtils.decrypted(passwordRequest.getOldPassword()),
-                                               cryptoUtils.decrypted(passwordRequest.getNewPassword()));
+        User user = userService.changePassword(
+                cryptoUtils.decrypted(passwordRequest.getEmail()),
+                cryptoUtils.decrypted(passwordRequest.getOldPassword()),
+                cryptoUtils.decrypted(passwordRequest.getNewPassword()));
         ResponseHandler responseHandler = new ResponseHandler<>(
                 "Change password successfully",
                 HttpStatus.OK.value(),
@@ -210,8 +230,7 @@ public class UserController {
             user.get().setPassword(userData.getPassword());
             user.get().setName(userData.getName());
             userService.saveNewClientUserByForm(user.get());
-        }
-        else {
+        } else {
             userData.setCodeActiveValue(codeActive);
             userData.setAccountType("Normal");
             userService.saveNewClientUserByForm(userData);
@@ -224,11 +243,14 @@ public class UserController {
     @Operation(description = "active account")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "active account successfully"),
-            @ApiResponse(responseCode = "400", description = "email doesn't exist <br/> code is not correct <br/> email cannot active <br/> code active cannot use anymore"),
+            @ApiResponse(responseCode = "400", description = "email doesn't exist <br/> code is not correct <br/> " +
+                    "email cannot active <br/> code active cannot use anymore"),
     })
     @PostMapping("/activeAccount")
     public ResponseHandler activeAccount(@RequestBody ActiveAccountRequest activeAccountRequest) throws CustomException {
-        userService.activeCode(userService.decryptedPasswordFromClient(activeAccountRequest.getEmail()), activeAccountRequest.getActiveCodeValue());
+        userService.activeCode(
+                userService.decryptedPasswordFromClient(activeAccountRequest.getEmail()),
+                activeAccountRequest.getActiveCodeValue());
         ResponseHandler responseHandler = new ResponseHandler(
                 "active account successfully", HttpStatus.OK.value(), null);
         return responseHandler;
@@ -240,7 +262,7 @@ public class UserController {
             @ApiResponse(responseCode = "406", description = "email is not correct to active code"),
     })
     @PostMapping("/sendActiveCodeAgain")
-    public ResponseHandler sendActiveCodeAgain(@RequestBody Map<String,String> param) throws CustomException {
+    public ResponseHandler sendActiveCodeAgain(@RequestBody Map<String, String> param) throws CustomException {
         String email = userService.decryptedPasswordFromClient(param.get("email"));
         User user = userService.findByEmail(email);
         if (!user.getAccountType().equals("Normal") || user.getCodeActiveValue() == null) {
@@ -248,12 +270,41 @@ public class UserController {
         }
         Random generateRandom = new Random();
         int randomNumber = generateRandom.nextInt(100) + 1;
-        String newCodeActiveValue =  Integer.valueOf(email.hashCode())  * randomNumber + "";
+        String newCodeActiveValue = Integer.valueOf(email.hashCode()) * randomNumber + "";
         user.setCodeActiveValue(newCodeActiveValue);
         userService.sendMail(email, newCodeActiveValue);
         userService.saveNewClientUserByForm(user);
         ResponseHandler responseHandler = new ResponseHandler(
                 "send active code again successfully", HttpStatus.OK.value(), null);
+        return responseHandler;
+    }
+
+    @PostMapping("/generateCode")
+    public ResponseHandler generateOtpResetPassword(@RequestBody ResetAccountRequest resetAccountRequest) throws CustomException {
+        verificationCodeService.sendVerificationCode(cryptoUtils.decrypted(resetAccountRequest.getEmail()));
+        ResponseHandler responseHandler = new ResponseHandler(
+                "Successfully generate otp", HttpStatus.OK.value(), null);
+        return responseHandler;
+    }
+
+    @PostMapping("/verificationCode")
+    public ResponseHandler verificationCode(@RequestBody ResetAccountRequest resetAccountRequest) throws CustomException {
+        verificationCodeService.verificationCode(
+                cryptoUtils.decrypted(resetAccountRequest.getCode()),
+                cryptoUtils.decrypted(resetAccountRequest.getEmail()));
+
+        ResponseHandler responseHandler = new ResponseHandler(
+                "Successfully verificationCode otp", HttpStatus.OK.value(), null);
+        return responseHandler;
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseHandler resetPassword(@RequestBody ResetAccountRequest resetAccountRequest) throws CustomException {
+        verificationCodeService.resetPassword(
+                passwordEncoder.encode(resetAccountRequest.getNewPassword()),
+                cryptoUtils.decrypted(resetAccountRequest.getEmail()));
+        ResponseHandler responseHandler = new ResponseHandler(
+                "Successfully reset password", HttpStatus.OK.value(), null);
         return responseHandler;
     }
 }

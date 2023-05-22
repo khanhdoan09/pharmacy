@@ -22,7 +22,8 @@ public class CommentController {
 
     @Autowired
     CommentService commentService;
-
+    @Autowired
+    CryptoUtils cryptoUtils;
 
     @GetMapping("/findAllComments")
     public ResponseHandler<List<Comment>> findAllComments() {
@@ -34,7 +35,6 @@ public class CommentController {
 
     @PostMapping("/postComment")
     public ResponseHandler postComment(@RequestBody CommentRequest commentRequest) {
-        CryptoUtils cryptoUtils = new CryptoUtils();
         commentService.postComment(cryptoUtils.decrypted(commentRequest.getEmail()), commentRequest.getMedicineId(),
                                    cryptoUtils.decrypted(commentRequest.getContent()));
         ResponseHandler responseHandler = new ResponseHandler("Successfully post comment",
@@ -42,17 +42,18 @@ public class CommentController {
         return responseHandler;
     }
 
-    @GetMapping("/findCommentsByMedicineIdOrderByCreateDate/{medicineId}")
-    public ResponseHandler<List<Comment>> findCommentsByMedicineId(@PathVariable("medicineId") int medicineId) throws CustomException {
-        List<Comment> comments = commentService.findCommentsByMedicineIdOrderByCreateDate(medicineId);
-        ResponseHandler<List<Comment>> responseHandler = new ResponseHandler<>("Successfully findCommentsByMedicineId",
-                                                                               HttpStatus.OK.value(), comments);
+    @GetMapping("/findCommentsByMedicineId/{medicineId}")
+    public ResponseHandler findCommentsByMedicineId(@PathVariable("medicineId") int medicineId) throws CustomException {
+        List<Comment> comments = commentService.findCommentsByMedicineId(medicineId);
+        ResponseHandler responseHandler = new ResponseHandler(
+                "Successfully findCommentsByMedicineId",
+                HttpStatus.OK.value(),
+                comments);
         return responseHandler;
     }
 
     @PostMapping("/responseComment")
     public ResponseHandler responseComment(@RequestBody CommentRequest commentRequest) throws CustomException {
-        CryptoUtils cryptoUtils = new CryptoUtils();
         commentService.responseComment(cryptoUtils.decrypted(commentRequest.getEmail()), commentRequest.getCommentId(),
                                        commentRequest.getMedicineId(),
                                        cryptoUtils.decrypted(commentRequest.getContent()));

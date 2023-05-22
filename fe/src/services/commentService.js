@@ -10,9 +10,9 @@ export const findAllComments = async () => {
     }
 };
 
-export const findCommentsByMedicineIdOrderByCreateDate = async (medicineId) => {
+export const findCommentsByMedicineId = async (medicineId) => {
     try {
-        const res = await request.get(`findCommentsByMedicineIdOrderByCreateDate/${medicineId}`);
+        const res = await request.get(`findCommentsByMedicineId/${medicineId}`);
         return res?.data;
     } catch (error) {
         console.log(error?.response);

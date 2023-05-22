@@ -1,13 +1,12 @@
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ContentNavModalItem } from '~/components/NavModal';
-import * as categoryService from '~/services/categoryService';
 import * as categoryDetailService from '~/services/categoryDetailService';
 
 function NavModalList() {
-    const { category } = useParams();
+    const { category,field } = useParams();
     const categoryFromUrl = category.split('=')[1].trim();
+    
 
     const [categoriesFromSlugURL, setCategoriesFromSlugURL] = useState([]);
 
@@ -22,7 +21,7 @@ function NavModalList() {
     return (
         <>
             <div className="mb-4 flex items-center">
-                <svg
+                {/* <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -37,13 +36,13 @@ function NavModalList() {
                     />
                 </svg>
 
-                <h3 className="font-bold">Chăm sóc cá nhân</h3>
+                <h3 className="font-bold">Chăm sóc cá nhân</h3> */}
             </div>
             <div className="mb-8 grid gap-4 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
                 {categoriesFromSlugURL?.data?.map((e) => (
                     <ContentNavModalItem
                         key={e.id}
-                        to=""
+                        to={`/filter/field=${field.split("=")[1]}/category=${category.split("=")[1]}/categoryDetail=${e?.slug}`}
                         img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/80x80/filters:quality(90):fill(white)/https://nhathuoclongchau.com.vn/upload/images/filtercate/than-tien-liet-tuyen.png"
                         title={e.name}
                     />

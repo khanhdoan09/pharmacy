@@ -1,12 +1,10 @@
-import { useSelector } from 'react-redux';
-import ItemCartHeader from './ItemCartHeader';
 import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink, useNavigate } from 'react-router-dom';
 import useAcquireAccessToken from '~/hooks/useAcquireAcessToken';
+import { addMedicinesToCart, unShowCartInHeader } from '~/redux/cartSlice';
 import { getAllMedicinesInCart } from '~/services/cartServices';
-import { useDispatch } from 'react-redux';
-import { addMedicinesToCart, removeMedicinesFromCart, unShowCartInHeader } from '~/redux/cartSlice';
+import ItemCartHeader from './ItemCartHeader';
 
 function CartHeader() {
     const cart = useSelector((state) => state.cart.medicines);
@@ -76,7 +74,7 @@ function CartHeader() {
                                             key={i}
                                             medicine={e?.medicine}
                                             unit={e?.unit}
-                                            quantity={e?.quantity}
+                                            quantity={e.quantity}
                                             id={e?.id}
                                             setTotalMedicine={setTotalMedicine}
                                             totalMedicine={totalMedicine}
@@ -86,7 +84,7 @@ function CartHeader() {
                                 })}
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-[12px] font-bold text-[#657384]">{totalMedicine} sản phẩm</span>
+                                <span className="text-[12px] font-bold text-[#657384]">{totalMedicine || 'Chưa có'} sản phẩm</span>
                                 <a
                                     href="/cart"
                                     className="h-[36px] rounded-lg bg-[#306de4] py-[8px] px-[12px] text-[0.875rem] font-[500]"

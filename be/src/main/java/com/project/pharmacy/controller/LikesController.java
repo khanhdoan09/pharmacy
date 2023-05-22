@@ -29,8 +29,6 @@ public class LikesController {
             responseHandler = new ResponseHandler("ok",
                                                   HttpStatus.OK.value(), true);
         }
-
-
         return responseHandler;
     }
 

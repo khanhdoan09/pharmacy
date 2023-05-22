@@ -11,43 +11,21 @@ import { FilterBrand, FilterDosage, FilterDrugs, FilterObject, FilterPrice } fro
 import BestSeller from './BestSeller/BestSeller';
 
 function Filter() {
-    const { field } = useParams();
-    const fieldFromUrl = field.split('=')[1].trim();
-    const [categoriesFromSlugURL, setCategoriesFromSlugURL] = useState([]);
-
-    const [bestSellerByFieldId, setBestSellerByFieldId] = useState([]);
-    const [medicineByExpensivePrice, setMedicByExpensivePrice] = useState([]);
-    const [medicineByCheapPrice, setMedicByCheapPrice] = useState([]);
-    const [medicineByNewRelease, setMedicByCNewRelease] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [categoriesRoot, setCategoriesRoot] = useState([]);
+    const { slug } = useParams();
 
     useEffect(() => {
         const fetchApi = async () => {
-            const resultCategoriesByFieldSlug = await categoryService.getCategoriesByFieldSlug(fieldFromUrl);
-            const resultBestSellerByFieldId = await medicineService.bestSellerByFieldId(
-                resultCategoriesByFieldSlug?.data[0]?.field,
-            );
-            const resultFindMedicineByFieldIdOrderByExpensivePrice =
-                await medicineService.findMedicineByFieldIdOrderByExpensivePrice(
-                    resultCategoriesByFieldSlug?.data[0]?.field,
-                );
-            const resultFindMedicineByFieldIdOrderByCheapPrice =
-                await medicineService.findMedicineByFieldIdOrderByExpensivePrice(
-                    resultCategoriesByFieldSlug?.data[0]?.field,
-                );
-            const findMedicineByFieldIdOrderByNewRelease = await medicineService.findMedicineByFieldIdOrderByNewRelease(
-                resultCategoriesByFieldSlug?.data[0]?.field,
-            );
-
-            setCategoriesFromSlugURL(resultCategoriesByFieldSlug);
-            setBestSellerByFieldId(resultBestSellerByFieldId);
-            setMedicByExpensivePrice(resultFindMedicineByFieldIdOrderByExpensivePrice);
-            setMedicByCheapPrice(resultFindMedicineByFieldIdOrderByCheapPrice);
-            setMedicByCNewRelease(findMedicineByFieldIdOrderByNewRelease);
+            const getCategories = await categoryService.getCategories();
+            setCategoriesRoot(getCategories?.data);
         };
         fetchApi();
-    }, [fieldFromUrl]);
+    }, []);
 
-    // const settings3 = {
+   
+    const filterCategory = categoriesRoot?.filter((c) => c.fieldOfCategory.slug === slug.split('=')[1]);
+    
     //     infinite: true,
     //     speed: 500,
     //     slidesToShow: 5,
@@ -96,34 +74,14 @@ function Filter() {
 
     return (
         <div className="max-w-full overflow-x-hidden">
-            <div className="mx-auto my-0 mb-4 max-w-[1200px] ">
-                <Breadcrumb />
-                <div className="padding-responsive grid gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5">
-                    <div className="cs:hidden xs:hidden sm:hidden md:hidden lg:block xl:block 2xl:block">
-                        <FilterBrand />
-
-                        <FilterDrugs />
-
-                        <FilterObject />
-
-                        <FilterDosage />
-
-                        <FilterPrice />
-                    </div>
-
-                    <div className="xs:col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-4 xl:col-span-4 2xl:col-span-4">
+            <div className="mx-auto my-0 mb-4 max-w-[1200px] padding-responsive ">
+                {/* <Breadcrumb /> */}
+                {/* <div className=" grid gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5"> */}
+                    {/* <div className="xs:col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-4 xl:col-span-4 2xl:col-span-4"> */}
                         {/* list category */}
-                        <FilterCategories categoriesFromSlugURL={categoriesFromSlugURL} />
-                        <BestSeller bestSellerByFieldId={bestSellerByFieldId} />
-
-                        {/* list famous product  */}
-                        <FamousProducts
-                            medicineByExpensivePrice={medicineByExpensivePrice}
-                            medicineByCheapPrice={medicineByCheapPrice}
-                            medicineByNewRelease={medicineByNewRelease}
-                        />
-                    </div>
-                </div>
+                        <FilterCategories categories={filterCategory} />
+                    {/* </div> */}
+                {/* </div> */}
             </div>
 
             <View />

@@ -15,8 +15,21 @@ import Resistance from './Resistance';
 import SearchHome from './SearchHome';
 import Seller from './Seller';
 import View from './View';
+import { useEffect } from 'react';
+import * as medicineService from '~/services/medicineService';
+import { useDispatch } from 'react-redux';
+import { setMedicines } from '~/redux/medicineSlice';
 
 function Home() {
+    const dispatch = useDispatch()
+    useEffect(() => {
+        const fetchApi = async () => {
+            const medicines = await medicineService.getMedicines();
+            dispatch(setMedicines(medicines))
+        };
+        fetchApi()
+    }, [dispatch]);
+
     return (
         <div className="app overflow-hidden">
             <SliderHome />

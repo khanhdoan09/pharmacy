@@ -1,22 +1,28 @@
 package com.project.pharmacy.controller;
 
-import com.project.pharmacy.entity.Medicine;
-import com.project.pharmacy.entity.MedicineDetail;
-import com.project.pharmacy.entity.MedicineIngredient;
+import com.project.pharmacy.dto.SaveDto;
+import com.project.pharmacy.entity.*;
 import com.project.pharmacy.exception.CustomException;
+import com.project.pharmacy.request.SavedRequest;
 import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.service.MedicineService;
+import com.project.pharmacy.service.SavedService;
+import com.project.pharmacy.service.UserService;
+import com.project.pharmacy.utils.CryptoUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -27,10 +33,22 @@ public class MedicineController {
     private MedicineService medicineService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SavedService savedService;
+
+    @Autowired
     private ModelMapper mapper;
+    @Autowired
+    CryptoUtils cryptoUtils;
 
-
-
+    @GetMapping("/getMedicines")
+    public ResponseHandler getMedicines() {
+        ResponseHandler responseHandler = new ResponseHandler("Successfully get medicines",
+                                                              HttpStatus.OK.value(), medicineService.getMedicines());
+        return responseHandler;
+    }
 
     @GetMapping("/search/{keyword}/{page}/{pageSize}")
     @ApiResponses({
@@ -75,83 +93,10 @@ public class MedicineController {
         return responseHandler;
     }
 
-    @GetMapping("/findMedicineByFieldIdOrderByExpensivePrice/{fieldId}")
-    public ResponseHandler<List<Medicine>> findMedicineByFieldIdOrderByExpensivePrice(@PathVariable("fieldId") int fieldId
-                                                                                     ) throws CustomException {
 
-        List<Medicine> medicines = medicineService.findMedicineByFieldIdOrderByExpensivePrice(fieldId);
-
-        ResponseHandler<List<Medicine>> responseHandler = new ResponseHandler<List<Medicine>>(
-                "Successfully findMedicineByFieldIdOrderByExpensivePrice",
-                HttpStatus.OK.value(),
-                medicines);
-        return responseHandler;
-    }
-
-    @GetMapping("/findMedicineByFieldIdOrderByCheapPrice/{fieldId}")
-    public ResponseHandler<List<Medicine>> findMedicineByFieldIdOrderByCheapPrice(@PathVariable("fieldId") int fieldId
-                                                                                 ) throws CustomException {
-
-        List<Medicine> medicines = medicineService.findMedicineByFieldIdOrderByCheapPrice(fieldId);
-
-        ResponseHandler<List<Medicine>>responseHandler = new ResponseHandler<List<Medicine>>(
-                "Successfully findMedicineByFieldIdOrderByCheapPrice",
-                HttpStatus.OK.value(),
-                medicines);
-        return responseHandler;
-    }
-
-    @GetMapping("/findMedicineByFieldIdOrderByNewRelease/{fieldId}")
-    public ResponseHandler<List<Medicine>> findMedicineByFieldIdOrderByNewRelease(@PathVariable("fieldId") int fieldId) throws CustomException {
-
-        List<Medicine> medicines = medicineService.findMedicineByFieldIdOrderByNewRelease(fieldId);
-
-        ResponseHandler<List<Medicine>> responseHandler = new ResponseHandler<List<Medicine>>(
-                "Successfully findMedicineByFieldIdOrderByNewRelease",
-                HttpStatus.OK.value(),
-                medicines);
-        return responseHandler;
-    }
-    @GetMapping("/findMedicineByCategoryIdOrderByExpensivePrice/{categoryId}")
-    public ResponseHandler<List<Medicine>> findMedicineByCategoryIdOrderByExpensivePrice(@PathVariable("categoryId") int categoryId
-                                                                                     ) throws CustomException {
-
-        List<Medicine> medicines = medicineService.findMedicineByCategoryIdOrderByExpensivePrice(categoryId);
-
-        ResponseHandler<List<Medicine>> responseHandler = new ResponseHandler<List<Medicine>>(
-                "Successfully findMedicineByCategoryIdOrderByExpensivePrice",
-                HttpStatus.OK.value(),
-                medicines);
-        return responseHandler;
-    }
-
-    @GetMapping("/findMedicineByCategoryIdOrderByCheapPrice/{categoryId}")
-    public ResponseHandler<List<Medicine>> findMedicineByCategoryIdOrderByCheapPrice(@PathVariable("categoryId") int categoryId
-                                                                                        ) throws CustomException {
-
-        List<Medicine> medicines = medicineService.findMedicineByCategoryIdOrderByCheapPrice(categoryId);
-
-        ResponseHandler<List<Medicine>> responseHandler = new ResponseHandler<List<Medicine>>(
-                "Successfully findMedicineByCategoryIdOrderByCheapPrice",
-                HttpStatus.OK.value(),
-                medicines);
-        return responseHandler;
-    }
-    @GetMapping("/findMedicineByCategoryIdOrderByNewRelease/{categoryId}")
-    public ResponseHandler<List<Medicine>> findMedicineByCategoryIdOrderByNewRelease(@PathVariable("categoryId") int categoryId
-                                                                                    ) throws CustomException {
-
-        List<Medicine> medicines = medicineService.findMedicineByCategoryIdOrderByNewRelease(categoryId);
-
-        ResponseHandler<List<Medicine>> responseHandler = new ResponseHandler<List<Medicine>>(
-                "Successfully findMedicineByCategoryIdOrderByNewRelease",
-                HttpStatus.OK.value(),
-                medicines);
-        return responseHandler;
-    }
     @GetMapping("/findMedicineByCategoryDetailId/{categoryDetailId}")
     public ResponseHandler<List<Medicine>> findMedicineByCategoryDetailId(@PathVariable("categoryDetailId") int categoryDetailId
-                                                                                    ) throws CustomException {
+                                                                         ) throws CustomException {
 
         List<Medicine> medicines = medicineService.findMedicineByCategoryDetailId(categoryDetailId);
 
@@ -161,6 +106,7 @@ public class MedicineController {
                 medicines);
         return responseHandler;
     }
+
     @GetMapping("/findMedicineDetailByMedicineId/{medicineId}")
     public ResponseHandler findMedicineDetailByMedicineId(@PathVariable("medicineId") int medicineId) throws CustomException {
         ResponseHandler<MedicineDetail> responseHandler = new ResponseHandler<MedicineDetail>(
@@ -169,9 +115,10 @@ public class MedicineController {
                 medicineService.findMedicineDetailByMedicineId(medicineId));
         return responseHandler;
     }
+
     @GetMapping("/findMedicineIngredientByMedicineId/{medicineId}")
     public ResponseHandler<List<MedicineIngredient>> findMedicineIngredientByMedicineId(@PathVariable("medicineId") int medicineId
-                                                                               ) throws CustomException {
+                                                                                       ) throws CustomException {
 
         List<MedicineIngredient> medicineIngredients = medicineService.findMedicineIngredientByMedicineId(medicineId);
 
@@ -189,7 +136,8 @@ public class MedicineController {
     @GetMapping("/findBestMedicinesInHistory")
     public ResponseHandler<List<Medicine>> findBestMedicinesInHistory() {
         List<Medicine> medicines = medicineService.findBestMedicinesInHistory();
-        return new ResponseHandler<List<Medicine>>("get successfully the best medicines in history", HttpStatus.OK.value(), medicines );
+        return new ResponseHandler<List<Medicine>>("get successfully the best medicines in history",
+                                                   HttpStatus.OK.value(), medicines);
     }
 
     @Operation(description = "get medicines by object")
@@ -199,7 +147,8 @@ public class MedicineController {
     @GetMapping("/findMedicinesByObject/{object}")
     public ResponseHandler<List<Medicine>> findMedicinesByObject(@PathVariable String object) {
         List<Medicine> medicines = medicineService.findMedicinesByObject(object);
-        return new ResponseHandler<List<Medicine>>("get successfully medicines by object", HttpStatus.OK.value(), medicines );
+        return new ResponseHandler<List<Medicine>>("get successfully medicines by object", HttpStatus.OK.value(),
+                                                   medicines);
     }
 
     @Operation(description = "get medicines by category detail id")
@@ -211,6 +160,59 @@ public class MedicineController {
             "/{categoryDetailId}")
     public ResponseHandler<List<Medicine>> findMedicinesByCategoryDetailId(@PathVariable int categoryDetailId) {
         List<Medicine> medicines = medicineService.findMedicinesByCategoryDetailId(categoryDetailId);
-        return new ResponseHandler<List<Medicine>>("get successfully medicines by category detail id", HttpStatus.OK.value(), medicines );
+        return new ResponseHandler<List<Medicine>>("get successfully medicines by category detail id",
+                                                   HttpStatus.OK.value(), medicines);
+    }
+
+    @GetMapping("/findBySlugFieldAndSlugCategory/{slugField}/{slugCategory}")
+    public ResponseHandler findBySlugFieldAndSlugCategory(@PathVariable("slugField") String slugField,
+                                                          @PathVariable("slugCategory") String slugCategory) throws CustomException {
+        ResponseHandler responseHandler = new ResponseHandler(
+                "Successfully find by slug field and slug category",
+                HttpStatus.OK.value(),
+                medicineService.findBySlugFieldAndSlugCategory(slugField, slugCategory));
+        return responseHandler;
+    }
+
+
+    @PostMapping("/savedMedicine")
+    public ResponseHandler savedMedicine(@RequestBody SavedRequest savedRequest) throws CustomException {
+        savedService.saveNewSaved(cryptoUtils.decrypted(savedRequest.getEmail()), savedRequest.getMedicineId());
+        ResponseHandler responseHandler = new ResponseHandler("Successfully saved medicine", HttpStatus.OK.value(),
+                                                              null);
+        return responseHandler;
+    }
+
+    @PostMapping("/unsavedMedicine")
+    public ResponseHandler unsavedMedicine(@RequestBody SavedRequest savedRequest) throws CustomException {
+        savedService.unSave(cryptoUtils.decrypted(savedRequest.getEmail()), savedRequest.getMedicineId());
+        ResponseHandler responseHandler = new ResponseHandler("Successfully unsaved medicine", HttpStatus.OK.value(),
+                                                              null);
+        return responseHandler;
+    }
+
+    @GetMapping("/findSavedByEmail/{email}")
+    public ResponseHandler findSavedByEmail(@PathVariable("email") String email) throws CustomException {
+        Type listType = new TypeToken<List<SaveDto>>() {
+        }.getType();
+        List<Saved> savedList01 = savedService.findSavedByEmail(email);
+        List<SaveDto> savedList = mapper.map(savedList01, listType);
+        ResponseHandler responseHandler = new ResponseHandler("Successfully find saved by email " +
+                                                                      "medicine",
+                                                              HttpStatus.OK.value(), savedList);
+        return responseHandler;
+    }
+
+    @GetMapping("/findSavedByEmailAndMedicineId/{email}/{medicineId}")
+    public ResponseHandler findSavedByEmailAndMedicineId(@PathVariable("email") String email, @PathVariable(
+            "medicineId") int medicineId) throws CustomException {
+        ResponseHandler responseHandler = null;
+        Saved saveCheck = savedService.findByEmailAndMedicineId(email, medicineId);
+        if (saveCheck == null) {
+            responseHandler = new ResponseHandler("fail", HttpStatus.NOT_FOUND.value(), false);
+        } else {
+            responseHandler = new ResponseHandler("oke", HttpStatus.OK.value(), true);
+        }
+        return responseHandler;
     }
 }

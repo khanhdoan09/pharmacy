@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import SearchProduct from './SearchProduct';
+import useDebounce from '~/hooks/useDebounce';
 import * as searchService from '~/services/searchServices';
+import SearchProduct from './SearchProduct';
 
 function Search() {
     const { keyword, page } = useParams();
@@ -14,20 +15,21 @@ function Search() {
     const [totalProduct, setTotalProduct] = useState(1); // total result product search
     const [numberPage, setNumberPage] = useState([]);
     const totalPage = [];
+    const debouncedSearchTerm = useDebounce(keywordFromUrl, 800);
     useEffect(() => {
+        const fetchApi = async () => {
+            const result = await searchService.search(keywordFromUrl, pageValue, pageSize);
+            setResultSearch(result?.data?.content);
+            setTotalProduct(result?.data?.totalElements);
+    
+            for (let index = 0; index < result?.data?.totalPages; index++) {
+                totalPage.push(index);
+            }
+            setNumberPage(totalPage);
+        };
         fetchApi();
-    }, [keywordFromUrl, pageValue]);
+    }, [debouncedSearchTerm, pageValue]);
 
-    const fetchApi = async () => {
-        const result = await searchService.search(keywordFromUrl, pageValue, pageSize);
-        setResultSearch(result?.data?.content);
-        setTotalProduct(result?.data?.totalElements);
-
-        for (let index = 0; index < result?.data?.totalPages; index++) {
-            totalPage.push(index);
-        }
-        setNumberPage(totalPage);
-    };
 
     const prevPage = () => {
         const currentPage = parseInt(pageValue) === 0 ? 0 : parseInt(pageValue) - 1;

@@ -6,12 +6,12 @@ import { getImageFromFirebase } from '~/utils/firebase';
 
 function ProductMain({ id, to, label, img, title, newPrice, oldPrice, unit }) {
     const [urlAvatar, setUrlAvatar] = useState(null);
-    useEffect(() => {
-        const imagePromise = getImageFromFirebase("product",`${id}`, `avatar`);
-        imagePromise.then((urlAvatar) => {
-            setUrlAvatar(urlAvatar);
-        });
-    }, []);
+    // useEffect(() => {
+    //     const imagePromise = getImageFromFirebase("product",`${id}`, `avatar`);
+    //     imagePromise.then((urlAvatar) => {
+    //         setUrlAvatar(urlAvatar);
+    //     });
+    // }, []);
     return (
         <div className="transition-basic relative mb-4 h-full rounded-md border bg-[#fff] px-3 pt-3 pb-2 hover:border-[#4f71d0]">
             <NavLink to={to || '/detail'}>
@@ -19,7 +19,7 @@ function ProductMain({ id, to, label, img, title, newPrice, oldPrice, unit }) {
                     <p className="text-xs capitalize">{label}</p>
                 </div>
                 <img
-                    src={urlAvatar}
+                    src={urlAvatar|| 'áđá'}
                     alt="main-img"
                     className="mb-3 max-w-full object-cover px-2 py-2"
                     onError={({ currentTarget }) => {
