@@ -24,9 +24,7 @@ public class CommentService {
     UserRepository userRepository;
 
     public List<Comment> findAllComments() {
-        List<Comment> comments = commentRepository.findAll();
-        comments.sort(Comparator.comparing(a -> a.getId()));
-        return comments;
+        return commentRepository.findAll();
     }
 
 
@@ -34,7 +32,7 @@ public class CommentService {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         User user =
-                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().get();
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().orElse(null);
         List<Likes> likes = new ArrayList<>();
 
 
@@ -44,19 +42,19 @@ public class CommentService {
 
     }
 
-    public List<Comment> findCommentsByMedicineIdOrderByCreateDate(int medicineId) throws CustomException {
-        List<Comment> comments = commentRepository.findCommentsByMedicineIdOrderByCreateDate(medicineId);
+    public List<Comment> findCommentsByMedicineId(int medicineId) throws CustomException {
+        List<Comment> comments = commentRepository.findCommentsByMedicineId(medicineId);
         if (comments.size() == 0) {
             throw new CustomException(
                     HttpStatus.NOT_FOUND,
-                    "Can't findCommentsByMedicineIdOrderByCreateDate is " + medicineId);
+                    "Can't findCommentsByMedicineId is " + medicineId);
         }
         return comments;
     }
 
     public void responseComment(String userEmail, int commentId, int medicineId, String content) throws CustomException {
         User user =
-                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().get();
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().orElse(null);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String roleUser = user.getRole().trim();

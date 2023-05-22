@@ -17,16 +17,22 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class CategoryController {
     @Autowired
-     CategoryService categoryService;
+    CategoryService categoryService;
 
     @Autowired
-     ModelMapper mapper;
+    ModelMapper mapper;
 
+    @GetMapping("/getCategoryDetails")
+    public ResponseHandler getCategoryDetails() {
+        ResponseHandler responseHandler = new ResponseHandler(
+                "Successfully getCategoryDetails", HttpStatus.OK.value(), categoryService.getCategoryDetails()
+        );
+        return responseHandler;
+    }
     @GetMapping("/categories")
-    public ResponseHandler<List<Category>> getAllFields() {
-        List<Category> categories = categoryService.getCategories();
-        ResponseHandler<List<Category>> responseHandler = new ResponseHandler<>(
-                "Successfully categories", HttpStatus.OK.value(), categories
+    public ResponseHandler getCategories() {
+        ResponseHandler responseHandler = new ResponseHandler(
+                "Successfully categories", HttpStatus.OK.value(), categoryService.getCategories()
         );
         return responseHandler;
     }
@@ -57,6 +63,7 @@ public class CategoryController {
         );
         return responseHandler;
     }
+
     @GetMapping("/findCategoryDetailBySlugCategory/{slugCategory}")
     public ResponseHandler<List<CategoryDetail>> findCategoryDetailBySlugCategory(@PathVariable("slugCategory") String slugCategory) throws CustomException {
         List<CategoryDetail> listCD = categoryService.findCategoryDetailBySlugCategory(slugCategory);

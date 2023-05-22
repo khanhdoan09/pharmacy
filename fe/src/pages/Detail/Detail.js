@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Breadcrumb from '~/components/Breadcrumb';
 import * as commentService from '~/services/commentService';
 import * as medicineService from '~/services/medicineService';
 import * as rateService from '~/services/rateService';
+import * as firebaseService from '~/utils/firebase';
 import Comment from './Comment';
 import DetailList from './DetailList';
 import MainDetail from './MainDetail';
 import RelatedProduct from './RelatedProduct';
 import Review from './Review';
-import * as firebaseService from '~/utils/firebase';
 
 function Detail() {
     const { medicineId } = useParams();
@@ -34,11 +33,11 @@ function Detail() {
 
     useEffect(() => {
         const intervalId = setInterval(async () => {
-            const resultAllComments = await commentService.findCommentsByMedicineIdOrderByCreateDate(handleMedicineId);
+            const resultAllComments = await commentService.findCommentsByMedicineId(handleMedicineId);
             setCommentByMedicineId(resultAllComments?.data);
         }, 5000);
         return () => clearInterval(intervalId);
-    }, [handleMedicineId, commentByMedicineId.length]);
+    }, [handleMedicineId, commentByMedicineId?.length]);
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -55,7 +54,7 @@ function Detail() {
     return (
         <div className=" max-w-full ">
             <div className="padding-responsive mx-auto my-0 max-w-[1200px] border-b pb-8 ">
-                <Breadcrumb />
+                {/* <Breadcrumb /> */}
                 <MainDetail
                     detail={dataDetail}
                     commentByMedicineId={commentByMedicineId}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Address from './Address';
 import InfoUpdate from './InfoUpdate';
 import PasswordUser from './PasswordUser';
+import Saved from './Saved/Saved';
 import Tab from './Tab';
 
 function User() {
@@ -12,18 +13,22 @@ function User() {
     };
     return (
         <div className="max-w-full">
-            <img src="https://nhathuoclongchau.com.vn/frontend_v3/images/banner-html/banner-QLTK.png" alt="banner" className='h-[264px] object-cover'/>
-            <div className="max-w-[1200px] mx-auto my-0">
-                <div className="grid 2xl:grid-cols-4 xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-1 gap-4 padding-responsive">
-                    <div className="2xl:col-span-1 xl:col-span-1 lg:col-span-1 xs:col-span-1 cs:col-span-1">
+            <img
+                src="https://nhathuoclongchau.com.vn/frontend_v3/images/banner-html/banner-QLTK.png"
+                alt="banner"
+                className="h-[264px] object-cover"
+            />
+            <div className="mx-auto my-0 max-w-[1200px]">
+                <div className="padding-responsive grid gap-4 md:grid-cols-1 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
+                    <div className="cs:col-span-1 xs:col-span-1 lg:col-span-1 xl:col-span-1 2xl:col-span-1">
                         <InfoUpdate />
-                        <div className="flex flex-col mt-[52px]">
+                        <div className="mt-[52px] flex flex-col">
                             <div
                                 onClick={() => toggleTab(1)}
                                 className={
                                     toggleState === 1
-                                        ? 'flex items-center bg-[#edf2f8] border border-transparent hover:border-[#072d94] rounded-lg mb-3 px-2 py-2 cursor-pointer transition-basic '
-                                        : 'flex items-center bg-transparent border border-transparent hover:border-[#072d94] rounded-lg mb-3 px-2 py-2 cursor-pointer transition-basic'
+                                        ? 'transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#edf2f8] px-2 py-2 hover:border-[#072d94] '
+                                        : 'transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-transparent px-2 py-2 hover:border-[#072d94]'
                                 }
                             >
                                 <svg
@@ -32,8 +37,8 @@ function User() {
                                     fill="currentColor"
                                     className={
                                         toggleState === 1
-                                            ? 'w-6 h-6 mr-2 text-[#072d94]'
-                                            : 'w-6 h-6 mr-2 text-[#c1bcbd] rounded-full bg-[#edf2f8]'
+                                            ? 'mr-2 h-6 w-6 text-[#072d94]'
+                                            : 'mr-2 h-6 w-6 rounded-full bg-[#edf2f8] text-[#c1bcbd]'
                                     }
                                 >
                                     <path
@@ -49,8 +54,8 @@ function User() {
                                 onClick={() => toggleTab(2)}
                                 className={
                                     toggleState === 2
-                                        ? 'flex items-center bg-[#edf2f8] border border-transparent hover:border-[#072d94] rounded-lg mb-3 px-2 py-2 cursor-pointer transition-basic '
-                                        : 'flex items-center bg-transparent border border-transparent hover:border-[#072d94] rounded-lg mb-3 px-2 py-2 cursor-pointer transition-basic'
+                                        ? 'transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#edf2f8] px-2 py-2 hover:border-[#072d94] '
+                                        : 'transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-transparent px-2 py-2 hover:border-[#072d94]'
                                 }
                             >
                                 <svg
@@ -59,8 +64,8 @@ function User() {
                                     fill="currentColor"
                                     className={
                                         toggleState === 2
-                                            ? 'w-6 h-6 mr-2 text-[#072d94]'
-                                            : 'w-6 h-6 mr-2 text-[#c1bcbd] rounded-full bg-[#edf2f8]'
+                                            ? 'mr-2 h-6 w-6 text-[#072d94]'
+                                            : 'mr-2 h-6 w-6 rounded-full bg-[#edf2f8] text-[#c1bcbd]'
                                     }
                                 >
                                     <path
@@ -76,8 +81,8 @@ function User() {
                                 onClick={() => toggleTab(3)}
                                 className={
                                     toggleState === 3
-                                        ? 'flex items-center bg-[#edf2f8] border border-transparent hover:border-[#072d94] rounded-lg mb-3 px-2 py-2 cursor-pointer hover:transition-basic'
-                                        : 'flex items-center bg-transparent border border-transparent hover:border-[#072d94] rounded-lg mb-3 px-2 py-2 cursor-pointer hover:transition-basic'
+                                        ? 'hover:transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#edf2f8] px-2 py-2 hover:border-[#072d94]'
+                                        : 'hover:transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-transparent px-2 py-2 hover:border-[#072d94]'
                                 }
                             >
                                 <svg
@@ -88,8 +93,8 @@ function User() {
                                     stroke="currentColor"
                                     className={
                                         toggleState === 3
-                                            ? 'w-6 h-6 mr-2 text-[#072d94]'
-                                            : 'w-6 h-6 mr-2 text-[#c1bcbd] rounded-full bg-[#edf2f8]'
+                                            ? 'mr-2 h-6 w-6 text-[#072d94]'
+                                            : 'mr-2 h-6 w-6 rounded-full bg-[#edf2f8] text-[#c1bcbd]'
                                     }
                                 >
                                     <path
@@ -101,29 +106,65 @@ function User() {
 
                                 <p className="text-[#334155]">Thay đổi mật khẩu</p>
                             </div>
+                            <div
+                                onClick={() => toggleTab(4)}
+                                className={
+                                    toggleState === 4
+                                        ? 'hover:transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#edf2f8] px-2 py-2 hover:border-[#072d94]'
+                                        : 'hover:transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-transparent px-2 py-2 hover:border-[#072d94]'
+                                }
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className={
+                                        toggleState === 4
+                                            ? 'mr-2 h-6 w-6 text-[#072d94]'
+                                            : 'mr-2 h-6 w-6 rounded-full bg-[#edf2f8] text-[#c1bcbd]'
+                                    }
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+                                    />
+                                </svg>
+
+                                <p className="text-[#334155]">Sản phẩm đã lưu</p>
+                            </div>
                         </div>
                     </div>
                     {/* tab content */}
                     <div
                         className={
-                            toggleState === 1 ? '2xl:col-span-3 xl:col-span-3  lg:col-span-3 xm mt-8 block' : 'hidden'
+                            toggleState === 1 ? 'xm mt-8  block lg:col-span-3 xl:col-span-3 2xl:col-span-3' : 'hidden'
                         }
                     >
                         <Tab />
                     </div>
                     <div
                         className={
-                            toggleState === 2 ? '2xl:col-span-3 xl:col-span-3 lg:col-span-3 pt-8 pb-10 block' : 'hidden'
+                            toggleState === 2 ? 'block pt-8 pb-10 lg:col-span-3 xl:col-span-3 2xl:col-span-3' : 'hidden'
                         }
                     >
                         <Address />
                     </div>
                     <div
                         className={
-                            toggleState === 3 ? '2xl:col-span-3 xl:col-span-3 lg:col-span-3 pt-8 pb-10 block' : 'hidden'
+                            toggleState === 3 ? 'block pt-8 pb-10 lg:col-span-3 xl:col-span-3 2xl:col-span-3' : 'hidden'
                         }
                     >
                         <PasswordUser />
+                    </div>
+                    <div
+                        className={
+                            toggleState === 4 ? 'block pt-8 pb-10 lg:col-span-3 xl:col-span-3 2xl:col-span-3' : 'hidden'
+                        }
+                    >
+                        <Saved />
                     </div>
                 </div>
             </div>

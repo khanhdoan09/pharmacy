@@ -1,12 +1,13 @@
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
+import CryptoJS from 'crypto-js';
 import { signInWithPopup } from 'firebase/auth';
 import { Form, Formik, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { Animation } from 'react-animate-style';
 import { useCookies } from 'react-cookie';
 import FacebookLogin from 'react-facebook-login';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { loginRequest } from '~/config/authConfig';
@@ -15,12 +16,9 @@ import { loginSuccess } from '~/redux/authSlice';
 import { addMedicinesToCart } from '~/redux/cartSlice';
 import { getAllMedicinesInCart } from '~/services/cartServices';
 import { loginNormal, loginWithAccessToken, registerWithAccessToken } from '~/services/userServices';
-import CryptoJS from 'crypto-js';
 
-const sign = require('jwt-encode');
 
 function SignIn() {
-    const user = useSelector((state) => state.authentication.login.currentUser);
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
@@ -362,7 +360,7 @@ function SignIn() {
                                 ) : null}
                             </div>
                             <NavLink
-                                to="/forgotPassword"
+                                to="/reset-password"
                                 className="transition-basic cursor-pointer select-none   text-zinc-500 hover:underline "
                             >
                                 <p className="hover:transition-basic py-1">Quên mật khẩu</p>

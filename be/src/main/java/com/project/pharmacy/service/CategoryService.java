@@ -22,6 +22,9 @@ public class CategoryService {
     public List<Category> getCategories() {
         return categoryRepository.findAll();
     }
+    public List<CategoryDetail> getCategoryDetails() {
+        return categoryDetailRepository.findAll();
+    }
 
     public List<Category> findByIdField(int field) throws CustomException {
         List<Category> categories = categoryRepository.findByField(field);

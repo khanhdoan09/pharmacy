@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "category_detail")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -21,4 +20,7 @@ public class CategoryDetail {
     private String slug;
 
 
+
+
 }
+

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { addMedicinesToCartAndShowCartInHeader } from '~/redux/cartSlice';
 import { addNewMedicineInCart, getAllMedicinesInCart } from '~/services/cartServices';
 import SliderImageDetail from '../SliderImageDetail';
+import SavedButton from './SavedButton';
 
 function MainDetail(props) {
     const [toggleState, setToggleState] = useState(1);
@@ -77,7 +78,7 @@ function MainDetail(props) {
     }
     return (
         <div className="main-detail !grid gap-6 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 ">
-            <SliderImageDetail imageList={props?.imageList}/>
+            <SliderImageDetail imageList={props?.imageList} />
 
             <div className="text animate-fadeBottomMobile px-1">
                 <div className="header-text border-b pb-4 ">
@@ -219,9 +220,8 @@ function MainDetail(props) {
                         >
                             Chọn mua
                         </button>
-                        <button className="h-[56px] rounded-[100px] bg-[#f59e0b] px-[36px] font-bold uppercase text-[#fff]">
-                            Tìm nhà thuốc
-                        </button>
+                     
+                        <SavedButton itemId={props?.detail?.medicineId} />
                     </div>
                     <div className="commit mt-4 rounded-2xl border">
                         <div className="commit-header">

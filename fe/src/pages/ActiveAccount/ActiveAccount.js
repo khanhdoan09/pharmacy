@@ -80,7 +80,7 @@ function ActiveAccount() {
     }
 
     return (
-        <div className="my-5 flex w-full items-center justify-center border border-2 py-5">
+        <div className="my-5 flex w-full items-center justify-center border py-5">
             <div
                 className={`absolute left-[47%] top-[45%] z-50 rounded-xl bg-[#edf0f3] p-5  ${
                     showLoading ? 'block' : 'hidden'

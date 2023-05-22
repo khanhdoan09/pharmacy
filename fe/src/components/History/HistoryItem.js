@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import * as rateService from '~/services/rateService';
 import { convertNumberToPrice } from '~/utils/currency';
 import HistoryImage from './HistoryImage';
-import { encrypt } from '~/utils/cryptoUtils';
+
 
 function HistoryItem(props) {
     const orderDetails = props?.orderDetails;
@@ -38,7 +38,7 @@ function HistoryItem(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (comment.length > 0 && medicineId !== undefined) {
-            await rateService.saveRate(medicineId, encrypt(user?.email), rating, encrypt(comment));
+            await rateService.saveRate(medicineId, user?.email, rating, comment);
             notifySuccessRate('Đánh giá thành công');
             setIsOpen(false);
             setComment('');
@@ -155,7 +155,7 @@ function HistoryItem(props) {
                     </>
                 )}
             </>
-            {orderDetails.map((e, i) => {
+            {orderDetails?.map((e, i) => {
                 const medicine = e?.medicine;
                 return (
                     <div key={i} className="my-5 flex items-center">

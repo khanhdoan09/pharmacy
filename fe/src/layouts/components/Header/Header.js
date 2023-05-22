@@ -1,19 +1,19 @@
 import { useMsal } from '@azure/msal-react';
 import { getAuth, signOut } from 'firebase/auth';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
+import bgLeftMenu from '~/assets/img/bg/bg-left-menu.jpg';
 import CartHeader from '~/components/CartHeader/CartHeader';
-import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import { logoutSuccess } from '~/redux/authSlice';
 import { removeMedicinesFromCart } from '~/redux/cartSlice';
 import { logOut } from '~/services/userServices';
+import { encrypt } from '~/utils/cryptoUtils';
 
 function Header() {
     const [showItemMobile, setShowItemMobile] = useState(false);
     const [showMenuMobiles, setShowMenuMobiles] = useState(false);
-    const [lock, toogle] = useBodyScrollLock();
     const { instance } = useMsal();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -21,12 +21,14 @@ function Header() {
 
     const toogleLock = () => {
         setShowMenuMobiles(!showMenuMobiles);
-        toogle();
     };
     const [isHovering, setIsHovering] = useState(false);
     const user = useSelector((state) => state.authentication.login.currentUser);
     const cart = useSelector((state) => state.cart?.medicines);
     const auth = getAuth();
+    const fields = useSelector((state) => state.fields.fields);
+    const categories = useSelector((state) => state.categories.categories);
+
     const handleSignOutWithGoogleFirebase = async () => {
         await signOut(auth)
             .then(() => {
@@ -70,27 +72,33 @@ function Header() {
             );
     }
     const [showHintSearch, setShowHintSearch] = useState('');
+    const [fieldId, setFieldId] = useState('');
+    const [categoryByFieldId, setCategoryByFieldId] = useState([]);
+
+    useEffect(() => {
+        const filteredCategory = categories?.data?.filter((c) => c.field === fieldId);
+        setCategoryByFieldId(filteredCategory);
+    }, [fieldId]);
+    const backgroundImage = 'url("https://nhathuoclongchau.com.vn/static/images/bg-header.svg")';
     return (
-        <div className="wrapper h-20 bg-[#072d94]">
+        <div className="wrapper h-20 bg-cover bg-center"  style={{ backgroundImage }}>
             <div className="padding-responsive m-auto h-20 max-w-[1200px] items-center justify-between cs:hidden xs:hidden sm:hidden md:hidden lg:flex xl:flex 2xl:flex ">
                 <NavLink to="/">
-                    <img src="https://cdn1.nhathuoclongchau.com.vn/logo_front_big_c58fec2dc9.svg" alt="logo" />
+                    <img src="https://cms-prod.s3-sgn09.fptcloud.com/logo_front_big_c58fec2dc9.svg" alt="logo" />
                 </NavLink>
                 <div className="right flex text-white ">
                     {!user ? (
                         <NavLink to="/signIn" className="track mr-3 flex items-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
                                 viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="h-10 w-10"
+                                fill="currentColor"
+                                className="h-7 w-7 rounded-full border-2 mr-1"
                             >
                                 <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
+                                    fillRule="evenodd"
+                                    d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                                    clipRule="evenodd"
                                 />
                             </svg>
                             <div className="track-title">
@@ -119,7 +127,7 @@ function Header() {
                             {isHovering && user && (
                                 <div className="fucn-user absolute top-11 right-0 z-10 w-60 animate-fadeBottomMobile rounded-lg border border-[#ccc] bg-[#ffffff]">
                                     <NavLink
-                                        to="/user"
+                                          to={`/user/uid=${encrypt(user?.email)}`}
                                         className="transition-basic flex items-center  rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "
                                     >
                                         <svg
@@ -326,9 +334,9 @@ function Header() {
                                         </svg>
                                     </button>
                                 </div>
-                                <div className="content-menu bg-[#fff] px-3 py-3">
+                                <div className="content-menu bg-[#fff] ">
                                     {/* search mobile start */}
-                                    <div className="relative flex w-full items-center">
+                                    <div className="relative flex w-full items-center px-3 py-3">
                                         <input
                                             placeholder="Nhập tìm thuốc..."
                                             name="search"
@@ -376,76 +384,257 @@ function Header() {
                                             </svg>
                                         </button>
                                     </div>
-                                    <div className="menu-item flex items-center justify-between border-b border-[#e4eaf1] py-[14px] pl-3 text-sm">
+                                    {user === null ? (
+                                        <div
+                                            className="menu-item  flex flex-col border-b border-[#e4eaf1] bg-cover bg-no-repeat  px-3  py-3 text-sm"
+                                            style={{ backgroundImage: `url(${bgLeftMenu})` }}
+                                        >
+                                            <div className="px-3 py-1">
+                                                <p className="font-medium text-[#fff]">
+                                                    Đăng nhập để hưởng những đặc quyền dành riêng cho thành viên.
+                                                </p>
+                                                <div className="mt-3  inline-flex items-center text-sm">
+                                                    <button
+                                                        className="h-8 rounded-full border-blue-100 bg-[#fff] px-3 font-medium text-[#125odc]"
+                                                        onClick={() => {
+                                                            toogleLock();
+                                                        }}
+                                                    >
+                                                        <NavLink to="/signIn">Đăng nhập</NavLink>
+                                                    </button>
+                                                    <button
+                                                        className="ml-2 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 px-3 font-medium text-[#fff]"
+                                                        onClick={() => {
+                                                            toogleLock();
+                                                        }}
+                                                    >
+                                                        <NavLink to="/signUp">Đăng ký</NavLink>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div
+                                            className="menu-item  flex flex-col border-b border-[#e4eaf1] bg-cover bg-no-repeat  px-3  py-3 text-sm"
+                                            style={{ backgroundImage: `url(${bgLeftMenu})` }}
+                                        >
+                                            <div className="mt-3 inline-flex items-center justify-between text-sm">
+                                                <div
+                                                    className=" px-3 font-medium text-[#125odc] "
+                                                    onClick={() => {
+                                                        toogleLock();
+                                                    }}
+                                                >
+                                                    <NavLink to="/user" className="flex items-center">
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none"
+                                                            viewBox="0 0 52 52"
+                                                            width={48}
+                                                            height={48}
+                                                        >
+                                                            <g clipPath="url(#clip0_7940_243129)">
+                                                                <rect width={52} height={52} fill="#95B2F0" rx={26} />
+                                                                <path
+                                                                    fill="url(#paint0_linear_7940_243129)"
+                                                                    d="M18.292 23.14c-1.058 0-1.783.24-1.373 2.986.41 2.745.94 3.522 1.853 3.177.482 2.263 1.637 3.948 2.595 4.82.049 2.793 0 4.044 0 4.044-4.283.337-5.968 3.804-4.862 6.788 1.107 2.984 11.17 7.414 16.562 4.334 5.392-3.081 7.077-10.495.186-11.026-.434-.048-1.157-.096-1.157-.096 0-2.552-.048-4.044-.048-4.044a7.385 7.385 0 002.41-4.67c.433.29 1.444.145 1.974-2.938.53-3.082-.977-2.669-.964-3.37.096-4.862-.24-8.569-7.23-8.376-6.99.193-9.608-.871-9.946 8.37z"
+                                                                />
+                                                                <path
+                                                                    fill="url(#paint1_linear_7940_243129)"
+                                                                    d="M36.442 26.51c-.53 3.082-1.54 3.227-1.974 2.938a7.385 7.385 0 01-2.41 4.669s.034 1.029.045 2.842c-1.142 1.136-2.662 2.239-4.28 2.26-3.003.044-4.898-1.749-6.432-3.09 0-.557 0-1.217-.02-2.006 1.528 1.438 3.45 2.74 5.247 2.74 2.745 0 5.44-3.66 6.404-5.923.964-2.264 1.034-11.493-.337-13.096-1.507-1.757-3.033-.048-5.489-.185s-3.175-1.318-5.053-1.207c-2.932.169-3.032 8.473-3.707 8.425l-.32-1.732h.175c.338-9.244 2.985-8.183 9.967-8.376 6.983-.193 7.316 3.522 7.23 8.376-.023.695 1.484.284.954 3.365z"
+                                                                />
+                                                                <path
+                                                                    fill="url(#paint2_linear_7940_243129)"
+                                                                    d="M33.499 11.906c-2.903-3.325-10.037-6.408-13.181-4.11-1.692.763-1.692 2.659-2.595 3.324-.903.666-2.484 1.81-2 3.267.484 1.457 1.405 2.024 1.51 3.566.106 1.542-1.39 2.903-.24 3.87 1.51-1.996 3.384-8.465 5.985-8.222 2.6.242 10.521-1.695 10.521-1.695z"
+                                                                />
+                                                                <path
+                                                                    fill="url(#paint3_linear_7940_243129)"
+                                                                    d="M18.505 25.33c.967 0-.371-7.74 2.54-9.251 2.48-1.15 2.78.37 5.864.37s4.172-1.391 6.117.544c1.944 1.935.786 7.739 1.994 7.86.545 0 .425-1.33 1.03-1.753.603-.422 1.087-.185 1.269-4.897 0-3.99.361-6.117-3.151-6.893-1.633-.423-1.694-1.331-3.326-1.15-1.63.182-2.947-2.307-6.53-1.39-2.595.666-1.952 1.711-3.448 2.478-2.478.371-3.203.786-3.203 1.876 0 1.09.664 1.813.605 3.507-.06 1.695-1.876 3.982-1.272 5.196.604 1.214 1.088 1.209 1.088 2.056s-.181 1.568.423 1.447z"
+                                                                />
+                                                                <path
+                                                                    fill="url(#paint4_linear_7940_243129)"
+                                                                    d="M6.5 44.78c3.018-3.49 7.303-6.197 14.872-6.62-4.82 1.06-4.264 6.506 5.686 6.8 9.002-.49 9.213-5.953 6.206-6.703 4.73.255 12.39 2.73 17.111 8.69-.843 9.284-16.847 9.594-23.272 9.356C20.678 56.066 7.893 51.28 6.5 44.78z"
+                                                                />
+                                                            </g>
+                                                            <defs>
+                                                                <linearGradient
+                                                                    id="paint0_linear_7940_243129"
+                                                                    x1="15.818"
+                                                                    x2="25.251"
+                                                                    y1="39.578"
+                                                                    y2="11.681"
+                                                                    gradientUnits="userSpaceOnUse"
+                                                                >
+                                                                    <stop stopColor="#FBDAD0" />
+                                                                    <stop offset={1} stopColor="#FDE5DE" />
+                                                                </linearGradient>
+                                                                <linearGradient
+                                                                    id="paint1_linear_7940_243129"
+                                                                    x1="18.956"
+                                                                    x2="51.533"
+                                                                    y1="36.188"
+                                                                    y2="-0.012"
+                                                                    gradientUnits="userSpaceOnUse"
+                                                                >
+                                                                    <stop stopColor="#FAD2C6" />
+                                                                    <stop offset={1} stopColor="#FBDAD0" />
+                                                                </linearGradient>
+                                                                <linearGradient
+                                                                    id="paint2_linear_7940_243129"
+                                                                    x1="20.512"
+                                                                    x2="24.252"
+                                                                    y1="16.38"
+                                                                    y2="6.369"
+                                                                    gradientUnits="userSpaceOnUse"
+                                                                >
+                                                                    <stop offset="0.008" stopColor="#20588C" />
+                                                                    <stop offset="0.924" stopColor="#054178" />
+                                                                </linearGradient>
+                                                                <linearGradient
+                                                                    id="paint3_linear_7940_243129"
+                                                                    x1="22.458"
+                                                                    x2="26.654"
+                                                                    y1="19.183"
+                                                                    y2="7.82"
+                                                                    gradientUnits="userSpaceOnUse"
+                                                                >
+                                                                    <stop offset="0.008" stopColor="#19446D" />
+                                                                    <stop offset="0.924" stopColor="#05427B" />
+                                                                </linearGradient>
+                                                                <linearGradient
+                                                                    id="paint4_linear_7940_243129"
+                                                                    x1="43.95"
+                                                                    x2="34.848"
+                                                                    y1="53.687"
+                                                                    y2="31.735"
+                                                                    gradientUnits="userSpaceOnUse"
+                                                                >
+                                                                    <stop stopColor="#306DE4" />
+                                                                    <stop offset={1} stopColor="#769DEA" />
+                                                                </linearGradient>
+                                                                <clipPath id="clip0_7940_243129">
+                                                                    <rect width={52} height={52} fill="#fff" rx={26} />
+                                                                </clipPath>
+                                                            </defs>
+                                                        </svg>
+                                                        <p className="ml-2 text-[#fff]">{user?.username}</p>
+                                                    </NavLink>
+                                                </div>
+                                                <button
+                                                    className=" rounded-full border border-[#fff] bg-transparent px-4 py-1 font-medium text-[#fff] transition-all hover:border-blue-400"
+                                                    onClick={() => {
+                                                        toogleLock();
+
+                                                        switch (user?.account) {
+                                                            case 'Microsoft':
+                                                                handleSignOutWithMicrosoft();
+                                                                break;
+                                                            case 'Google':
+                                                                handleSignOutWithGoogleFirebase();
+                                                                break;
+                                                            case 'Normal':
+                                                                handleSignOutWithNormal();
+                                                                break;
+                                                            default:
+                                                                dispatch(logoutSuccess(null));
+                                                                setCookie('accessToken', null);
+                                                                setCookie('accountType', null);
+                                                                logOut();
+                                                        }
+                                                    }}
+                                                >
+                                                    <NavLink to="/signUp">Đăng xuất</NavLink>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div
+                                        className="menu-item flex items-center justify-between border-b border-[#e4eaf1] py-[14px] pl-3 text-sm "
+                                        onClick={() => {
+                                            toogleLock();
+                                        }}
+                                    >
                                         <NavLink to="">Trang chủ</NavLink>
                                     </div>
-                                    <div className="menu-item border-b border-[#e4eaf1] py-[14px] pl-3 text-sm ">
-                                        <div
-                                            className="flex items-center justify-between"
-                                            onClick={() => setShowItemMobile(!showItemMobile)}
-                                        >
-                                            <NavLink to="/filter" className="select-none">
-                                                Thực phẩm chức năng
-                                            </NavLink>
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth={1.5}
-                                                stroke="currentColor"
-                                                className={
-                                                    showItemMobile
-                                                        ? 'h-6 w-6 rotate-[180deg] transition-all'
-                                                        : 'h-6 w-6 rotate-[360deg] transition-all'
-                                                }
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                                                />
-                                            </svg>
-                                        </div>
-                                        {showItemMobile && (
-                                            <ul className="menu-item__childs mt-3 rounded-lg bg-[#e8f5fd] transition-opacity delay-1000">
-                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
-                                                    <NavLink to="/filter">Chức năng gan</NavLink>
-                                                </li>
-                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
-                                                    <NavLink to="/filter">Hỗ trợ trao đổi chất</NavLink>
-                                                </li>
-                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
-                                                    <NavLink to="/filter">Giải rượu, cai rượu</NavLink>
-                                                </li>
-                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
-                                                    <NavLink to="/filter">Chống lão hóa</NavLink>
-                                                </li>
-                                                <li className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]">
-                                                    <NavLink to="/filter">Bổ mắt, bảo vệ mắt</NavLink>
-                                                </li>
-                                            </ul>
-                                        )}
-                                    </div>
-
-                                    <div className="menu-item flex items-center justify-between border-b border-[#e4eaf1] py-[14px] pl-3 text-sm">
-                                        <NavLink to="" className="select-none">
-                                            Dược mỹ phẩm
-                                        </NavLink>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={1.5}
-                                            stroke="currentColor"
-                                            className="h-6 w-6"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                                            />
-                                        </svg>
-                                    </div>
+                                    {fields?.data?.map((field, index) => {
+                                        return (
+                                            <div key={index}>
+                                                <div
+                                                    className="menu-item flex items-center justify-between border-b border-[#e4eaf1]  px-3 py-3 pl-3 text-sm"
+                                                    onClick={() => {
+                                                        setShowItemMobile(!showItemMobile);
+                                                        setFieldId(field?.id);
+                                                    }}
+                                                    onMouseEnter={() => {
+                                                        setFieldId(field?.id);
+                                                    }}
+                                                >
+                                                    <NavLink
+                                                        to={`/filter/slug=${field?.slug}`}
+                                                        className="select-none"
+                                                        onClick={() => {
+                                                            toogleLock();
+                                                        }}
+                                                    >
+                                                        {field?.name}
+                                                    </NavLink>
+                                                    {showItemMobile && fieldId === field?.id ? (
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            strokeWidth={1.5}
+                                                            stroke="currentColor"
+                                                            className="h-6 w-6 rotate-180 transition-all"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                                                            />
+                                                        </svg>
+                                                    ) : (
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            strokeWidth={1.5}
+                                                            stroke="currentColor"
+                                                            className="h-6 w-6 transition-all"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                                                            />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                                {showItemMobile && fieldId === field?.id && (
+                                                    <ul className="menu-item__childs mt-3 rounded-lg bg-[#e8f5fd] transition-opacity delay-1000">
+                                                        {categoryByFieldId?.map((category) => {
+                                                            return (
+                                                                <li
+                                                                    className="item select-none px-3 py-3 text-sm transition-all hover:bg-[#bed5e4]"
+                                                                    key={category?.id}
+                                                                    onClick={() => {
+                                                                        toogleLock();
+                                                                    }}
+                                                                >
+                                                                    <NavLink
+                                                                        to={`/filter/field=${category?.fieldOfCategory?.slug}/category=${category?.slug}`}
+                                                                        className="block"
+                                                                    >
+                                                                        {category?.category}
+                                                                    </NavLink>
+                                                                </li>
+                                                            );
+                                                        })}
+                                                    </ul>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                                 <div className="footer-menu flex items-center pt-4 pb-6 pl-6">
                                     <svg
@@ -472,7 +661,7 @@ function Header() {
                     )}
                 </div>
                 <NavLink to="/" className="center">
-                    <img src="https://nhathuoclongchau.com.vn/frontend_v3/images/longchau-logo.svg" alt="img-logo" />
+                    <img src="https://cms-prod.s3-sgn09.fptcloud.com/logo_front_big_c58fec2dc9.svg" alt="img-logo" />
                 </NavLink>
                 <NavLink
                     to="/cart"

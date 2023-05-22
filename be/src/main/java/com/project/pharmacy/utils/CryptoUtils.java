@@ -1,12 +1,17 @@
 package com.project.pharmacy.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Component;
+
+
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.Cipher;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-
+@Component
 public class CryptoUtils {
+
     public String decrypted(String text) {
         try {
             String key = "1234567812345678";
@@ -27,11 +32,5 @@ public class CryptoUtils {
             e.printStackTrace();
         }
         return null;
-    }
-
-
-    public static void main(String[] args) throws Exception {
-        CryptoUtils cryptoUtils = new CryptoUtils();
-        System.out.println(cryptoUtils.decrypted("h/fncYObsxBMhhOlNn9uRg=="));
     }
 }

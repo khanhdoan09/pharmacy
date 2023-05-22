@@ -91,31 +91,6 @@ function Comment(props) {
         });
     };
 
-    const notifySuccessLikeComment = (msg) => {
-        toast.success(msg, {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-        });
-    };
-
-    const notifySuccessUnLikeComment = (msg) => {
-        toast.success(msg, {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-        });
-    };
 
     const [commentId, setCommentId] = useState('');
     const [slideCount, setSlideCount] = useState(5);
@@ -222,14 +197,14 @@ function Comment(props) {
                 )}
 
                 <div className="comment-detail rounded-b-lg bg-[#fff] px-4 py-4">
-                    {handleComments?.slice(0, slideCount)?.map((e) => {
+                    {handleComments?.slice(0, slideCount)?.map((e,index) => {
                         return (
                             <CommentItem
-                                key={e.comment.id}
-                                avatar={e.comment.user.name.charAt(0).toUpperCase()}
-                                name={e.comment.user.name}
-                                time={e.comment.createDate}
-                                content={e.comment.content}
+                                key={index}
+                                avatar={e?.comment?.user?.name.charAt(0).toUpperCase() || 'A'}
+                                name={e?.comment?.user?.name}
+                                time={e?.comment?.createDate}
+                                content={e?.comment?.content}
                             >
                                 {isOpen && commentId === e.comment.id && (
                                     <>
@@ -324,7 +299,7 @@ function Comment(props) {
                                     </div>
                                 </div>
 
-                                {e.reply.map((rep) => (
+                                {e?.reply?.map((rep) => (
                                     <Reply
                                         key={rep.id}
                                         name={rep.user.name}

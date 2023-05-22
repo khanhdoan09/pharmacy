@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import * as Yup from 'yup';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import { findUserByEmail, updateInformation } from '~/services/userServices';
-const sign = require('jwt-encode');
+
 function InfoUpdate() {
     const [showModal, setShowModal] = useState(false);
     const [lock, toggle] = useBodyScrollLock();

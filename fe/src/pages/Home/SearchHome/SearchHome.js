@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { NavLink, useNavigate } from 'react-router-dom';
 import ResultSearchItem from '~/components/ResultSearchItem';
+import useDebounce from '~/hooks/useDebounce';
 import * as searchService from '~/services/searchServices';
 
 function SearchHome() {
@@ -19,6 +20,7 @@ function SearchHome() {
     // search logic
     const [resultSearch, setResultSearch] = useState([]);
     const [pageSize] = useState(3); // total product appear one page
+    const debouncedSearchTerm = useDebounce(keyword, 800);
     useEffect(() => {
         const fetchApi = async () => {
             if (keyword.length > 0) {
@@ -28,7 +30,7 @@ function SearchHome() {
         };
 
         fetchApi();
-    }, [keyword]);
+    }, [debouncedSearchTerm]);
     const navigate = useNavigate();
 
     return (
@@ -82,7 +84,7 @@ function SearchHome() {
                     {/* modal result search  */}
                     {resultSearch?.length !== 0 && keyword.length > 0 && (
                         <div className="results absolute left-0 z-10 w-full rounded-lg bg-[#ffffff] shadow-2xl">
-                            {resultSearch?.slice(0, 5).map((e) => (
+                            {resultSearch?.slice(0, 5)?.map((e) => (
                                 <ResultSearchItem
                                     key={e.id}
                                     to={`detail/${e.slug}`}
@@ -201,7 +203,7 @@ function SearchHome() {
                     </div>
                     {resultSearch?.length !== 0 && keyword.length !== 0 ? (
                         <div className="results absolute left-0 w-full rounded-lg bg-[#ffffff] shadow-2xl">
-                            {resultSearch?.slice(0, 5).map((e) => (
+                            {resultSearch?.slice(0, 5)?.map((e) => (
                                 <ResultSearchItem
                                     key={e.id}
                                     to={`detail/${e.slug}`}

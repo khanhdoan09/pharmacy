@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import ProductMain from '~/components/ProductMain';
-import n1 from '~/assets/img/nav/n1.png';
-import n2 from '~/assets/img/nav/n2.png';
-import n3 from '~/assets/img/nav/n3.png';
-import n4 from '~/assets/img/nav/n4.png';
-import n5 from '~/assets/img/nav/n5.png';
 
 function FamousProducts(props) {
-    const [active, setActive] = useState('2');
-    const [countViewExpensive, setCountViewExpensive] = useState(3);
-    const [countViewCheap, setCountViewCheap] = useState(3);
-    const [countViewNewRelease, setCountViewNewRelease] = useState(3);
+    const [sortOrder, setSortOrder] = useState('ascending');
+    const [visibleProducts, setVisibleProducts] = useState(4);
 
-    const handleClick = (event) => {
-        setActive(event.target.id);
-    };
+
+    function handleSortOrderChange(event) {
+        setSortOrder(event.target.value);
+    }
+    const sortedProducts = props?.medicineList?.sort((a, b) => {
+        if (sortOrder === 'ascending') {
+            return a.price - b.price;
+        } else {
+            return b.price - a.price;
+        }
+    });
     return (
         <div>
             <div className="mb-4 flex flex-wrap items-center justify-between pb-3">
@@ -39,134 +40,58 @@ function FamousProducts(props) {
                         />
                     </svg>
 
-                    <h3 className="select-none text-[20px] font-bold text-[#000] ">Sản Phẩm Nổi Bật</h3>
+                    <h3 className="select-none text-[20px] font-bold text-[#000] line-clamp-1">Danh sách sản phẩm</h3>
                 </div>
                 <div>
-                    <button
-                        key={2}
-                        className={
-                            active === '2'
-                                ? 'mr-1 mb-1 rounded-3xl border border-[#d8e0e8] bg-[#1d48ba] px-4 py-1 text-sm text-[#fff]'
-                                : 'mr-1 mb-1 rounded-3xl border border-[#d8e0e8] bg-[#fff] px-4 py-1 text-sm text-[#52637a]'
-                        }
-                        id={'2'}
-                        onClick={handleClick}
+                    <select
+                        id="small"
+                        className="mb-6 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                        onChange={handleSortOrderChange}
                     >
-                        Hàng mới
-                    </button>
-                    <button
-                        key={3}
-                        className={
-                            active === '3'
-                                ? 'mr-1 mb-1 rounded-3xl border border-[#d8e0e8] bg-[#1d48ba] px-4 py-1 text-sm text-[#fff]'
-                                : 'mr-1 mb-1 rounded-3xl border border-[#d8e0e8] bg-[#fff] px-4 py-1 text-sm text-[#52637a]'
-                        }
-                        id={'3'}
-                        onClick={handleClick}
-                    >
-                        Giá thấp
-                    </button>
-                    <button
-                        key={4}
-                        className={
-                            active === '4'
-                                ? 'mr-1 mb-1 rounded-3xl border border-[#d8e0e8] bg-[#1d48ba] px-4 py-1 text-sm text-[#fff]'
-                                : 'mr-1 mb-1 rounded-3xl border border-[#d8e0e8] bg-[#fff] px-4 py-1 text-sm text-[#52637a]'
-                        }
-                        id={'4'}
-                        onClick={handleClick}
-                    >
-                        Giá cao
-                    </button>
+                        <option value="ascending">Giá tăng dần</option>
+                        <option value="descending">Giá giảm dần</option>
+                    </select>
                 </div>
             </div>
 
-            {active === '2' && (
-                <>
-                    <div className="grid animate-fadeBottomMobile gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 ">
-                        {props?.medicineByNewRelease?.data?.slice(0, countViewNewRelease).map((e) => (
-                            <ProductMain
-                                key={e.id}
-                                to=""
-                                label={e.specification}
-                                img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00007318-thuan-linh-chi-ho-tro-nsgua-ung-thu-bao-ve-gan-9752-62af_large.jpg"
-                                title={e.name}
-                                newPrice="2.744.000đ"
-                                oldPrice=""
-                                unit={e.category}
-                            />
-                        ))}
-                    </div>
-                    {countViewNewRelease < props?.medicineByNewRelease?.data?.length ? (
-                        <button
-                            className="mx-auto mt-4 flex h-8 items-center rounded-2xl  border border-[#d8e0e8] px-4 transition-all hover:bg-[#718198] hover:text-[#fff]"
-                            onClick={() => {
-                                setCountViewNewRelease((count) => count + 3);
-                            }}
-                        >
-                            Xem thêm
-                        </button>
-                    ) : null}
-                </>
-            )}
-
-            {active === '3' && (
-                <>
-                    <div className="grid animate-fadeBottomMobile gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 ">
-                        {props?.medicineByCheapPrice?.data?.slice(0, countViewCheap).map((e) => (
-                            <ProductMain
-                                key={e.id}
-                                to=""
-                                label={e.specification}
-                                img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00007318-thuan-linh-chi-ho-tro-nsgua-ung-thu-bao-ve-gan-9752-62af_large.jpg"
-                                title={e.name}
-                                newPrice="2.744.000đ"
-                                oldPrice=""
-                                unit={e.category}
-                            />
-                        ))}
-                    </div>
-                    {countViewCheap < props?.medicineByCheapPrice?.data?.length ? (
-                        <button
-                            className="mx-auto mt-4 flex h-8 items-center rounded-2xl  border border-[#d8e0e8] px-4 transition-all hover:bg-[#718198] hover:text-[#fff]"
-                            onClick={() => {
-                                setCountViewCheap((count) => count + 3);
-                            }}
-                        >
-                            Xem thêm
-                        </button>
-                    ) : null}
-                </>
-            )}
-
-            {active === '4' && (
-                <>
-                    <div className="grid animate-fadeBottomMobile gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 ">
-                        {props?.medicineByExpensivePrice?.data?.slice(0, countViewExpensive).map((e) => (
-                            <ProductMain
-                                key={e.id}
-                                to=""
-                                label={e.specification}
-                                img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00007318-thuan-linh-chi-ho-tro-nsgua-ung-thu-bao-ve-gan-9752-62af_large.jpg"
-                                title={e.name}
-                                newPrice="2.744.000đ"
-                                oldPrice=""
-                                unit={e.category}
-                            />
-                        ))}
-                    </div>
-                    {countViewExpensive < props?.medicineByExpensivePrice?.data?.length ? (
-                        <button
-                            className="mx-auto mt-4 flex h-8 items-center rounded-2xl  border border-[#d8e0e8] px-4 transition-all hover:bg-[#718198] hover:text-[#fff]"
-                            onClick={() => {
-                                setCountViewExpensive((count) => count + 3);
-                            }}
-                        >
-                            Xem thêm
-                        </button>
-                    ) : null}
-                </>
-            )}
+            <div className="grid animate-fadeBottomMobile gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 ">
+                {sortedProducts?.slice(0, visibleProducts)?.map((e) => (
+                    <ProductMain
+                        key={e.id}
+                        to={`/detail/medicineId=${e?.id}`}
+                        label={e.specification}
+                        img=""
+                        title={e.name}
+                        newPrice={e?.price}
+                        oldPrice=""
+                        unit={e.category}
+                    />
+                ))}
+            </div>
+            {visibleProducts < sortedProducts?.length ? (
+                <button
+                    className="mx-auto mt-4 flex h-8 items-center rounded-2xl  border border-[#d8e0e8] px-4 transition-all hover:bg-[#718198] hover:text-[#fff]"
+                    onClick={() => {
+                        setVisibleProducts((visibleProducts) => visibleProducts + 1);
+                    }}
+                >
+                    Xem thêm
+                </button>
+            ) : null}
+            {visibleProducts > 4 ? (
+                <button
+                    className="mx-auto mt-4 flex h-8 items-center rounded-2xl  border border-[#d8e0e8] px-4 transition-all hover:bg-[#718198] hover:text-[#fff]"
+                    onClick={() => {
+                        if (visibleProducts < 8) {
+                            setVisibleProducts(4);
+                        } else {
+                            setVisibleProducts(visibleProducts - 8);
+                        }
+                    }}
+                >
+                    Thu gọn
+                </button>
+            ) : null}
         </div>
     );
 }

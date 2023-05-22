@@ -40,8 +40,6 @@ export const registerWithAccessToken = async (accessToken, accountType) => {
     }
 };
 export const loginNormal = async (email, encryptedPassword) => {
-    console.log(email);
-    console.log(encryptedPassword);
     try {
         const load = await request.post(`/${controller}/loginNormal`, {
             email: email,
