@@ -131,11 +131,8 @@ public class UserController {
     @PostMapping("/loginNormal")
     public ResponseHandler loginNormal(@RequestBody User userData) throws CustomException {
         String password = userService.decryptedPasswordFromClient(userData.getPassword());
-        // this will update when register function by form is done
         User user = userService.findByEmail(userData.getEmail());
-        CryptoUtils cryptoUtils = new CryptoUtils();
-
-        if (!password.equals(cryptoUtils.decrypted(userData.getPassword()))) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "wrong password");
         }
         String jwt = jwtTokenProvider.generateToken(user.getEmail(), user.getName(), user.getAvatar(), user.getRole());
@@ -198,10 +195,11 @@ public class UserController {
     @PutMapping("/changePassword")
     public ResponseHandler changePassword(@RequestBody PasswordRequest passwordRequest) throws CustomException {
 
-        User user = userService.changePassword(
-                cryptoUtils.decrypted(passwordRequest.getEmail()),
-                cryptoUtils.decrypted(passwordRequest.getOldPassword()),
-                cryptoUtils.decrypted(passwordRequest.getNewPassword()));
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        String decryptedOldPassword = cryptoUtils.decrypted(passwordRequest.getOldPassword());
+        String decryptedNewPassword = cryptoUtils.decrypted(passwordRequest.getNewPassword());
+        userService.changePassword(cryptoUtils.decrypted(passwordRequest.getEmail()), decryptedOldPassword,
+                                               decryptedNewPassword, passwordEncoder);
         ResponseHandler responseHandler = new ResponseHandler<>(
                 "Change password successfully",
                 HttpStatus.OK.value(),
@@ -225,14 +223,18 @@ public class UserController {
         String codeActive = userData.getEmail().hashCode() + "";
         userService.sendMail(userData.getEmail(), codeActive);
 
+        CryptoUtils cryptoUtils = new CryptoUtils();
+        String decryptedPassword = cryptoUtils.decrypted(userData.getPassword());
+        String encryptedPassword = passwordEncoder.encode(decryptedPassword);
         if (user.isPresent()) {
             user.get().setCodeActiveValue(codeActive);
-            user.get().setPassword(userData.getPassword());
+            user.get().setPassword(encryptedPassword);
             user.get().setName(userData.getName());
             userService.saveNewClientUserByForm(user.get());
         } else {
             userData.setCodeActiveValue(codeActive);
             userData.setAccountType("Normal");
+            userData.setPassword(encryptedPassword);
             userService.saveNewClientUserByForm(userData);
         }
         ResponseHandler<String> responseHandler = new ResponseHandler<String>(

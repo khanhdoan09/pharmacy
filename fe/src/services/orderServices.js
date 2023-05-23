@@ -3,6 +3,8 @@ import request from '~/utils/request';
 const controller = 'order';
 
 export const addNewOrder = async (token, account, newOrder, listOrderDetail) => {
+    console.log(token);
+    console.log(account);
     try {
         const load = await request.post(
             `/${controller}/add`,
@@ -13,7 +15,7 @@ export const addNewOrder = async (token, account, newOrder, listOrderDetail) => 
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    Account: account,
+                    AccountType: account,
                 },
             },
         );

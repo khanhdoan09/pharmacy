@@ -322,17 +322,21 @@ function HeaderSearch() {
                                                 switch (user?.account) {
                                                     case 'Microsoft':
                                                         handleSignOutWithMicrosoft();
+                                                        navigate('/signIn');
                                                         break;
                                                     case 'Google':
                                                         handleSignOutWithGoogleFirebase();
+                                                        navigate('/signIn');
                                                         break;
                                                     case 'Normal':
                                                         handleSignOutWithNormal();
+                                                        navigate('/signIn');
                                                         break;
                                                     default:
                                                         dispatch(removeMedicinesFromCart());
                                                         setCookie('accessToken', null);
                                                         setCookie('accountType', null);
+                                                        navigate('/signIn');
                                                         logOut();
                                                 }
                                             }}

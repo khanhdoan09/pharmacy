@@ -12,6 +12,7 @@
         "customize-cra": "^1.0.0",
         "firebase": "^9.18.0",
         "formik": "^2.2.9",
+        "jsonwebtoken": "^9.0.0",
         "multi-range-slider-react": "^2.0.2",
         "node-modules": "^0.0.1",
         "node-polyfill-webpack-plugin": "^2.0.1",

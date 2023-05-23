@@ -4,6 +4,8 @@ import { convertNumberToPrice } from '~/utils/currency';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import { addMedicinesToCart } from '~/redux/cartSlice';
+import { useState, useEffect } from 'react';
+import { getImageFromFirebase } from '~/utils/firebase';
 
 function ItemCartHeader(props) {
     const medicineInCartRef = useRef({});
@@ -11,6 +13,9 @@ function ItemCartHeader(props) {
     const user = useSelector((state) => state.authentication.login.currentUser);
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart?.medicines);
+    const [image, setImage] = useState(
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlBWOxDZ6-zuaW-Bp6x8aw3FNAdI_x90UpUNJhSrd1&s',
+    );
     function removeInCart(id) {
         deleteAMedicineInCart(id, user?.accessToken, user?.account).then(
             () => {
@@ -32,13 +37,21 @@ function ItemCartHeader(props) {
             },
         );
     }
+    
+    useEffect(() => {      
+        const imagePromise = getImageFromFirebase('product', props?.medicine?.id, 'avatar');
+        imagePromise.then((url) => {
+            setImage(url);
+        });
+    }, []);
+
     return (
         <div className="my-3 flex items-center" ref={medicineInCartRef}>
             <a
                 href="/"
                 className="flex h-[56px] w-[80px] items-center justify-center rounded-lg border border-2 border-[#e4e8ed] p-1"
             >
-                <img src="https://cdn.nhathuoclongchau.com.vn/unsafe/112x112/https://cms-prod.s3-sgn09.fptcloud.com/00029788_gel_tri_seo_qderma_20g_9261_630d_large_213edea830.JPG" />
+                <img src={image} />
             </a>
             <div className="mx-4">
                 <p className="text-[0.875rem] text-[#020b27] line-clamp-2">{props?.medicine?.name}</p>

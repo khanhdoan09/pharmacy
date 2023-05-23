@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -66,18 +67,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable();
         http
+                .cors()
+                .and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/")
-                .permitAll()
-                .antMatchers( "/api/cart/**")
-//                .authenticated()
-                .hasAnyAuthority("client")
-                .and()
-                .exceptionHandling().accessDeniedPage("/api/auth/unauthorized")
-                .and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        ;
-//        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .antMatchers(
+                        "/api/v1/cart/**",
+//                             "api/v1/auth/**",
+                             "/api/v1/order/**",
+                             "/api/v1/postComment",
+                             "/api/v1/responseComment",
+                             "/api/v1/addLike",
+                             "/api/v1/unLikeComment/**",
+                             "/api/v1/saveRate"
+                            )
+                .authenticated()
+                .and().exceptionHandling().accessDeniedPage("/api/v1/auth/unauthorized")
+                .and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
+                .anyRequest().permitAll();
     }
 }

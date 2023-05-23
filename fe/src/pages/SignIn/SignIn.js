@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Animation } from 'react-animate-style';
 import { useCookies } from 'react-cookie';
 import FacebookLogin from 'react-facebook-login';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { loginRequest } from '~/config/authConfig';
@@ -19,6 +19,7 @@ import { loginNormal, loginWithAccessToken, registerWithAccessToken } from '~/se
 
 
 function SignIn() {
+    const user = useSelector((state) => state.authentication.login.currentUser);
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
@@ -140,6 +141,9 @@ function SignIn() {
     };
 
     useEffect(() => {
+        if (user) {
+            navigate("/")
+        }
         const accountType = cookies.accountType;
         const accessToken = cookies.accessToken;
         if (accountType && accessToken) {
@@ -154,9 +158,7 @@ function SignIn() {
         }
     }, []);
 
-    function handleLoginWithAccessToken(accessToken, accountType) {
-        console.log(accessToken);
-        console.log(accountType);
+    function handleLoginWithAccessToken(accessToken, accountType) {   
         if (accessToken === 'null' || accountType === 'null') {
             return Promise.reject('fail');
         }
@@ -236,6 +238,7 @@ function SignIn() {
     }
 
     return (
+        !user &&
         <div className="max-w-full py-10">
             <div className="padding-responsive mx-auto grid max-w-[1200px] gap-4 cs:grid-cols-1 xs:grid-cols-1  sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3  xl:grid-cols-3 2xl:grid-cols-3 ">
                 <div className="relative my-auto flex flex-col  justify-between cs:col-span-1 xs:col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 xl:col-span-2  2xl:col-span-2">

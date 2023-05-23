@@ -130,10 +130,12 @@ function CartItem({
                     let arr = [];
                     cart?.medicines?.forEach((e) => {
                         let t = { ...e };
+                        if (e?.id === data?.id) {
+                            t.quantity = quantity;
+                        }
                         arr.push(t);
                     });
-                    arr[0].quantity = quantity;
-                    dispatch(addMedicinesToCart({ medicines: arr }));
+                    dispatch(addMedicinesToCart({ medicines: arr }));                    
                 },
                 (err) => {
                     const statusCode = err?.status;
@@ -236,7 +238,7 @@ function CartItem({
     }
 
     function unActiveShowLoading() {
-        document.body.style.overflow = 'block';
+        document.body.style.overflow = 'scroll';
         setShowLoading(false);
     }
 

@@ -1,6 +1,6 @@
 import { signInWithPopup } from 'firebase/auth';
 import { Form, Formik, useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Animation } from 'react-animate-style';
 import { useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -11,12 +11,20 @@ import { auth, provider } from '~/config/firebase';
 import { loginSuccess } from '~/redux/authSlice';
 import { registerByForm } from '~/services/userServices';
 import { encrypt } from '~/utils/cryptoUtils';
+import { useSelector } from 'react-redux';
 
 function SignUp() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [messageEmailExists, setMessageEmailExist] = useState(null);
+    
+    const user = useSelector((state) => state.authentication.login.currentUser);
 
+    useEffect(()=>{
+        if (user) {
+            navigate("/")
+        }
+    }, [])
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -85,6 +93,7 @@ function SignUp() {
             });
     };
     return (
+        !user &&
         <div className="sm::bg-[#fff] my-2 flex max-w-full animate-fadeBottomMobile justify-center px-4 cs:bg-[#fff] xs:bg-[#fff] md:bg-[#f5f5f5] lg:bg-[#f5f5f5] xl:bg-[#f5f5f5] 2xl:bg-[#f5f5f5]">
             <div className="mx-auto grid max-w-[1200px] place-content-center gap-10 py-10 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2">
                 <Animation

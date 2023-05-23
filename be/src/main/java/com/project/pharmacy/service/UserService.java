@@ -6,6 +6,7 @@ import com.project.pharmacy.repository.UserRepository;
 import com.project.pharmacy.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -57,6 +58,7 @@ public class UserService implements UserDetailsService {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         User user = new User(name, email, password, phoneNumber,  dateFormat.format(cal.getTime()), methodLogin, avatar, "client");
+        user.setRewardPoint(50);
         userRepository.save(user);
     }
 
@@ -64,6 +66,7 @@ public class UserService implements UserDetailsService {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
         LocalDateTime now = LocalDateTime.now();
         user.setCodeActiveTime(dtf.format(now));
+        user.setRole("client");
         userRepository.save(user);
     }
 
@@ -107,13 +110,19 @@ public class UserService implements UserDetailsService {
         }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "not found user by email"));
     }
 
-    public User changePassword(String email, String oldPassword, String newPassword) throws CustomException {
-        Optional<User> user = userRepository.findByEmailAndPassword(email, oldPassword);
-        return user.map(u -> {
-            u.setPassword(newPassword);
-            userRepository.save(u);
-            return u;
-        }).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Incorrect password"));
+    public User changePassword(String email, String oldPassword, String newPassword, PasswordEncoder passwordEncoder) throws CustomException {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (!user.isPresent()) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Not found email");
+        }
+        if (passwordEncoder.matches(oldPassword, user.get().getPassword())) {
+            user.get().setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user.get());
+            return user.get();
+        }
+        else {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Incorrect password");
+        }
     }
 
     public User findByEmail(String email) throws CustomException {
@@ -232,7 +241,6 @@ public class UserService implements UserDetailsService {
                 && now.getDayOfMonth() == codeActiveTime.getDayOfMonth()
         ) {
             if (now.getHour() == codeActiveTime.getHour()) {
-                System.out.println(now.getMinute() - codeActiveTime.getMinute());
                 return now.getMinute() - codeActiveTime.getMinute() <= 5 ? true : false;
             }
             else {

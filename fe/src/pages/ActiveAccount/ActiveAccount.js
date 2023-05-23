@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { activeCode, sendActiveCodeAgain } from '~/services/userServices';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function ActiveAccount() {
     const [code, setCode] = useState('');
@@ -9,9 +10,12 @@ function ActiveAccount() {
     const navigate = useNavigate();
     const [showLoading, setShowLoading] = useState(false);
     const [encryptedEmail, setEncryptedEmail] = useState('');
+    const user = useSelector((state) => state.authentication.login.currentUser);
 
     useEffect(() => {
-        alert(localStorage.getItem('encryptedEmail'));
+        if (user) {
+            navigate("/")
+        }
         setEncryptedEmail(localStorage.getItem('encryptedEmail'));
     }, []);
 

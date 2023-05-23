@@ -8,6 +8,7 @@ import cartSlice from './cartSlice';
 import categorySlice from './categorySlice';
 import fieldSlice from './fieldSlice';
 import medicineSlice from './medicineSlice';
+import voucherSlice from './voucherSlice';
 
 const persistAuthenticationConfig = {
     key: 'auth',
@@ -43,12 +44,20 @@ const persistMedicineConfig = {
     blacklist: ['medicine'],
 };
 
+const persistVoucherConfig = {
+    key: 'voucher',
+    storage,
+    blacklist: ['voucher'],
+};
+
 const persistedAuthenticationReducer = persistReducer(persistAuthenticationConfig, authSlice);
 const persistedCartReducer = persistReducer(persistCartConfig, cartSlice);
 const persistedAddressReducer = persistReducer(persistAddressConfig, addressSlice);
 const persistedFieldReducer = persistReducer(persistFieldConfig, fieldSlice);
 const persistedCategoryReducer = persistReducer(persistCategoryConfig, categorySlice);
 const persistedMedicineReducer = persistReducer(persistMedicineConfig, medicineSlice);
+const persistedVoucherReducer = persistReducer(persistVoucherConfig, voucherSlice);
+
 export default configureStore({
     reducer: {
         authentication: persistedAuthenticationReducer,
@@ -56,8 +65,8 @@ export default configureStore({
         address: persistedAddressReducer,
         fields: persistedFieldReducer,
         categories: persistedCategoryReducer,
-        medicine: persistedMedicineReducer
-      
+        medicine: persistedMedicineReducer,
+        voucher: persistedVoucherReducer,
     },
     middleware: [thunk],
 });

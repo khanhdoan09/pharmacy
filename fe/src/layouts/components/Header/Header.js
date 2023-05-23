@@ -168,17 +168,21 @@ function Header() {
                                                 switch (user?.account) {
                                                     case 'Microsoft':
                                                         handleSignOutWithMicrosoft();
+                                                        navigate('/signIn');
                                                         break;
                                                     case 'Google':
                                                         handleSignOutWithGoogleFirebase();
+                                                        navigate('/signIn');
                                                         break;
                                                     case 'Normal':
                                                         handleSignOutWithNormal();
+                                                        navigate('/signIn');
                                                         break;
                                                     default:
                                                         dispatch(logoutSuccess(null));
                                                         setCookie('accessToken', null);
                                                         setCookie('accountType', null);
+                                                        navigate('/signIn');
                                                         logOut();
                                                 }
                                             }}
@@ -190,7 +194,7 @@ function Header() {
                             )}
 
                             {isHovering && !user && (
-                                <div className="fucn-user absolute top-11 right-0 z-10 w-60 animate-fadeBottomMobile rounded-lg border border-[#ccc] bg-[#ffffff]">
+                                <div className="fucn-user absolute top-11 right-0 z-10 w-60 animate-deBottomMobile rounded-lg border border-[#ccc] bg-[#ffffff]">
                                     <NavLink
                                         to="/signin"
                                         className="transition-basic flex items-center  rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "

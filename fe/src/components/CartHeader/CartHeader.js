@@ -18,12 +18,15 @@ function CartHeader() {
     const isShowCart = useSelector((state) => state.cart?.showCart);
 
     useEffect(() => {
+        if (!user) {
+            return;
+        }
         dispatch(unShowCartInHeader());
         const load = getAllMedicinesInCart(user?.accessToken, user?.account, user?.email);
         load.then(
             (e) => {
                 if (e.status == 200) {
-                    setTotalMedicine(e?.data?.data?.length);
+                    setTotalMedicine(e?.data?.data?.length ? e?.data?.data?.length : 0);
                     dispatch(addMedicinesToCart({ medicines: e?.data?.data }));
                 }
             },
@@ -31,8 +34,10 @@ function CartHeader() {
                 if (err?.status === 401) {
                     getNewAccessToken();
                 } else if (err?.status === 403) {
+                    console.log(err);
                     navigate('/signIn');
                 } else if (err?.status === 404) {
+                    console.log('cart is empty');
                 } else {
                     console.log(err);
                     navigate('/server_error');
@@ -44,9 +49,9 @@ function CartHeader() {
     useEffect(() => {
         // dispatch(removeMedicinesFromCart());
         setMedicineInCart(cart?.medicines);
-        setTotalMedicine(cart?.medicines?.length);
+        setTotalMedicine(cart?.medicines?.length ? cart?.medicines?.length : 0);
         setShowCart(isShowCart);
-    }, [useSelector((state) => state.cart)]);
+    }, [cart]);
 
     return (
         <div

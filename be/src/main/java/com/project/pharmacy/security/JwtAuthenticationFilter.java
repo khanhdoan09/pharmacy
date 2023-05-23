@@ -33,7 +33,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private Set<String> skipUrls = new HashSet<>(Arrays.asList( "/api/v1/auth/**", "/api/v1/unit/**", "/api/**", "/**"));
+    private Set<String> urls = new HashSet<>(Arrays.asList(
+//            "/**"
+            "/api/v1/cart/**",
+//            "api/v1/auth/**",
+            "/api/v1/order/**",
+            "/api/v1/postComment",
+            "/api/v1/responseComment",
+            "/api/v1/addLike",
+            "/api/v1/unLikeComment/**",
+            "/api/v1/saveRate"
+                                                          ));
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
@@ -67,13 +77,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 request.getRequestDispatcher("/api/v1/auth/unauthorized").forward(request, response);
             }
         }
-//        filterChain.doFilter(request, response);
-
+        else {
+            request.setAttribute("exception message", "not found access token in header");
+            request.getRequestDispatcher("/api/v1/auth/unauthorized").forward(request, response);
+        }
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return skipUrls.stream()
-                .anyMatch(p -> pathMatcher.match(p, request.getServletPath()));
+//        return urls.stream()
+//                .anyMatch(p -> pathMatcher.match(p, request.getServletPath()));
+        return urls.stream()
+                .noneMatch(p -> pathMatcher.match(p, request.getServletPath()));
     }
 }
