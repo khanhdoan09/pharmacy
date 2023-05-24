@@ -23,3 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 be/src/main/resources/application.properties
 be/src/main/resources/application.properties
+be/src/main/resources/application.properties
+*.properties

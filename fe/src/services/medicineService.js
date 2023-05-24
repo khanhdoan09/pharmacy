@@ -90,24 +90,42 @@ export const findBySlugFieldAndSlugCategory = async (slugField, slugCategory) =>
     }
 };
 
-export const savedMedicine = async (email, medicineId) => {
+export const savedMedicine = async (accessToken, accountType, email, medicineId) => {
     try {
-        const res = await request.post(`savedMedicine`, {
-            email: encrypt(email),
-            medicineId: encrypt(medicineId),
-        });
+        const res = await request.post(
+            `savedMedicine`,
+            {
+                email,
+                medicineId,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    AccountType: accountType,
+                },
+            },
+        );
         return res?.data;
     } catch (error) {
         console.log(error);
         console.log(error?.response?.data); // delete when deploy
     }
 };
-export const unsavedMedicine = async (email, medicineId) => {
+export const unsavedMedicine = async (accessToken, accountType, email, medicineId) => {
     try {
-        const res = await request.post(`unsavedMedicine`, {
-            email: encrypt(email),
-            medicineId: encrypt(medicineId),
-        });
+        const res = await request.post(
+            `unsavedMedicine`,
+            {
+                email,
+                medicineId,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    AccountType: accountType,
+                },
+            },
+        );
         return res?.data;
     } catch (error) {
         console.log(error?.response?.data); // delete when deploy

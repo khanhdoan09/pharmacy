@@ -19,6 +19,7 @@ import { useEffect } from 'react';
 import * as medicineService from '~/services/medicineService';
 import { useDispatch } from 'react-redux';
 import { setMedicines } from '~/redux/medicineSlice';
+import { getImageFromFirebase } from '~/utils/firebase';
 
 function Home() {
     const dispatch = useDispatch()
@@ -30,6 +31,7 @@ function Home() {
         fetchApi()
     }, [dispatch]);
 
+ 
     return (
         <div className="app overflow-hidden">
             <SliderHome />
@@ -66,9 +68,9 @@ function Home() {
             </Fade>
 
             {/* best seller */}
-            <Fade bottom duration={1500}>
+            {/* <Fade bottom duration={1500}>
                 <Seller />
-            </Fade>
+            </Fade> */}
 
             {/* protect  */}
             <Fade bottom duration={1500}>

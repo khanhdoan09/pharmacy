@@ -18,7 +18,7 @@ const ProductImageSlider = ({ images }) => {
     return (
         <div className="flex flex-col items-center">
             <div className="relative">
-                <img className="h-auto w-full" src={images[currentIndex]} alt={`Product ${currentIndex}`} />
+                <img className="h-[488px] max-w-full select-none" src={images[currentIndex]} alt={`Product ${currentIndex}`} />
                 <button
                     className="absolute top-1/2 left-0 -translate-y-1/2 transform rounded-full bg-white px-4 py-2 shadow-md hover:bg-gray-200 focus:outline-none"
                     onClick={handlePrev}

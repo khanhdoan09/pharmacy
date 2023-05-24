@@ -36,11 +36,11 @@ function SavedButton(props) {
         } else {
             if (saved === false) {
                 setSaved(true);
-                await medicineService.savedMedicine(user?.email, props.itemId);
+                await medicineService.savedMedicine(user?.accessToken, user?.account, user?.email, props.itemId);
                 console.log(saved);
             } else {
                 setSaved(false);
-                await medicineService.unsavedMedicine(user?.email, props.itemId);
+                await medicineService.unsavedMedicine(user?.accessToken, user?.account, user?.email, props.itemId);
                 console.log(saved);
             }
         }

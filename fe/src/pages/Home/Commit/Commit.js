@@ -55,7 +55,7 @@ function Commit() {
                         <div className="flex-[0_0_100%] px-1">
                             <NavLink to="">
                                 <img
-                                    src="https://nhathuoclongchau.com.vn/frontend_v3/images/chuyen-trang-du-an/banner-home-v2.png"
+                                    src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/banner%2F1.png?alt=media&token=58240fee-6369-4428-8f53-3315e0cd36b7"
                                     alt="banner"
                                     className="object-cover"
                                 />

@@ -112,7 +112,8 @@ function HeaderSearch() {
         setCategoryByFieldId(filteredCategory);
     }, [fieldId]);
 
-    const backgroundImage = 'url("https://nhathuoclongchau.com.vn/static/images/bg-header.svg")';
+    const backgroundImage =
+        'url("https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/header%2Ft%E1%BA%A3i%20xu%E1%BB%91ng.png?alt=media&token=d2b42b7e-12e5-440f-9932-e156b6751b66")';
 
     return (
         <div className="wrapper h-20 bg-cover bg-center" style={{ backgroundImage }}>
@@ -246,7 +247,7 @@ function HeaderSearch() {
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
-                                className="h-7 w-7 rounded-full border-2 mr-1"
+                                className="mr-1 h-7 w-7 rounded-full border-2"
                             >
                                 <path
                                     fillRule="evenodd"

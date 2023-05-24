@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as commentService from '~/services/commentService';
@@ -15,8 +15,7 @@ function Comment(props) {
     const [alertContentComment, setAlertContentComment] = useState('');
 
     const [responseCommentContent, setResponseCommentContent] = useState('');
-    const { medicineId } = useParams();
-    const handleMedicineId = medicineId.split('=')[1];
+    const handleMedicineId = localStorage.getItem('medicineId').match(/\d+/)[0];
 
     const handlePostComment = async () => {
         if (user?.email === undefined) {
@@ -64,7 +63,7 @@ function Comment(props) {
         if (user?.role.toLowerCase() === 'client') {
             notifyWarning('Tài khoản của bạn không có quyền sử dụng chức năng này.');
         } else {
-            commentService.responseComment(userEmail, commentId, medicineId, content);
+            commentService.responseComment(user?.accessToken, user?.account, userEmail, commentId, medicineId, content);
             setIsOpen(false);
             notifySuccess('Phản hồi thành công');
         }
@@ -282,23 +281,6 @@ function Comment(props) {
 
                                         <p className="mr-2 text-sm text-[#1d48ba]">({e?.comment?.likes?.length})</p>
 
-                                        {/* <button
-                                            className="mr-2 text-sm text-[#1d48ba]"
-                                            onClick={() => {
-                                                handleLikeClick(e.comment.id);
-                                            }}
-                                        >
-                                            {liked ? 'Bỏ thích' : 'Thích'}
-                                        </button> */}
-                                        {/* <button
-                                            className="mr-2 text-sm text-[#1d48ba]"
-                                            onClick={() => {
-                                                handleUnLikeComment(e.comment.id);
-                                            }}
-                                        >
-                                            Bỏ Thích
-                                        </button> */}
-
                                         <span className="text-sm text-[#1d48ba]">
                                             {e.likes?.length > 0 ? e.likes?.length : ''}
                                         </span>
@@ -330,25 +312,6 @@ function Comment(props) {
                                             </svg>
                                             <LikeButton itemId={rep.id} />
                                             <p className="mr-2 text-sm text-[#1d48ba]">({rep?.likes?.length})</p>
-                                            {/* <button
-                                                className="mr-2 text-sm text-[#1d48ba]"
-                                                onClick={() => {
-                                                    handleLikeComment(rep.id);
-                                                }}
-                                            >
-                                                Thích
-                                            </button>
-                                            <button
-                                                className="mr-2 text-sm text-[#1d48ba]"
-                                                onClick={() => {
-                                                    handleUnLikeComment(rep.id);
-                                                }}
-                                            >
-                                                Bỏ Thích
-                                            </button>
-                                            <span className="text-sm text-[#1d48ba]">
-                                                {rep.likes?.length > 0 ? rep.likes?.length : ''}
-                                            </span> */}
                                         </div>
                                     </Reply>
                                 ))}

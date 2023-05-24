@@ -19,8 +19,7 @@ public class LikesController {
     @GetMapping("/findLikeByCommentIdAndUserId/{commentId}/{userEmail}")
     public ResponseHandler findLikeByCommentIdAndUserId(@PathVariable("commentId") int commentId, @PathVariable(
             "userEmail") String userEmail) throws CustomException {
-        CryptoUtils cryptoUtils = new CryptoUtils();
-        Likes like = likeService.findLikeByCommentIdAndUserId(commentId, cryptoUtils.decrypted(userEmail));
+        Likes like = likeService.findLikeByCommentIdAndUserId(commentId, userEmail);
         ResponseHandler responseHandler;
         if (like == null) {
             responseHandler = new ResponseHandler("fail",
@@ -44,8 +43,7 @@ public class LikesController {
     @DeleteMapping("/unLikeComment/{commentId}/{userEmail}")
     public ResponseHandler unLikeComment(@PathVariable("commentId") int commentId,
                                          @PathVariable("userEmail") String userEmail) throws CustomException {
-        CryptoUtils cryptoUtils = new CryptoUtils();
-        likeService.unLikeComment(commentId, cryptoUtils.decrypted(userEmail));
+        likeService.unLikeComment(commentId, userEmail);
         ResponseHandler responseHandler = new ResponseHandler("Successfully unlike comment",
                                                               HttpStatus.OK.value(), null);
         return responseHandler;

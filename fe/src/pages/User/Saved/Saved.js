@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ProductAds from '~/components/ProductAds/ProductAds';
 import * as medicineService from '~/services/medicineService';
-import { convertPriceToNumber } from '~/utils/currency';
+import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
 
 function Saved() {
     const [savedList, setSavedList] = useState([]);
@@ -22,15 +22,18 @@ function Saved() {
             <div className="padding-responsive mx-auto max-w-[1200px] ">
                 <div className="grid gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
                     {savedList?.slice(0, countSeeMore)?.map((saved) => {
+                        const price = saved?.medicine?.priceWithUnit?.[0]?.price;
                         return (
                             <div className="max-w-full" key={saved?.id}>
                                 <ProductAds
                                     img="ád"
-                                    to={`/detail/medicineId=${saved?.medicine?.id}`}
+                                    to={`/detail/slug=${saved?.medicine?.slug}`}
                                     label={saved?.medicine?.specification}
                                     title={saved?.medicine?.name}
-                                    newPrice={convertPriceToNumber(saved?.medicine?.price)}
-                                    oldPrice={convertPriceToNumber(saved?.medicine?.price)}
+                                    newPrice={`${convertNumberToPrice(
+                                        price - (price * saved?.medicine?.discount) / 100,
+                                    )}đ`}
+                                    oldPrice={`${convertNumberToPrice(price)}đ`}
                                     unit={saved?.medicine?.category}
                                 />
                             </div>

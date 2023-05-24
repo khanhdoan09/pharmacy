@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
 import { getImageFromFirebase } from '~/utils/firebase';
+import { randomText } from '~/utils/randomUtils';
 
 function ProductMain({ id, to, label, img, title, newPrice, oldPrice, unit }) {
     const [urlAvatar, setUrlAvatar] = useState('/static/media/placeholder600x600.8239fe13708c0a4484a8.png');
@@ -17,10 +18,16 @@ function ProductMain({ id, to, label, img, title, newPrice, oldPrice, unit }) {
             );
         }
     }, []);
+    const handleClick = (medicineId) => {
+        localStorage.setItem('medicineId', randomText(8) + medicineId);
+    };
     return (
-        <div className="transition-basic relative mb-4 h-full rounded-md border bg-[#fff] px-3 pt-3 pb-2 hover:border-[#4f71d0]">
+        <div
+            className="transition-basic relative mb-4 h-full rounded-md border bg-[#fff] px-3 pt-3 pb-2 hover:border-[#4f71d0]"
+            onClick={() => handleClick(id)}
+        >
             <NavLink to={to || '/detail'}>
-                <div className="rounde d-3xl absolute top-3 right-3 bg-[#4f71d0] py-1 px-2 text-[#fff]">
+                <div className="absolute top-3 right-3 rounded-3xl bg-[#4f71d0] py-1 px-2 text-[#fff]">
                     <p className="text-xs capitalize">{label}</p>
                 </div>
                 <img
@@ -38,7 +45,7 @@ function ProductMain({ id, to, label, img, title, newPrice, oldPrice, unit }) {
                     &#8260;
                     <span className="unit capitalize text-[#334155]">{unit}</span>
                 </p>
-                <p className="old-price left-6 h-6 text-[#718198]">{oldPrice || ' '} </p>
+                <p className="old-price left-6 h-6 text-[#718198] line-through">{oldPrice || ' '} </p>
             </NavLink>
         </div>
     );

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
 import { getImageFromFirebase } from '~/utils/firebase';
+import { randomText } from '~/utils/randomUtils';
 
 function ProductSeller({ id, to, img, name, newPrice, unit, oldPrice, backgroundColor, px, py, borderRadius }) {
     const [urlAvatar, setUrlAvatar] = useState(null);
@@ -16,8 +17,16 @@ function ProductSeller({ id, to, img, name, newPrice, unit, oldPrice, background
             );
         }
     }, []);
+
+    const handleClick = (medicineId) => {
+        localStorage.setItem('medicineId', randomText(8) + id);
+    };
+
     return (
-        <div className={`product ${backgroundColor + ' ' + px + ' ' + py + ' ' + borderRadius}`}>
+        <div
+            className={`product ${backgroundColor + ' ' + px + ' ' + py + ' ' + borderRadius}`}
+            onClick={() => handleClick(id)}
+        >
             <NavLink to={to || ''} className="flex justify-center">
                 <img
                     src={urlAvatar}

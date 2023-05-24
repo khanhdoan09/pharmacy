@@ -6,7 +6,6 @@ import * as rateService from '~/services/rateService';
 import { convertNumberToPrice } from '~/utils/currency';
 import HistoryImage from './HistoryImage';
 
-
 function HistoryItem(props) {
     const orderDetails = props?.orderDetails;
     const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +37,7 @@ function HistoryItem(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (comment.length > 0 && medicineId !== undefined) {
-            await rateService.saveRate(medicineId, user?.email, rating, comment);
+            await rateService.saveRate(user?.accessToken, user?.account, medicineId, user?.email, rating, comment);
             notifySuccessRate('Đánh giá thành công');
             setIsOpen(false);
             setComment('');

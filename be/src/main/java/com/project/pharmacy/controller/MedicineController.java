@@ -177,7 +177,7 @@ public class MedicineController {
 
     @PostMapping("/savedMedicine")
     public ResponseHandler savedMedicine(@RequestBody SavedRequest savedRequest) throws CustomException {
-        savedService.saveNewSaved(cryptoUtils.decrypted(savedRequest.getEmail()), savedRequest.getMedicineId());
+        savedService.saveNewSaved((savedRequest.getEmail()), savedRequest.getMedicineId());
         ResponseHandler responseHandler = new ResponseHandler("Successfully saved medicine", HttpStatus.OK.value(),
                                                               null);
         return responseHandler;
@@ -185,7 +185,7 @@ public class MedicineController {
 
     @PostMapping("/unsavedMedicine")
     public ResponseHandler unsavedMedicine(@RequestBody SavedRequest savedRequest) throws CustomException {
-        savedService.unSave(cryptoUtils.decrypted(savedRequest.getEmail()), savedRequest.getMedicineId());
+        savedService.unSave((savedRequest.getEmail()), savedRequest.getMedicineId());
         ResponseHandler responseHandler = new ResponseHandler("Successfully unsaved medicine", HttpStatus.OK.value(),
                                                               null);
         return responseHandler;

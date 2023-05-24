@@ -17,7 +17,7 @@ function InfoUpdate() {
     const [phoneNumber, setPhoneNumber] = useState();
     useEffect(() => {
         const fetchApi = async () => {
-            const result = await findUserByEmail(user?.email)
+            await findUserByEmail(user?.email)
                 .then((response) => {
                     setDataInfoUser(response.data.data);
                     setPhoneNumber(response?.data?.data?.phoneNumber)
@@ -94,6 +94,7 @@ function InfoUpdate() {
                         clipRule="evenodd"
                     />
                 </svg>
+                
             </div>
             <p className="mt-3 text-xl font-bold text-[#072d94]">{user?.username}</p>
             <p className="mt-1 text-base text-[#334155]">{phoneNumber}</p>

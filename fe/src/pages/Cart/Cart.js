@@ -415,7 +415,7 @@ function Cart() {
                                                 <div className="py-5 max-sm:px-1 sm:px-3">
                                                     <ProductSeller
                                                         name={e?.name}
-                                                        to={`detail/medicine=${e?.id}`}
+                                                        to={`/detail/slug=${e?.slug}`}
                                                         id={e?.id}
                                                         label={e?.priceWithUnit?.[0]?.name}
                                                         img={e?.avatar}
