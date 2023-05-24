@@ -7,7 +7,7 @@ function Commit() {
                 <div className="grid gap-4 2xl:grid-cols-4 xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2 xs:grid-cols-2 cs:grid-cols-1 2xl:px-1 xl:px-1 lg:px-2 md:px-2 sm:px-4 xs:px-4 cs:px-4 mb-8 ">
                     <div className="flex items-center ">
                         <img
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/drug-double.svg"
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F10.webp?alt=media&token=2cb8b726-1409-41d7-acf2-0e548831fc96                            "
                             alt="img"
                             className="w-[48px] h-[48px] object-cover mr-4"
                         />
@@ -18,7 +18,7 @@ function Commit() {
                     </div>
                     <div className=" flex items-center ">
                         <img
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/ic-reload-vector.svg"
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F7.webp?alt=media&token=bb5e46b0-b3e2-41f0-97d9-06669771e5ec"
                             alt="img"
                             className="w-[48px] h-[48px] object-cover mr-4"
                         />
@@ -29,7 +29,7 @@ function Commit() {
                     </div>
                     <div className=" flex items-center">
                         <img
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/ic-guarantee-vector.svg"
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F9.webp?alt=media&token=dfb2bd1e-aff2-44e4-9659-ad13b1f9e766"
                             alt="img"
                             className="w-[48px] h-[48px] object-cover mr-4"
                         />
@@ -40,7 +40,7 @@ function Commit() {
                     </div>
                     <div className=" flex items-center ">
                         <img
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/ic-shipping.svg"
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F8.webp?alt=media&token=3738a468-ead3-442d-9ada-67d4923f9ba6"
                             alt="img"
                             className="w-[48px] h-[48px] object-cover mr-4"
                         />

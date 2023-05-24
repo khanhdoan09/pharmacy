@@ -16,19 +16,19 @@ function Protect() {
                     </div>
                     <div className="grid 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3 cs:grid-cols-1 gap-4 2xl:px-1 xl:px-1 lg:px-2 md:px-2 sm:px-4 xs:px-4 cs:px-4">
                         <ProtectItem
-                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/filters:quality(69):fill(white)/https://nhathuoclongchau.com.vn/upload/me-be.png"
+                            img="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F4.webp?alt=media&token=2daa039c-7bc8-4ccb-bd48-93f3bc6e8d5e"
                             title="MẸ VÀ BÉ"
                             to=""
                             more="Tìm hiểu thêm"
                         />
                         <ProtectItem
-                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/filters:quality(69):fill(white)/https://nhathuoclongchau.com.vn/upload/nguoicaotuoi.png"
+                            img="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F5.webp?alt=media&token=926d391f-2026-442d-a244-c89641dd07a6"
                             title="NGƯỜI GIÀ"
                             to=""
                             more="Tìm hiểu thêm"
                         />
                         <ProtectItem
-                            img="https://cdn.nhathuoclongchau.com.vn/unsafe/filters:quality(69):fill(white)/https://nhathuoclongchau.com.vn/upload/treem.png"
+                            img="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F6.webp?alt=media&token=3e40e635-e1fa-4701-9fc3-632c9e74e692"
                             title="TRẺ EM"
                             to=""
                             more="Tìm hiểu thêm"

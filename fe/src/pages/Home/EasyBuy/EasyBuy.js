@@ -13,7 +13,7 @@ function EasyBuy() {
                 <div className="px-1 ">
                     <div className="flex flex-col items-center">
                         <img
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/banner-html/home/chuptoathuoc.png"
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F1.webp?alt=media&token=e61601a8-d97c-4f84-931d-8c96d02ce469"
                             alt="img"
                             className="w-[64px] h-[64px]"
                         />
@@ -28,7 +28,7 @@ function EasyBuy() {
                 <div className="px-1 ">
                     <div className="flex flex-col items-center">
                         <img
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/banner-html/home/info-ct.png"
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F3.webp?alt=media&token=16713757-c88a-4386-a6a2-5a1fe437bb46"
                             alt="img"
                             className="w-[64px] h-[64px]"
                         />
@@ -43,7 +43,7 @@ function EasyBuy() {
                 <div className="px-1 flex-[0_0_33.33333%] max-w-full">
                     <div className="flex flex-col items-center">
                         <img
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/banner-html/home/duoc-sy.png"
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/home%2F2.webp?alt=media&token=e3d2ff91-cfac-4f17-bf83-1a20b179d0ac"
                             alt="img"
                             className="w-[64px] h-[64px]"
                         />

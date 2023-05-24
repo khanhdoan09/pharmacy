@@ -1,4 +1,5 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { getImageFromFirebase } from '~/utils/firebase';
 
 function DetailList(props) {
     const refScrollDesc = useRef(null);
@@ -8,6 +9,17 @@ function DetailList(props) {
     const refScrollEffects = useRef(null);
     const refScrollNote = useRef(null);
     const refScrollPreserve = useRef(null);
+    const [urlAvatar, setUrlAvatar] = useState(null);
+
+    useEffect(() => {
+        if (props?.detail?.medicine?.id !== undefined) {
+            const imagePromise = getImageFromFirebase("product",`${props?.detail?.medicine?.id}`, `${props?.detail?.medicine?.avatar?.substring(0, props?.detail?.medicine?.avatar?.lastIndexOf("."))}`);
+            imagePromise.then((urlAvatar) => {
+                setUrlAvatar(urlAvatar);
+            }, (err) => {
+            });
+        }       
+    }, [props]);
     return (
         <div className=" grid gap-6 px-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  xl:grid-cols-4 2xl:grid-cols-4">
             <div className="!sticky !top-0 left-0 h-fit rounded-lg border-b bg-[#edf2f8] cs:hidden xs:hidden sm:hidden md:hidden lg:block xl:block 2xl:block">
@@ -99,7 +111,7 @@ function DetailList(props) {
                     <h3 className="mb-3 text-2xl font-bold text-[#1e293b]">Mô Tả Sản Phẩm</h3>
                     <p className="mb-3 text-xl font-bold text-[#1e293b]">{props?.detail?.medicine?.name}</p>
                     <p>{props?.detail?.benefit}</p>
-                    <img src={props?.detail?.medicine?.avatar} alt="avatar" className="mx-auto my-0 flex" />
+                    <img src={urlAvatar} alt="avatar" className="mx-auto my-0 flex" />
                 </div>
 
                 <div className="ingredient mb-3" ref={refScrollIngredient}>
@@ -115,8 +127,8 @@ function DetailList(props) {
                                 className="ingredient-item flex justify-between border-b border-[#333] px-1 py-1"
                                 key={e.id}
                             >
-                                <p>{e.ingredient.name}</p>
-                                <p>{e.content}</p>
+                                <p>{e?.ingredient?.name}</p>
+                                <p>{e?.content !== "null" ? e?.content : ""}</p>
                             </div>
                         ))}
                     </div>
@@ -219,13 +231,13 @@ function DetailList(props) {
                 </div>
                 <div className="approve mt-9 flex items-center rounded-lg border-[#bee3f8] bg-[#edf2f8]   py-3 px-4 ">
                     <img
-                        src="https://nhathuoclongchau.com.vn/upload/be/avatar/ZEurNG7e5s3lxcts2DKXVxXxrgl67a.png"
+                        src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/pharmacist%2F1.webp?alt=media&token=92a3f1fd-4618-4f76-95dd-d5d09679ca8b"
                         alt="img-approve"
                         className="mr-2 h-[72px] w-[72px] rounded-lg object-cover"
                     />
                     <div className="approve-detail">
                         <div className="approve-detail__header flex items-center justify-between border-b pb-2">
-                            <p className="text-xl font-bold line-clamp-1">Dược sĩ Đại học Nguyễn Thanh Hải</p>
+                            <p className="text-xl font-bold line-clamp-1">Dược sĩ Đại học Nguyễn Mỹ Huyền</p>
                             <div className="flex items-center">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

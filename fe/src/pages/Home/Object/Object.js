@@ -89,6 +89,7 @@ function Object() {
                 <div className=" grid animate-fadeBottomMobile gap-4 xs:grid-cols-2 xs:px-4 sm:grid-cols-2 sm:px-4 md:grid-cols-3 md:px-2 lg:grid-cols-4 lg:px-2 xl:grid-cols-5 xl:px-1 2xl:grid-cols-5 2xl:px-1">
                     {medicinesForChildren?.map((e, i) => {
                         const price = e?.priceWithUnit?.[0]?.price;
+                        console.log(e);
                         return (
                             <ProductMain
                                 key={i}
