@@ -139,10 +139,11 @@ function Tab() {
                     }
                 >
                     {listOrder.length === 0 ? (
-                        <div>
+                        <div className="flex flex-col items-center justify-center">
                             <img
-                                src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"
+                                src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/order%2Forder-not-found.svg?alt=media&token=db407979-fef0-4d53-b115-01ed4f1756db"
                                 alt="non-order"
+                               
                             />
                             <p className="mt-4 text-base font-bold">Quý khách chưa có đơn hàng nào </p>
                         </div>
@@ -158,11 +159,12 @@ function Tab() {
                     }
                 >
                     {listOrder.length === 0 ? (
-                        <div>
-                            <img
-                                src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"
-                                alt="non-order"
-                            />
+                        <div className="flex flex-col items-center justify-center">
+                        <img
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/order%2Forder-not-found.svg?alt=media&token=db407979-fef0-4d53-b115-01ed4f1756db"
+                            alt="non-order"
+                           
+                        />
                             <p className="mt-4 text-base font-bold">Quý khách chưa có đơn hàng nào </p>
                         </div>
                     ) : (
@@ -177,11 +179,12 @@ function Tab() {
                     }
                 >
                     {listOrder.length === 0 ? (
-                        <div>
-                            <img
-                                src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"
-                                alt="non-order"
-                            />
+                         <div className="flex flex-col items-center justify-center">
+                         <img
+                             src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/order%2Forder-not-found.svg?alt=media&token=db407979-fef0-4d53-b115-01ed4f1756db"
+                             alt="non-order"
+                            
+                         />
                             <p className="mt-4 text-base font-bold">Quý khách chưa có đơn hàng nào </p>
                         </div>
                     ) : (
@@ -196,11 +199,12 @@ function Tab() {
                     }
                 >
                     {listOrder.length === 0 ? (
-                        <div>
-                            <img
-                                src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"
-                                alt="non-order"
-                            />
+                        <div className="flex flex-col items-center justify-center">
+                        <img
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/order%2Forder-not-found.svg?alt=media&token=db407979-fef0-4d53-b115-01ed4f1756db"
+                            alt="non-order"
+                           
+                        />
                             <p className="mt-4 text-base font-bold">Quý khách chưa có đơn hàng nào </p>
                         </div>
                     ) : (
@@ -215,11 +219,12 @@ function Tab() {
                     }
                 >
                     {listOrder.length === 0 ? (
-                        <div>
-                            <img
-                                src="https://nhathuoclongchau.com.vn/frontend_v3/images/empty-chitiet.png"
-                                alt="non-order"
-                            />
+                         <div className="flex flex-col items-center justify-center">
+                         <img
+                             src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/order%2Forder-not-found.svg?alt=media&token=db407979-fef0-4d53-b115-01ed4f1756db"
+                             alt="non-order"
+                            
+                         />
                             <p className="mt-4 text-base font-bold">Quý khách chưa có đơn hàng nào </p>
                         </div>
                     ) : (

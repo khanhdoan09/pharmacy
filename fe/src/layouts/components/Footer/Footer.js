@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 
 function Footer() {
     const [collapseFirstColumn, setCollapseFirstColumn] = useState(false);
@@ -24,7 +25,11 @@ function Footer() {
     });
 
     function createLink(text, link) {
-        return <a className="cursor-pointer text-xs leading-7 text-blue-800/100">{text}</a>;
+        return (
+            <NavLink to="/" className="cursor-pointer text-xs leading-7 text-blue-800/100">
+                {text}
+            </NavLink>
+        );
     }
 
     return (
@@ -134,13 +139,15 @@ function Footer() {
                         <img
                             className="mx-2 cursor-pointer"
                             width={20}
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/icon-facebook.png"
-                        ></img>
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/social%2FFacebook_b2899fc1dd.svg?alt=media&token=fcff2705-9ed6-4ce7-a952-be30ed0384ea"
+                            alt="facebook"
+                        />
                         <img
                             className="cursor-pointer"
                             width={20}
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/icon-zalo.png"
-                        ></img>
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/social%2FZalo_8aa1fbb719.svg?alt=media&token=d8f33d08-2087-4663-b43c-81c88525ab99"
+                            alt="zalo"
+                        />
                     </div>
                 </div>
             </div>

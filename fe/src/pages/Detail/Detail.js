@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import * as commentService from '~/services/commentService';
 import * as medicineService from '~/services/medicineService';
 import * as rateService from '~/services/rateService';
@@ -11,14 +10,13 @@ import RelatedProduct from './RelatedProduct';
 import Review from './Review';
 
 function Detail() {
-    const { medicineId } = useParams();
     const [dataDetail, setDataDetail] = useState();
     const [dataIngredient, setDataIngredient] = useState();
     const [commentByMedicineId, setCommentByMedicineId] = useState([]);
     const [dataReview, setDataReview] = useState();
     const [imageList, setImageList] = useState([]);
 
-    const handleMedicineId = medicineId.split('=')[1];
+    const handleMedicineId = localStorage.getItem("medicineId").match(/\d+/)[0]
     useEffect(() => {
         const fetchApi = async () => {
             const resultFindMedicineDetailByMedicineId = await medicineService.findMedicineDetailByMedicineId(

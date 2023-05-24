@@ -74,12 +74,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/api/v1/cart/**",
 //                             "api/v1/auth/**",
-                             "/api/v1/order/**",
-                             "/api/v1/postComment",
-                             "/api/v1/responseComment",
-                             "/api/v1/addLike",
-                             "/api/v1/unLikeComment/**",
-                             "/api/v1/saveRate"
+                        "/api/v1/order/**",
+                        "/api/v1/postComment",
+                        "/api/v1/responseComment",
+                        "/api/v1/addLike",
+                        "/api/v1/unLikeComment/**",
+                        "/api/v1/saveRate",
+                        "api/v1/savedMedicine",
+                        "api/v1/unsavedMedicine"
                             )
                 .authenticated()
                 .and().exceptionHandling().accessDeniedPage("/api/v1/auth/unauthorized")

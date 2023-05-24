@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import n5 from '~/assets/img/nav/n5.png';
 import ProductSeller from '~/components/ProductSeller';
+import { convertNumberToPrice } from '~/utils/currency';
 import ContentNavModalItem from './ContentNavModalItem';
 import NavModalItem from './NavModalItem';
-
+import { getImageFromFirebase, getImageList, getImageURL } from '~/utils/firebase';
 function NavModal(props) {
     const [categoryId, setCategoryId] = useState();
     const [categoryDetails, setCategoryDetails] = useState([]);
@@ -15,7 +15,6 @@ function NavModal(props) {
     useEffect(() => {
         setMedicinesRoot(medicine?.data);
     }, [medicine]);
-
 
     useEffect(() => {
         const filterProductByCID = medicinesRoot?.filter((m) => m.categoryDetail.categoryId === categoryId);
@@ -38,8 +37,8 @@ function NavModal(props) {
                 {props?.categories?.map((e) => (
                     <NavModalItem
                         key={e.id}
+                        id={e?.id}
                         to={`/filter/field=${e.fieldOfCategory.slug}/category=${e.slug}`}
-                        img={e.image + 'á'}
                         title={e.category}
                         onMouseOver={() => {
                             setCategoryId(e.id);
@@ -56,9 +55,10 @@ function NavModal(props) {
                         return (
                             <div className="px-1" key={e.id}>
                                 <ContentNavModalItem
+                                    id={e?.id}
                                     to={`/filter/field=${categoryDetails?.fieldOfCategory?.slug}/category=${categoryDetails?.slug}/categoryDetail=${e?.slug}`}
-                                    img={e.image + 'a'}
-                                    title={e.name}
+                                    img={e?.image + 'a'}
+                                    title={e?.name}
                                 />
                             </div>
                         );
@@ -94,12 +94,13 @@ function NavModal(props) {
                             return (
                                 <div className=" px-1" key={e.id}>
                                     <ProductSeller
-                                        to={`/detail/medicineId=${e.id}`}
-                                        img={n5 + 's'}
-                                        name="Viên uống Maca M Male Power Nature's Supplements bổ thận, tráng dương (60 viên)"
-                                        newPrice="627.000đ"
-                                        unit="Hộp"
-                                        oldPrice="660.000đ"
+                                        to={`/detail/slug=${e?.slug}`}
+                                        id={e?.id}
+                                        img={e?.avatar}
+                                        name={e?.name}
+                                        unit={e?.category}
+                                        newPrice={`${convertNumberToPrice(e?.price - (e?.price * e?.discount) / 100)}đ`}
+                                        oldPrice={`${convertNumberToPrice(e?.price)}đ`}
                                     />
                                 </div>
                             );

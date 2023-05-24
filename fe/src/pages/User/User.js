@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Address from './Address';
 import InfoUpdate from './InfoUpdate';
 import PasswordUser from './PasswordUser';
 import Saved from './Saved/Saved';
@@ -11,13 +10,17 @@ function User() {
     const toggleTab = (index) => {
         setToggleState(index);
     };
+    const backgroundImage =
+        'url("https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/header%2Ft%E1%BA%A3i%20xu%E1%BB%91ng.png?alt=media&token=d2b42b7e-12e5-440f-9932-e156b6751b66")';
     return (
-        <div className="max-w-full">
-            <img
-                src="https://nhathuoclongchau.com.vn/frontend_v3/images/banner-html/banner-QLTK.png"
-                alt="banner"
-                className="h-[264px] object-cover"
-            />
+        <div className="max-w-full ">
+            <div className="flex flex-row-reverse bg-blue-300 bg-cover bg-center" style={{ backgroundImage }}>
+                <img
+                    src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/avatar%2Ffilter-product-personal.svg?alt=media&token=438c8d79-6472-4940-be29-797f0bb5ef2d"
+                    alt="banner"
+                    className="h-[300px]"
+                />
+            </div>
             <div className="mx-auto my-0 max-w-[1200px]">
                 <div className="padding-responsive grid gap-4 md:grid-cols-1 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
                     <div className="cs:col-span-1 xs:col-span-1 lg:col-span-1 xl:col-span-1 2xl:col-span-1">
@@ -50,33 +53,7 @@ function User() {
                                 </svg>
                                 <p className="text-[#334155]">Đơn hàng của tôi</p>
                             </div>
-                            <div
-                                onClick={() => toggleTab(2)}
-                                className={
-                                    toggleState === 2
-                                        ? 'transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#edf2f8] px-2 py-2 hover:border-[#072d94] '
-                                        : 'transition-basic mb-3 flex cursor-pointer items-center rounded-lg border border-transparent bg-transparent px-2 py-2 hover:border-[#072d94]'
-                                }
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className={
-                                        toggleState === 2
-                                            ? 'mr-2 h-6 w-6 text-[#072d94]'
-                                            : 'mr-2 h-6 w-6 rounded-full bg-[#edf2f8] text-[#c1bcbd]'
-                                    }
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
 
-                                <p className="text-[#334155]">Sổ địa chỉ nhận hàng</p>
-                            </div>
                             <div
                                 onClick={() => toggleTab(3)}
                                 className={
@@ -145,13 +122,7 @@ function User() {
                     >
                         <Tab />
                     </div>
-                    <div
-                        className={
-                            toggleState === 2 ? 'block pt-8 pb-10 lg:col-span-3 xl:col-span-3 2xl:col-span-3' : 'hidden'
-                        }
-                    >
-                        <Address />
-                    </div>
+
                     <div
                         className={
                             toggleState === 3 ? 'block pt-8 pb-10 lg:col-span-3 xl:col-span-3 2xl:col-span-3' : 'hidden'

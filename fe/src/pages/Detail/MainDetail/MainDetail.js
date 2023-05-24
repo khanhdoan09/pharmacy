@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { addMedicinesToCartAndShowCartInHeader } from '~/redux/cartSlice';
 import { addNewMedicineInCart, getAllMedicinesInCart } from '~/services/cartServices';
+import { convertNumberToPrice } from '~/utils/currency';
 import SliderImageDetail from '../SliderImageDetail';
 import SavedButton from './SavedButton';
-import { convertNumberToPrice } from '~/utils/currency';
 
 function MainDetail(props) {
     const [toggleState, setToggleState] = useState(props?.detail?.medicine?.priceWithUnit?.[0]?.id);
@@ -18,11 +18,6 @@ function MainDetail(props) {
     const dispatch = useDispatch();
 
     const handleIncrementQuantity = (maxQuantity) => {
-        // if (quantity === maxQuantity) {
-        //     setQuantity(maxQuantity);
-        // } else {
-        //     setQuantity((quantity) => quantity + 1);
-        // }
         setQuantity((quantity) => quantity + 1);
     };
     const handleDecrementQuantity = () => {
@@ -58,7 +53,7 @@ function MainDetail(props) {
                 const load = getAllMedicinesInCart(user?.accessToken, user?.account, user?.email);
                 load.then(
                     (e) => {
-                        if (e.status == 200) {
+                        if (e.status === 200) {
                             dispatch(addMedicinesToCartAndShowCartInHeader({ medicines: e?.data?.data }));
                         }
                     },
@@ -90,7 +85,9 @@ function MainDetail(props) {
                     </p>
                     <h3 className="text-[28px] font-bold text-[#072d94]">{props?.detail?.medicine?.name}</h3>
                     <div className="flex items-center justify-between">
-                        <span className="text-[#b6c0d7]">Mã sản phẩm: ({props?.detail?.id})</span>
+                        <span className="text-[#b6c0d7]">
+                            Mã sản phẩm: ({localStorage.getItem("medicineId")})
+                        </span>
                         <div className="text-sm">
                             <span className="cursor-pointer border-r border-[#bb91a5] px-2 hover:underline">
                                 {props?.dataReview?.length || 0} đánh giá
@@ -104,7 +101,9 @@ function MainDetail(props) {
                 <div className="center-text pt-4">
                     <div className="price">
                         <h3 className="text-[32px] font-bold">
-                            {convertNumberToPrice(priceWithUnit) || convertNumberToPrice(props?.detail?.medicine?.priceWithUnit[0]?.price)} &#8260;
+                            {convertNumberToPrice(priceWithUnit) ||
+                                convertNumberToPrice(props?.detail?.medicine?.priceWithUnit[0]?.price)}{' '}
+                            &#8260;
                             <span className="text-2xl font-normal text-[#1e293b]">
                                 {nameUnit || props?.detail?.medicine?.priceWithUnit[0]?.name}
                             </span>
@@ -135,11 +134,6 @@ function MainDetail(props) {
                                                     : ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1'
                                             }
                                         >
-                                            {/* <img
-                                            src="https://cdn-icons-png.flaticon.com/512/2800/2800607.png"
-                                            className="mr-2 h-5 w-5 select-none object-cover"
-                                            alt=""
-                                        /> */}
                                             <p className="capitalize">{u.name}</p>
                                         </div>
                                     );
@@ -222,7 +216,7 @@ function MainDetail(props) {
                         >
                             Chọn mua
                         </button>
-                     
+
                         <SavedButton itemId={props?.detail?.medicineId} />
                     </div>
                     <div className="commit mt-4 rounded-2xl border">

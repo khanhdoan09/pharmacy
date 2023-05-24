@@ -79,9 +79,10 @@ function Header() {
         const filteredCategory = categories?.data?.filter((c) => c.field === fieldId);
         setCategoryByFieldId(filteredCategory);
     }, [fieldId]);
-    const backgroundImage = 'url("https://nhathuoclongchau.com.vn/static/images/bg-header.svg")';
+    const backgroundImage =
+        'url("https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/header%2Ft%E1%BA%A3i%20xu%E1%BB%91ng.png?alt=media&token=d2b42b7e-12e5-440f-9932-e156b6751b66")';
     return (
-        <div className="wrapper h-20 bg-cover bg-center"  style={{ backgroundImage }}>
+        <div className="wrapper h-20 bg-cover bg-center" style={{ backgroundImage }}>
             <div className="padding-responsive m-auto h-20 max-w-[1200px] items-center justify-between cs:hidden xs:hidden sm:hidden md:hidden lg:flex xl:flex 2xl:flex ">
                 <NavLink to="/">
                     <img src="https://cms-prod.s3-sgn09.fptcloud.com/logo_front_big_c58fec2dc9.svg" alt="logo" />
@@ -93,7 +94,7 @@ function Header() {
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
-                                className="h-7 w-7 rounded-full border-2 mr-1"
+                                className="mr-1 h-7 w-7 rounded-full border-2"
                             >
                                 <path
                                     fillRule="evenodd"
@@ -127,7 +128,7 @@ function Header() {
                             {isHovering && user && (
                                 <div className="fucn-user absolute top-11 right-0 z-10 w-60 animate-fadeBottomMobile rounded-lg border border-[#ccc] bg-[#ffffff]">
                                     <NavLink
-                                          to={`/user/uid=${encrypt(user?.email)}`}
+                                        to={`/user/uid=${encrypt(user?.email)}`}
                                         className="transition-basic flex items-center  rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "
                                     >
                                         <svg
@@ -194,7 +195,7 @@ function Header() {
                             )}
 
                             {isHovering && !user && (
-                                <div className="fucn-user absolute top-11 right-0 z-10 w-60 animate-deBottomMobile rounded-lg border border-[#ccc] bg-[#ffffff]">
+                                <div className="fucn-user animate-deBottomMobile absolute top-11 right-0 z-10 w-60 rounded-lg border border-[#ccc] bg-[#ffffff]">
                                     <NavLink
                                         to="/signin"
                                         className="transition-basic flex items-center  rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "

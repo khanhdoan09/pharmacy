@@ -16,3 +16,14 @@ export const getImageList = async (folder) => {
     );
     return imageURLs;
 };
+
+export const getImageURL = async (imageName) => {
+    const storageRef = ref(storage, imageName);
+    try {
+        const url = await getDownloadURL(storageRef);
+        return url;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};

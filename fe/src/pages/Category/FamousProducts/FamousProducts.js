@@ -62,7 +62,7 @@ function FamousProducts(props) {
                             newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
                             oldPrice={`${convertNumberToPrice(price)}đ`}
                             key={e.id}
-                            to={`/detail/medicineId=${e?.id}`}
+                            to={`/detail/slug=${e?.slug}`}
                             label={e.specification}
                             img={e?.avatar}
                             title={e.name}

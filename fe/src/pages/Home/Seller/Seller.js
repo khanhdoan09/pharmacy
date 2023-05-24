@@ -54,7 +54,7 @@ function Seller() {
                     return (
                         <ProductMain
                             key={i}
-                            to={`detail/medicine=${e?.id}`}
+                            to={`/detail/slug=${e?.slug}`}
                             id={e?.id}
                             label={e?.priceWithUnit?.[0]?.name}
                             img={e?.avatar}
