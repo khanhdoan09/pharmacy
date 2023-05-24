@@ -46,7 +46,7 @@ function Home() {
                 <div className="mx-auto my-0 max-w-[1200px] xs:px-4 sm:px-4 md:px-2 lg:px-2 xl:px-1 2xl:px-1">
                     <NavLink to="">
                         <img
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/chuyen-trang-ung-thu/banner-home.png"
+                            src="https://cdn.nhathuoclongchau.com.vn/unsafe/1459x148/https://cms-prod.s3-sgn09.fptcloud.com/Section_PC_1176x120_B_1_0885c8cd23.png"
                             alt="banner"
                             className="w-full rounded-lg"
                         />

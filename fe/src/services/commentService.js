@@ -18,13 +18,22 @@ export const findCommentsByMedicineId = async (medicineId) => {
         console.log(error?.response);
     }
 };
-export const postComment = async (userEmail, medicineId, content) => {
+export const postComment = async (accessToken, accountType, userEmail, medicineId, content) => {
     try {
-        const res = await request.post(`postComment`, {
-            email: encrypt(userEmail),
-            medicineId,
-            content: encrypt(content),
-        });
+        const res = await request.post(
+            `postComment`,
+            {
+                email: encrypt(userEmail),
+                medicineId,
+                content: encrypt(content),
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    AccountType: accountType,
+                },
+            },
+        );
         return res?.data;
     } catch (error) {
         console.log(error?.response);

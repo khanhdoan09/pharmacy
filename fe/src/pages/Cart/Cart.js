@@ -16,6 +16,7 @@ import useAcquireAccessToken from '~/hooks/useAcquireAcessToken';
 import CartEmpty from './CartEmpty';
 import { useSelector, useDispatch } from 'react-redux';
 import { addItemsToVoucher } from '~/redux/voucherSlice';
+import { findBestMedicinesInHistory } from '~/services/medicineService';
 
 function Cart() {
     const [cookies, setCookie] = useCookies(['access_token']);
@@ -36,6 +37,16 @@ function Cart() {
     const user = useSelector((state) => state.authentication.login.currentUser);
     const getNewAccessToken = useAcquireAccessToken();
     const dispatch = useDispatch();
+    const [bestMedicinesInHistory, setBestMedicinesInHistory] = useState([]);
+
+    useEffect(() => {
+        findBestMedicinesInHistory().then(
+            (e) => {
+                setBestMedicinesInHistory(e?.data);
+            },
+            (err) => {},
+        );
+    }, []);
 
     useEffect(() => {
         // let dateObj = new Date();
@@ -397,23 +408,32 @@ function Cart() {
                                     Sản phẩm vừa xem
                                 </h2>
                                 <Slider {...settings} className="relative m-0 p-0">
-                                    {Array.from({ length: 6 }, (v, i) => (
-                                        <div key={i} className="">
-                                            <div className="py-5 max-sm:px-1 sm:px-3">
-                                                <ProductSeller
-                                                    img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/06/00500184-sua-nutren-junior-nestle-health-science-hop-850g-2256-62a8_large.jpg"
-                                                    name="Sữa bột Nestlé Nutren Junior hỗ trợ hệ tiêu hóa giúp trẻ hấp thu dinh dưỡng (850g)"
-                                                    newPrice="591.000đ"
-                                                    unit="Hộp"
-                                                    oldPrice=""
-                                                    backgroundColor="bg-white"
-                                                    py="sm:py-5 max-sm:py-4"
-                                                    px="max-sm:px-2 sm:px-5"
-                                                    borderRadius="rounded-xl"
-                                                />
+                                    {bestMedicinesInHistory?.map((e, i) => {
+                                        const price = e?.priceWithUnit?.[0]?.price;
+                                        return (
+                                            <div key={i} className="">
+                                                <div className="py-5 max-sm:px-1 sm:px-3">
+                                                    <ProductSeller
+                                                        name={e?.name}
+                                                        to={`detail/medicine=${e?.id}`}
+                                                        id={e?.id}
+                                                        label={e?.priceWithUnit?.[0]?.name}
+                                                        img={e?.avatar}
+                                                        title={e?.name}
+                                                        newPrice={`${convertNumberToPrice(
+                                                            price - (price * e?.discount) / 100,
+                                                        )}đ`}
+                                                        oldPrice={`${convertNumberToPrice(price)}đ`}
+                                                        unit={e?.priceWithUnit?.[0]?.name}
+                                                        backgroundColor="bg-white"
+                                                        py="sm:py-5 max-sm:py-4"
+                                                        px="max-sm:px-2 sm:px-5"
+                                                        borderRadius="rounded-xl"
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </Slider>
                             </div>
                         </div>

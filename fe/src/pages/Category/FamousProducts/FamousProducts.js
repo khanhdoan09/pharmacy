@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import ProductMain from '~/components/ProductMain';
+import { convertNumberToPrice } from '~/utils/currency';
 
 function FamousProducts(props) {
     const [sortOrder, setSortOrder] = useState('ascending');
     const [visibleProducts, setVisibleProducts] = useState(4);
-
 
     function handleSortOrderChange(event) {
         setSortOrder(event.target.value);
@@ -55,18 +55,22 @@ function FamousProducts(props) {
             </div>
 
             <div className="grid animate-fadeBottomMobile gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 ">
-                {sortedProducts?.slice(0, visibleProducts)?.map((e) => (
-                    <ProductMain
-                        key={e.id}
-                        to={`/detail/medicineId=${e?.id}`}
-                        label={e.specification}
-                        img=""
-                        title={e.name}
-                        newPrice={e?.price}
-                        oldPrice=""
-                        unit={e.category}
-                    />
-                ))}
+                {sortedProducts?.slice(0, visibleProducts)?.map((e) => {
+                    const price = e?.priceWithUnit?.[0]?.price;
+                    return (
+                        <ProductMain
+                            newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
+                            oldPrice={`${convertNumberToPrice(price)}đ`}
+                            key={e.id}
+                            to={`/detail/medicineId=${e?.id}`}
+                            label={e.specification}
+                            img={e?.avatar}
+                            title={e.name}
+                            unit={e.category}
+                            id={e?.id}
+                        />
+                    );
+                })}
             </div>
             {visibleProducts < sortedProducts?.length ? (
                 <button

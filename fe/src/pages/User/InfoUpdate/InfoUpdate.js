@@ -5,17 +5,22 @@ import { ToastContainer, toast } from 'react-toastify';
 import * as Yup from 'yup';
 import useBodyScrollLock from '~/hooks/useBodyScrollLock';
 import { findUserByEmail, updateInformation } from '~/services/userServices';
+import { useDispatch} from 'react-redux';
+import { loginSuccess } from '~/redux/authSlice';
 
 function InfoUpdate() {
+    const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
     const [lock, toggle] = useBodyScrollLock();
     const user = useSelector((state) => state.authentication.login.currentUser);
     const [dataInfoUser, setDataInfoUser] = useState();
+    const [phoneNumber, setPhoneNumber] = useState();
     useEffect(() => {
         const fetchApi = async () => {
             const result = await findUserByEmail(user?.email)
                 .then((response) => {
                     setDataInfoUser(response.data.data);
+                    setPhoneNumber(response?.data?.data?.phoneNumber)
                 })
                 .catch((err) => {
                     console.log(err);
@@ -43,6 +48,17 @@ function InfoUpdate() {
                         notifySuccess('Thay đổi thông tin thành công');
                         toggle();
                         setShowModal(!showModal);
+                        setPhoneNumber(values.phone)
+                        dispatch(
+                            loginSuccess({
+                                id: user?.id,
+                                username: values.name,
+                                email: user?.email,
+                                accessToken: user?.accessToken,
+                                account: 'Normal',
+                                role:user?.role,
+                            }),
+                        );
                     }
                 })
                 .catch((err) => {
@@ -79,8 +95,8 @@ function InfoUpdate() {
                     />
                 </svg>
             </div>
-            <p className="mt-3 text-xl font-bold text-[#072d94]">{dataInfoUser?.name}</p>
-            <p className="mt-1 text-base text-[#334155]">{dataInfoUser?.phoneNumber}</p>
+            <p className="mt-3 text-xl font-bold text-[#072d94]">{user?.username}</p>
+            <p className="mt-1 text-base text-[#334155]">{phoneNumber}</p>
             <button
                 className="mt-1 flex items-center rounded-xl border border-[#d8e0e8] bg-transparent px-4 py-1 leading-6 text-[#52637a] hover:bg-[#718198] hover:text-[#fff]"
                 onClick={() => {

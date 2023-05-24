@@ -8,22 +8,23 @@ function ProductMain({ id, to, label, img, title, newPrice, oldPrice, unit }) {
     const [urlAvatar, setUrlAvatar] = useState('/static/media/placeholder600x600.8239fe13708c0a4484a8.png');
     useEffect(() => {
         if (id !== undefined) {
-            const imagePromise = getImageFromFirebase("product",`${id}`, `avatar`);
-            imagePromise.then((urlAvatar) => {
-                setUrlAvatar(urlAvatar);
-            }, (err) => {
-              
-            });
-        }       
+            const imagePromise = getImageFromFirebase('product', `${id}`, `avatar`);
+            imagePromise.then(
+                (urlAvatar) => {
+                    setUrlAvatar(urlAvatar);
+                },
+                (err) => {},
+            );
+        }
     }, []);
     return (
         <div className="transition-basic relative mb-4 h-full rounded-md border bg-[#fff] px-3 pt-3 pb-2 hover:border-[#4f71d0]">
             <NavLink to={to || '/detail'}>
-                <div className="absolute top-3 right-3 rounde d-3xl bg-[#4f71d0] py-1 px-2 text-[#fff]">
+                <div className="rounde d-3xl absolute top-3 right-3 bg-[#4f71d0] py-1 px-2 text-[#fff]">
                     <p className="text-xs capitalize">{label}</p>
                 </div>
                 <img
-                    src={urlAvatar|| 'áđá'}
+                    src={urlAvatar || 'áđá'}
                     alt="main-img"
                     className="mb-3 max-w-full object-cover px-2 py-2"
                     onError={({ currentTarget }) => {

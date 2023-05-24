@@ -18,14 +18,19 @@ function Comment(props) {
     const { medicineId } = useParams();
     const handleMedicineId = medicineId.split('=')[1];
 
-
     const handlePostComment = async () => {
         if (user?.email === undefined) {
             setOpenModal(true);
         } else if (contentComment.length < 3) {
             setAlertContentComment('Vui lòng nhập ít nhất 3 ký tự');
         } else {
-            await commentService.postComment(user?.email, handleMedicineId, contentComment);
+            await commentService.postComment(
+                user?.accessToken,
+                user?.account,
+                user?.email,
+                handleMedicineId,
+                contentComment,
+            );
             setAlertContentComment('');
             setContentComment('');
             notifySuccess('Bình luận thành công.');
@@ -90,7 +95,6 @@ function Comment(props) {
             theme: 'light',
         });
     };
-
 
     const [commentId, setCommentId] = useState('');
     const [slideCount, setSlideCount] = useState(5);
@@ -197,7 +201,7 @@ function Comment(props) {
                 )}
 
                 <div className="comment-detail rounded-b-lg bg-[#fff] px-4 py-4">
-                    {handleComments?.slice(0, slideCount)?.map((e,index) => {
+                    {handleComments?.slice(0, slideCount)?.map((e, index) => {
                         return (
                             <CommentItem
                                 key={index}
@@ -247,7 +251,9 @@ function Comment(props) {
                                             if (user?.email === undefined) {
                                                 setOpenModal(true);
                                             } else if (user?.role.toLowerCase() === 'client') {
-                                                notifyWarning('Tài khoản của bạn không có quyền sử dụng chức năng này.')
+                                                notifyWarning(
+                                                    'Tài khoản của bạn không có quyền sử dụng chức năng này.',
+                                                );
                                                 setIsOpen(false);
                                             } else {
                                                 setIsOpen(true);

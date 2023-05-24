@@ -5,9 +5,10 @@ import { addMedicinesToCartAndShowCartInHeader } from '~/redux/cartSlice';
 import { addNewMedicineInCart, getAllMedicinesInCart } from '~/services/cartServices';
 import SliderImageDetail from '../SliderImageDetail';
 import SavedButton from './SavedButton';
+import { convertNumberToPrice } from '~/utils/currency';
 
 function MainDetail(props) {
-    const [toggleState, setToggleState] = useState(1);
+    const [toggleState, setToggleState] = useState(props?.detail?.medicine?.priceWithUnit?.[0]?.id);
     const [quantity, setQuantity] = useState(1);
     const [priceWithUnit, setPriceWithUnit] = useState();
     const [nameUnit, setNameUnit] = useState();
@@ -17,11 +18,12 @@ function MainDetail(props) {
     const dispatch = useDispatch();
 
     const handleIncrementQuantity = (maxQuantity) => {
-        if (quantity === maxQuantity) {
-            setQuantity(maxQuantity);
-        } else {
-            setQuantity((quantity) => quantity + 1);
-        }
+        // if (quantity === maxQuantity) {
+        //     setQuantity(maxQuantity);
+        // } else {
+        //     setQuantity((quantity) => quantity + 1);
+        // }
+        setQuantity((quantity) => quantity + 1);
     };
     const handleDecrementQuantity = () => {
         if (quantity === 1) {
@@ -41,7 +43,7 @@ function MainDetail(props) {
         }
         addNewMedicineInCart(
             props?.detail?.medicineId,
-            toggleState,
+            toggleState ? toggleState : props?.detail?.medicine?.priceWithUnit?.[0]?.id,
             quantity,
             user?.email,
             user?.accessToken,
@@ -102,7 +104,7 @@ function MainDetail(props) {
                 <div className="center-text pt-4">
                     <div className="price">
                         <h3 className="text-[32px] font-bold">
-                            {priceWithUnit || props?.detail?.medicine?.priceWithUnit[0]?.price} &#8260;{' '}
+                            {convertNumberToPrice(priceWithUnit) || convertNumberToPrice(props?.detail?.medicine?.priceWithUnit[0]?.price)} &#8260;
                             <span className="text-2xl font-normal text-[#1e293b]">
                                 {nameUnit || props?.detail?.medicine?.priceWithUnit[0]?.name}
                             </span>
