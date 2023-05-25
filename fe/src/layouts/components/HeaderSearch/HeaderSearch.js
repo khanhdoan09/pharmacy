@@ -13,6 +13,7 @@ import { removeMedicinesFromCart } from '~/redux/cartSlice';
 import * as searchService from '~/services/searchServices';
 import { logOut } from '~/services/userServices';
 import { encrypt } from '~/utils/cryptoUtils';
+import { convertNumberToPrice } from '~/utils/currency';
 
 function HeaderSearch() {
     const navigate = useNavigate();
@@ -168,25 +169,25 @@ function HeaderSearch() {
                     )}
                     {resultSearch?.content?.content?.length !== 0 && keyword?.length !== 0 && (
                         <div className="absolute top-11 left-0 z-20 w-full rounded-lg bg-[#ffffff] shadow-2xl">
-                            {resultSearch?.content?.map((e) => (
-                                <ResultSearchItem
-                                    key={e.id}
-                                    to={`detail/${e.slug}`}
-                                    img="https://cdn.nhathuoclongchau.scom.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-s7608-6226_large.jpg"
-                                    name={e.name}
-                                    title={e.category}
-                                    oldPrice={`${e.discount !== 0 ? `${e.price.toString().replace(',', '.')}đ` : ''}`}
-                                    newPrice={`${
-                                        e.discount !== 0
-                                            ? `${handleNewPrice(e.price, e.discount).toFixed(3)}đ`
-                                            : `${e.price.toString().replace(',', '.')}đ`
-                                    }`}
-                                    unit="Hộp"
-                                    onClick={() => {
-                                        setKeyword('');
-                                    }}
-                                />
-                            ))}
+                            {resultSearch?.content?.map((e) => {
+                                const price = e?.priceWithUnit?.[0]?.price;
+                                return (
+                                    <ResultSearchItem
+                                        key={e.id}
+                                        id={e.id}
+                                        to={`/detail/slug=${e.slug}`}
+                                        img="https://cdn.nhathuoclongchau.scom.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-s7608-6226_large.jpg"
+                                        name={e.name}
+                                        title={e.category}
+                                        newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
+                                        oldPrice={`${convertNumberToPrice(price)}đ`}
+                                        unit={e.category}
+                                        onClick={() => {
+                                            setKeyword('');
+                                        }}
+                                    />
+                                );
+                            })}
 
                             {resultSearch?.content?.length > 0 && (
                                 <NavLink

@@ -1,12 +1,27 @@
 import { NavLink } from 'react-router-dom';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
+import { useEffect, useState } from 'react';
+import { getImageFromFirebase } from '~/utils/firebase';
 
-function ResultSearchItem({ to, img, name, title, oldPrice, newPrice, unit, onClick }) {
+function ResultSearchItem({ id, to, img, name, title, oldPrice, newPrice, unit, onClick }) {
+    console.log(to);
+    const [urlAvatar, setUrlAvatar] = useState('/static/media/placeholder600x600.8239fe13708c0a4484a8.png');
+    useEffect(() => {
+        if (id !== undefined) {
+            const imagePromise = getImageFromFirebase('product', `${id}`, `avatar`);
+            imagePromise.then(
+                (urlAvatar) => {
+                    setUrlAvatar(urlAvatar);
+                },
+                (err) => {},
+            );
+        }
+    }, []);
     return (
-       <NavLink to={to || ''}>
-            <div  className="result-item flex items-center border-b-2 py-2 px-6" onClick={onClick}>
+        <NavLink to={to || ''}>
+            <div className="result-item flex items-center border-b-2 py-2 px-6" onClick={onClick}>
                 <img
-                    src={img}
+                    src={urlAvatar}
                     alt="result-img"
                     className="mr-2 h-[64px] w-[64px] object-cover"
                     onError={({ currentTarget }) => {
@@ -24,7 +39,7 @@ function ResultSearchItem({ to, img, name, title, oldPrice, newPrice, unit, onCl
                     </div>
                 </div>
             </div>
-       </NavLink>
+        </NavLink>
     );
 }
 

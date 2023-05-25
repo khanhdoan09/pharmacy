@@ -315,7 +315,7 @@ function Cart() {
                                             >
                                                 {checkAll ? <i className="fa-solid fa-check"></i> : null}
                                             </span>
-                                            Chọn tất cả (3)
+                                            Chọn tất cả ({data?.data?.length})
                                         </div>
                                         <div className="w-36 text-center text-sm font-[500] max-sm:hidden">
                                             Giá thành
@@ -403,9 +403,9 @@ function Cart() {
                                     })}
                                 </div>
                             </div>
-                            <div className="my-3 sm:w-[700px]">
+                            <div className="my-3 my-5 sm:w-[700px]">
                                 <h2 className="text-[18px] font-[500] tracking-[.0025em] text-[#020b27]">
-                                    Sản phẩm vừa xem
+                                    Sản phẩm bán chạy nhất
                                 </h2>
                                 <Slider {...settings} className="relative m-0 p-0">
                                     {bestMedicinesInHistory?.map((e, i) => {

@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import ResultSearchItem from '~/components/ResultSearchItem';
 import useDebounce from '~/hooks/useDebounce';
 import * as searchService from '~/services/searchServices';
+import { convertNumberToPrice } from '~/utils/currency';
 
 function SearchHome() {
     const ref = useRef(null);
@@ -84,21 +85,25 @@ function SearchHome() {
                     {/* modal result search  */}
                     {resultSearch?.length !== 0 && keyword.length > 0 && (
                         <div className="results absolute left-0 z-10 w-full rounded-lg bg-[#ffffff] shadow-2xl">
-                            {resultSearch?.slice(0, 5)?.map((e) => (
-                                <ResultSearchItem
-                                    key={e.id}
-                                    to={`detail/${e.slug}`}
-                                    img="https://cdn.nhathuoclongchau.scom.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-s7608-6226_large.jpg"
-                                    name={e.name}
-                                    title={e.category}
-                                    oldPrice={e.price}
-                                    newPrice={e.price}
-                                    unit="Hộp"
-                                    onClick={() => {
-                                        setKeyword('');
-                                    }}
-                                />
-                            ))}
+                            {resultSearch?.slice(0, 5)?.map((e) => {
+                                const price = e?.priceWithUnit?.[0]?.price;
+                                return (
+                                    <ResultSearchItem
+                                        key={e.id}
+                                        to={`detail/slug=${e.slug}`}
+                                        id={e?.id}
+                                        img="https://cdn.nhathuoclongchau.scom.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-s7608-6226_large.jpg"
+                                        name={e.name}
+                                        title={e.category}
+                                        newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
+                                        oldPrice={`${convertNumberToPrice(price)}đ`}
+                                        unit="Hộp"
+                                        onClick={() => {
+                                            setKeyword('');
+                                        }}
+                                    />
+                                );
+                            })}
 
                             {resultSearch?.length > 0 && (
                                 <NavLink
@@ -206,7 +211,7 @@ function SearchHome() {
                             {resultSearch?.slice(0, 5)?.map((e) => (
                                 <ResultSearchItem
                                     key={e.id}
-                                    to={`detail/${e.slug}`}
+                                    to={`detail/slug=${e.slug}`}
                                     img=""
                                     name={e.name}
                                     title={e.category}
