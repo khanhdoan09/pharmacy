@@ -7,6 +7,7 @@ import * as medicineService from '~/services/medicineService';
 import BranchPharmacy from '../Home/BranchPharmacy';
 import View from '../Home/View';
 import FamousProducts from './FamousProducts/FamousProducts';
+import { convertNumberToPrice } from '~/utils/currency';
 
 function CategoryDetail() {
     const { field, category } = useParams();
@@ -210,8 +211,8 @@ function CategoryDetail() {
                         <div>
                             <Slider range min={0} max={500000} value={selectedPrice} onChange={handlePriceChange} />
 
-                            <div>giá tối thiểu: {selectedPrice[0]}</div>
-                            <div>giá tối đa: {selectedPrice[1]}</div>
+                            <div>giá tối thiểu: {convertNumberToPrice(selectedPrice[0])}</div>
+                            <div>giá tối đa: {convertNumberToPrice(selectedPrice[1])}</div>
                         </div>
                     </div>
 
