@@ -38,6 +38,7 @@ public class RateController {
 
     @PostMapping("/saveRate")
     public ResponseHandler saveRate(@RequestBody RateRequest rateRequest) throws CustomException {
+
         User user = userService.findByEmail(rateRequest.getUserEmail());
         Medicine medicine = medicineService.findById(rateRequest.getMedicineId());
         if (user == null) {

@@ -30,16 +30,13 @@ function SignIn() {
             email: '',
             password: '',
         },
-        validationSchema: Yup.object({
+        validationSchema: Yup.object().shape({
             email: Yup.string()
                 .required('Thông tin bắt buộc')
-                .matches('/^[^s@]+@[^s@]+.[^s@]+$/', 'Email không đúng định dạng'),
+                .matches(/^[^s@]+@[^s@]+.[^s@]+$/, 'Email không đúng định dạng'),
             password: Yup.string()
                 .required('Thông tin bắt buộc')
-                .matches(
-                    '/^(?=.*[A-Z])(?=.*[a-z])(?=.*d).{8,}$/',
-                    'Mật khẩu không đúng định dạng',
-                ),
+                .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*d).{8,}$/, 'Mật khẩu không đúng định dạng'),
         }),
         onSubmit: (values) => {
             const encryptedPassword = '' + encrypt(values?.password);
@@ -132,8 +129,10 @@ function SignIn() {
     };
 
     const handleLoginWithFacebook = (response) => {
+        console.log(response);
         dispatch(
             loginSuccess({
+                email: response?.email,
                 username: response?.name,
                 accessToken: response?.accessToken,
                 avatar: response?.picture?.data?.url,
@@ -318,23 +317,26 @@ function SignIn() {
                                         onChange={formik.handleChange}
                                         value={formik.values.password}
                                     ></input>
-                                    
+
                                     {formik.touched.password && formik.errors.password ? (
                                         <div className="mt-2 flex items-center text-sm font-bold text-red-600">
                                             <span className="mx-1">{formik.errors.password}</span>
                                         </div>
                                     ) : null}
-                                        <ul className="list-disc text-[13px] text-gray-500 ml-6 mt-2">
-                                            <li>Ít nhất một chữ cái viết hoa</li>
-                                            <li>Ít nhất một chữ cái viết thường</li>
-                                            <li>Ít nhất một chữ số</li>
-                                            <li>Độ dài tối thiểu là 8 ký tự</li>
-                                        </ul>
-                                    <div
-                                        className="mt-1 cursor-pointer select-none"
-                                    >
+                                    <ul className="ml-6 mt-2 list-disc text-[13px] text-gray-500">
+                                        <li>Ít nhất một chữ cái viết hoa</li>
+                                        <li>Ít nhất một chữ cái viết thường</li>
+                                        <li>Ít nhất một chữ số</li>
+                                        <li>Độ dài tối thiểu là 8 ký tự</li>
+                                    </ul>
+                                    <div className="mt-1 cursor-pointer select-none">
                                         <div className="flex items-center">
-                                            <input type="checkbox" id="showPassword" name="showPassword"  onClick={() => setShowPassword(!showPassword)}/>
+                                            <input
+                                                type="checkbox"
+                                                id="showPassword"
+                                                name="showPassword"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                            />
                                             <label htmlFor="showPassword" className="ml-2">
                                                 Hiện mật khẩu
                                             </label>

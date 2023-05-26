@@ -26,8 +26,9 @@ public class VerifyJwtTokenByGoogle implements VerifyJwtToken {
         String s = new String(claims);
         s += "}";
         StringBuilder b = new StringBuilder(s);
-        b.insert(s.length() - 33, "}");
-        System.out.println(b.toString());
+
+        b.insert(s.length() -  33, "}");
+
         if (s != null) {
             jsonObject = new JSONObject(b.toString());
             return true;

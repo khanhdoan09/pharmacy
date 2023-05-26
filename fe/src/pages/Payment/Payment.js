@@ -256,10 +256,10 @@ function Payment() {
                                                         setIsUseRewardPoint(!isUseRewardPoint);
                                                         if (isUseRewardPoint) {
                                                             setRenderRewardPoint(0);
-                                                            setMoneySaved(moneySaved - 100);
+                                                            setMoneySaved(moneySaved - (totalPrice * 3) / 100);
                                                         } else {
-                                                            setRenderRewardPoint(100);
-                                                            setMoneySaved(100 + moneySaved);
+                                                            setRenderRewardPoint((totalPrice * 5) / 100);
+                                                            setMoneySaved((totalPrice * 3) / 100 + moneySaved);
                                                         }
                                                     }}
                                                     className="absolute mx-1"

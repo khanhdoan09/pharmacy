@@ -43,11 +43,13 @@ function InfoUpdate() {
             phone: '',
             birthday: '',
         },
-        validationSchema: Yup.object({
-            name: Yup.string().required('Thông tin bắt buộc').matches("/^[A-Za-zs'-]+$/", 'Tên không đúng định dạng'),
+        validationSchema: Yup.object().shape({
+            name: Yup.string()
+                .required('Thông tin bắt buộc')
+                .matches(/^[A-Za-zs'-]+$/, 'Tên không đúng định dạng'),
             phone: Yup.string()
                 .required('Thông tin bắt buộc')
-                .matches('/^d{10,}$/', 'Số điện thoại không đúng định dạng'),
+                .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'Số điện thoại không đúng định dạng'),
             birthday: Yup.string().required('Thông tin bắt buộc'),
         }),
         onSubmit: (values) => {

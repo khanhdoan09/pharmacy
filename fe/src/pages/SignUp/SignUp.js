@@ -32,14 +32,16 @@ function SignUp() {
             password: '',
             confirmPassword: '',
         },
-        validationSchema: Yup.object({
-            name: Yup.string().required('Thông tin bắt buộc').matches("/^[A-Za-zs'-]+$/", 'Tên không đúng định dạng'),
+        validationSchema: Yup.object().shape({
+            name: Yup.string()
+                .required('Thông tin bắt buộc')
+                .matches(/^[A-Za-zs'-]+$/, 'Tên không đúng định dạng'),
             email: Yup.string()
                 .required('Thông tin bắt buộc')
-                .matches('/^[^s@]+@[^s@]+.[^s@]+$/', 'Email không đúng định dạng'),
+                .matches(/^[^s@]+@[^s@]+.[^s@]+$/, 'Email không đúng định dạng'),
             password: Yup.string()
                 .required('Thông tin bắt buộc')
-                .matches('/^(?=.*[A-Z])(?=.*[a-z])(?=.*d).{8,}$/', 'Mật khẩu không đúng định dạng'),
+                .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*d).{8,}$/, 'Mật khẩu không đúng định dạng'),
             confirmPassword: Yup.string()
                 .required('Thông tin bắt buộc')
                 .oneOf([Yup.ref('password')], 'Xác nhận mật khẩu không đúng.'),
@@ -227,12 +229,12 @@ function SignUp() {
                                             <span className="mx-1">{formik.errors.password}</span>
                                         </div>
                                     ) : null}
-                                    <ul className="list-disc text-[13px] text-gray-500 ml-6 mt-2">
-                                            <li>Ít nhất một chữ cái viết hoa</li>
-                                            <li>Ít nhất một chữ cái viết thường</li>
-                                            <li>Ít nhất một chữ số</li>
-                                            <li>Độ dài tối thiểu là 8 ký tự</li>
-                                        </ul>
+                                    <ul className="ml-6 mt-2 list-disc text-[13px] text-gray-500">
+                                        <li>Ít nhất một chữ cái viết hoa</li>
+                                        <li>Ít nhất một chữ cái viết thường</li>
+                                        <li>Ít nhất một chữ số</li>
+                                        <li>Độ dài tối thiểu là 8 ký tự</li>
+                                    </ul>
                                 </div>
                                 <div className="relative my-3">
                                     <label htmlFor="confirmPassword" className="py-1 font-bold text-[#016cc9] ">
