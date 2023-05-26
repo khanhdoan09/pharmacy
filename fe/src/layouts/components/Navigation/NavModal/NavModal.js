@@ -91,6 +91,7 @@ function NavModal(props) {
                     </div>
                     <div className="grid grid-cols-5 gap-2">
                         {bestSell?.slice(0, 5)?.map((e) => {
+                             const price = e?.priceWithUnit?.[0]?.price;
                             return (
                                 <div className=" px-1" key={e.id}>
                                     <ProductSeller
@@ -99,8 +100,8 @@ function NavModal(props) {
                                         img={e?.avatar}
                                         name={e?.name}
                                         unit={e?.category}
-                                        newPrice={`${convertNumberToPrice(e?.price - (e?.price * e?.discount) / 100)}đ`}
-                                        oldPrice={`${convertNumberToPrice(e?.price)}đ`}
+                                        newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
+                                oldPrice={`${convertNumberToPrice(price)}đ`}
                                     />
                                 </div>
                             );

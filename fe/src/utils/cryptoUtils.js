@@ -6,7 +6,7 @@ export const encrypt = (text) => {
     var encrypted = CryptoJS.AES.encrypt(text, key, {
         iv: iv,
         mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.ZeroPadding,
+        padding: CryptoJS.pad.Pkcs7,
     });
     return encrypted.toString();
 };
@@ -17,7 +17,7 @@ export const decryptString = (encryptedString) => {
     var decrypt = CryptoJS.AES.decrypt(encryptedString, key, {
         iv: iv,
         mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.ZeroPadding,
+        padding: CryptoJS.pad.Pkcs7,
     });
     return decrypt;
 };

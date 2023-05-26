@@ -7,6 +7,7 @@ import * as categoryService from '~/services/categoryService';
 import * as fieldService from '~/services/fieldService';
 import NavItem from './NavItem';
 
+
 function Navigation() {
     const [isHovering, setIsHovering] = useState(false);
     const [fields, setFields] = useState([]);
@@ -36,7 +37,7 @@ function Navigation() {
     }, [valueFieldHover]);
     return (
         <div className="padding-responsive relative m-auto grid max-w-[1200px] items-center justify-between bg-[#ff] cs:hidden xs:hidden sm:hidden md:hidden lg:flex xl:flex 2xl:flex">
-            {fields?.data?.map((e) => {
+            {fields?.data?.map((e,index) => {
                 return (
                     <div
                         onMouseEnter={() => {
@@ -47,7 +48,7 @@ function Navigation() {
                         onMouseLeave={() => {
                             setIsHovering(false);
                         }}
-                        key={e?.id}
+                        key={index}
                         className='grow'
                     >
                         <NavItem to={`/filter/slug=${e.slug}`} >

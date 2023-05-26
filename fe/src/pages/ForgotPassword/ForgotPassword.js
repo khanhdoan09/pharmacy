@@ -27,7 +27,7 @@ function ForgotPassword() {
                 .oneOf([Yup.ref('password')], 'Xác nhận mật khẩu không đúng.'),
         }),
         onSubmit: (values) => {
-            navigate('/signIn');
+            navigate('/sign-in');
         },
     });
     return (

@@ -12,7 +12,7 @@ function Search() {
     const navigate = useNavigate();
 
     const [resultSearch, setResultSearch] = useState([]);
-    const [pageSize] = useState(3); // total product appear one page
+    const [pageSize] = useState(10); // total product appear one page
     const [totalProduct, setTotalProduct] = useState(1); // total result product search
     const [numberPage, setNumberPage] = useState([]);
     const totalPage = [];

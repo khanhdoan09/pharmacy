@@ -71,7 +71,7 @@ function CartItem({
             },
             (err) => {
                 console.log(err);
-                navigate('/server_error');
+                navigate('server-error');
             },
         );
     }, []);
@@ -96,10 +96,10 @@ function CartItem({
                 },
                 (err) => {
                     if (err?.status === 403 || err?.status === 401) {
-                        navigate('/signIn');
+                        navigate('/sign-in');
                     } else {
                         console.log(err);
-                        navigate('/server_error');
+                        navigate('server-error');
                     }
                 },
             );
@@ -146,10 +146,10 @@ function CartItem({
                         alert('not active');
                     } else if (statusCode === 403 || statusCode === 401) {
                         console.log(err);
-                        // navigate('/signIn');
+                        // navigate('/sign-in');
                     } else {
                         console.log(err);
-                        navigate('/server_error');
+                        navigate('server-error');
                     }
                 },
             );
@@ -192,9 +192,9 @@ function CartItem({
                             } else if (statusCode === 410) {
                                 alert('sản phẩm không còn được bán');
                             } else if (statusCode === 403 || statusCode === 401) {
-                                navigate('/signIn');
+                                navigate('/sign-in');
                             } else {
-                                navigate('/server_error');
+                                navigate('server-error');
                             }
                         },
                     );

@@ -33,7 +33,7 @@ function ActiveAccount() {
                     if (e?.status === 200) {
                         localStorage.removeItem('encryptedEmail');
                         alert('kích hoạt tài khoản thành công');
-                        navigate('/signIn');
+                        navigate('/sign-in');
                     }
                 },
                 (err) => {

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { getImageFromFirebase } from '~/utils/firebase';
 
 function ResultSearchItem({ id, to, img, name, title, oldPrice, newPrice, unit, onClick }) {
-    console.log(to);
     const [urlAvatar, setUrlAvatar] = useState('/static/media/placeholder600x600.8239fe13708c0a4484a8.png');
     useEffect(() => {
         if (id !== undefined) {

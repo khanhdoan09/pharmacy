@@ -289,11 +289,11 @@ function Comment(props) {
 
                                 {e?.reply?.map((rep) => (
                                     <Reply
-                                        key={rep.id}
-                                        name={rep.user.name}
-                                        label={rep.user.role === 'staff' ? 'Quản trị viên' : ''}
-                                        time={rep.createDate}
-                                        content={rep.content}
+                                        key={rep?.id}
+                                        name={rep?.user?.name}
+                                        label={rep?.user?.role === 'staff' ? 'Quản trị viên' : ''}
+                                        time={rep?.createDate}
+                                        content={rep?.content}
                                     >
                                         <div className="flex items-center">
                                             <svg

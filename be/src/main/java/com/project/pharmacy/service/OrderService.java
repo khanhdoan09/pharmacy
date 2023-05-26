@@ -4,6 +4,7 @@ import com.project.pharmacy.entity.Orders;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class OrderService {
         Orders newOrder = orderRepository.save(order);
         return newOrder.getId();
     }
-
+    @Cacheable("orderCache")
     public List<Orders> getOrderByEmail(String email) throws CustomException {
         List<Orders> orders =
                 orderRepository.findAll().stream().filter(o -> o.getUser().getEmail().equals(email)).collect(Collectors.toList());

@@ -40,7 +40,7 @@ function Header() {
             .catch((err) => {
                 console.log('Lỗi đăng xuất google');
                 console.log(err?.code);
-                navigate('/server_error');
+                navigate('server-error');
             });
     };
     const handleSignOutWithNormal = async () => {
@@ -56,7 +56,7 @@ function Header() {
     function handleSignOutWithMicrosoft() {
         instance
             .logoutPopup({
-                postLogoutPopupUri: '/signIn',
+                postLogoutPopupUri: '/sign-in',
             })
             .then(
                 () => {
@@ -67,7 +67,7 @@ function Header() {
                     setCookie('accountType', null);
                 },
                 (err) => {
-                    navigate('/server_error');
+                    navigate('server-error');
                 },
             );
     }
@@ -89,7 +89,7 @@ function Header() {
                 </NavLink>
                 <div className="right flex text-white ">
                     {!user ? (
-                        <NavLink to="/signIn" className="track mr-3 flex items-center">
+                        <NavLink to="/sign-in" className="track mr-3 flex items-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -169,21 +169,21 @@ function Header() {
                                                 switch (user?.account) {
                                                     case 'Microsoft':
                                                         handleSignOutWithMicrosoft();
-                                                        navigate('/signIn');
+                                                        navigate('/sign-in');
                                                         break;
                                                     case 'Google':
                                                         handleSignOutWithGoogleFirebase();
-                                                        navigate('/signIn');
+                                                        navigate('/sign-in');
                                                         break;
                                                     case 'Normal':
                                                         handleSignOutWithNormal();
-                                                        navigate('/signIn');
+                                                        navigate('/sign-in');
                                                         break;
                                                     default:
                                                         dispatch(logoutSuccess(null));
                                                         setCookie('accessToken', null);
                                                         setCookie('accountType', null);
-                                                        navigate('/signIn');
+                                                        navigate('/sign-in');
                                                         logOut();
                                                 }
                                             }}
@@ -216,7 +216,7 @@ function Header() {
                                         <p className="ml-1 select-none text-[#333]">Đăng nhập</p>
                                     </NavLink>
                                     <NavLink
-                                        to="/signup"
+                                        to="/sign-up"
                                         className="transition-basic flex items-center rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "
                                     >
                                         <svg
@@ -318,7 +318,7 @@ function Header() {
                                 >
                                     <NavLink to="/" className="center">
                                         <img
-                                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/longchau-logo.svg"
+                                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/logo%2Flogo_front_big_c58fec2dc9.svg?alt=media&token=829a536a-047e-4264-ab9a-f277904a0c7a"
                                             alt="img-logo"
                                         />
                                     </NavLink>
@@ -405,7 +405,7 @@ function Header() {
                                                             toogleLock();
                                                         }}
                                                     >
-                                                        <NavLink to="/signIn">Đăng nhập</NavLink>
+                                                        <NavLink to="/sign-in">Đăng nhập</NavLink>
                                                     </button>
                                                     <button
                                                         className="ml-2 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 px-3 font-medium text-[#fff]"
@@ -413,7 +413,7 @@ function Header() {
                                                             toogleLock();
                                                         }}
                                                     >
-                                                        <NavLink to="/signUp">Đăng ký</NavLink>
+                                                        <NavLink to="/sign-up">Đăng ký</NavLink>
                                                     </button>
                                                 </div>
                                             </div>
@@ -548,7 +548,7 @@ function Header() {
                                                         }
                                                     }}
                                                 >
-                                                    <NavLink to="/signUp">Đăng xuất</NavLink>
+                                                    <NavLink to="/sign-up">Đăng xuất</NavLink>
                                                 </button>
                                             </div>
                                         </div>
@@ -666,7 +666,7 @@ function Header() {
                     )}
                 </div>
                 <NavLink to="/" className="center">
-                    <img src="https://cms-prod.s3-sgn09.fptcloud.com/logo_front_big_c58fec2dc9.svg" alt="img-logo" />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/logo%2Flogo_front_big_c58fec2dc9.svg?alt=media&token=829a536a-047e-4264-ab9a-f277904a0c7a" alt="img-logo" />
                 </NavLink>
                 <NavLink
                     to="/cart"

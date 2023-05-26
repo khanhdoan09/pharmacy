@@ -4,6 +4,7 @@ import com.project.pharmacy.entity.Rate;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.repository.RateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 public class RateService {
     @Autowired
     RateRepository rateRepository;
-
+    @Cacheable("rateCache")
     public List<Rate> findRateByMedicineId(int medicineId) throws CustomException {
         List<Rate> rates =
                 rateRepository.findAll().stream().filter(rate -> rate.getMedicine().getId() == medicineId).collect(Collectors.toList());

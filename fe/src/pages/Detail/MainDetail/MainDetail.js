@@ -34,7 +34,7 @@ function MainDetail(props) {
 
     function handleAddNewMedicineIntoCart() {
         if (user == null) {
-            navigate('/signIn');
+            navigate('/sign-in');
         }
         addNewMedicineInCart(
             props?.detail?.medicineId,
@@ -59,17 +59,17 @@ function MainDetail(props) {
                     },
                     (err) => {
                         if (err?.status === 403) {
-                            navigate('/signIn');
+                            navigate('/sign-in');
                         } else {
                             console.log(err);
-                            navigate('/server_error');
+                            navigate('server-error');
                         }
                     },
                 );
             },
             (err) => {
                 console.log(err);
-                navigate('/server_error');
+                navigate('server-error');
             },
         );
     }

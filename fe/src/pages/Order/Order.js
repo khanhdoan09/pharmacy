@@ -48,7 +48,7 @@ function Order() {
 
     useEffect(() => {
         if (user == null) {
-            navigate('/signIn');
+            navigate('/sign-in');
         }
     }, []);
 

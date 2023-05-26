@@ -7,6 +7,7 @@ import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.repository.CategoryDetailRepository;
 import com.project.pharmacy.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class CategoryService {
     public List<CategoryDetail> getCategoryDetails() {
         return categoryDetailRepository.findAll();
     }
-
+    @Cacheable("categoryCache")
     public List<Category> findByIdField(int field) throws CustomException {
         List<Category> categories = categoryRepository.findByField(field);
         if (categories.size() == 0) {

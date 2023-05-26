@@ -9,6 +9,7 @@ import com.project.pharmacy.repository.MedicineRepository;
 import com.project.pharmacy.repository.UnitRepository;
 import com.project.pharmacy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class CartService {
 
     @Autowired
     private UnitService unitService;
-
+    @Cacheable("cartCache")
     public List<Cart> findMedicinesInCart(String email) throws CustomException {
         if (email == null || email.isEmpty()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "parameter must be valid");

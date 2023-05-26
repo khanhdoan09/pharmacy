@@ -34,19 +34,19 @@ function Payment() {
                 if (e?.status == 200) {
                     setRewardPoint(e?.data);
                 } else {
-                    navigate('/server_error');
+                    navigate('server-error');
                 }
             },
             (err) => {
                 console.log(err);
-                navigate('/server_error');
+                navigate('server-error');
             },
         );
     }, []);
 
     useEffect(() => {
         if (user == null) {
-            navigate('/signIn');
+            navigate('/sign-in');
         }
         let totalPriceTmp = 0;
         let totalPriceWithDiscountTmp = 0;
@@ -371,7 +371,7 @@ function Payment() {
                                                         })
                                                         .catch((err) => {
                                                             console.log(err);
-                                                            navigate('/server_error');
+                                                            navigate('server-error');
                                                         });
                                                 }
                                             }}

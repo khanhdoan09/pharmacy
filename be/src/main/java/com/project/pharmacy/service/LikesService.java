@@ -8,6 +8,7 @@ import com.project.pharmacy.repository.CommentRepository;
 import com.project.pharmacy.repository.LikesRepository;
 import com.project.pharmacy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class LikesService {
 
     @Autowired
     UserRepository userRepository;
-
+    @Cacheable("likesCache")
     public Likes findLikeByCommentIdAndUserId(int commentId, String userEmail) throws CustomException {
         User user =
                 userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().get();

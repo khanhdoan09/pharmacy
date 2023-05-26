@@ -1,25 +1,22 @@
-import { useState, useRef, useEffect } from 'react';
-// import CartEmpty from './CartEmpty';
-import CartItem from './CartItem';
-import Slider from 'react-slick';
-import ProductSeller from '~/components/ProductSeller';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import Voucher from '~/components/Voucher';
-import { useNavigate } from 'react-router-dom';
-import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
-import { getAllVouchersByToDay } from '~/services/voucherServices';
-import { getAllMedicinesInCart } from '~/services/cartServices';
-import { addMedicinesToCart } from '~/redux/cartSlice';
+import { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick-theme.css';
+import 'slick-carousel/slick/slick.css';
+import ProductSeller from '~/components/ProductSeller';
+import Voucher from '~/components/Voucher';
 import useAcquireAccessToken from '~/hooks/useAcquireAcessToken';
-import CartEmpty from './CartEmpty';
-import { useSelector, useDispatch } from 'react-redux';
+import { addMedicinesToCart } from '~/redux/cartSlice';
 import { addItemsToVoucher } from '~/redux/voucherSlice';
-import { findBestMedicinesInHistory } from '~/services/medicineService';
+import { getAllMedicinesInCart } from '~/services/cartServices';
+import { getAllVouchersByToDay } from '~/services/voucherServices';
+import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
+import CartEmpty from './CartEmpty';
+import CartItem from './CartItem';
 
 function Cart() {
-    const [cookies, setCookie] = useCookies(['access_token']);
     const voucherRef = useRef();
     const [totalPrice, setTotalPrice] = useState(0);
     const [showModal, setShowModal] = useState(false);
@@ -37,35 +34,13 @@ function Cart() {
     const user = useSelector((state) => state.authentication.login.currentUser);
     const getNewAccessToken = useAcquireAccessToken();
     const dispatch = useDispatch();
-    const [bestMedicinesInHistory, setBestMedicinesInHistory] = useState([]);
+
+    const medicine = useSelector((state) => state.medicine);
+    const bestSell = medicine.data.slice(0, 10).sort((a, b) => b.saleNumber - a.saleNumber);
 
     useEffect(() => {
-        findBestMedicinesInHistory().then(
-            (e) => {
-                setBestMedicinesInHistory(e?.data);
-            },
-            (err) => {},
-        );
-    }, []);
-
-    useEffect(() => {
-        // let dateObj = new Date();
-        // let month = dateObj.getUTCMonth() + 1;
-        // let day = dateObj.getUTCDate();
-        // let year = dateObj.getUTCFullYear();
-        // let toDay = year + '-' + month + '-' + day;
-        // getAllVouchersByToDay(toDay).then(
-        //     (e) => {
-        //         setVouchers(e?.data);
-        //         setShowVouchers(true);
-        //     },
-        //     (err) => {
-        //         navigate('/server_error');
-        //         console.log(err);
-        //     },
-        // );
         if (user == null) {
-            navigate('/signIn');
+            navigate('/sign-in');
         } else {
             dispatch(addItemsToVoucher({ items: [] }));
             const load = getAllMedicinesInCart(user?.accessToken, user?.account, user?.email);
@@ -77,7 +52,7 @@ function Cart() {
                         let tmpTotalPriceWithoutDiscount = 0;
                         let num = 0;
                         e?.data?.data?.map((e2) => {
-                            if (e2.medicine.active == 1) {
+                            if (e2.medicine.active === 1) {
                                 tmpTotalPrice +=
                                     (e2?.unit?.price - (e2?.unit?.price * e2?.medicine?.discount) / 100) * e2?.quantity;
                                 num += 1;
@@ -94,11 +69,11 @@ function Cart() {
                     if (err?.status === 401) {
                         getNewAccessToken();
                     } else if (err?.status === 403) {
-                        navigate('/signIn');
+                        navigate('/sign-in');
                     } else if (err?.status === 404) {
                     } else {
                         console.log(err);
-                        navigate('/server_error');
+                        navigate('server-error');
                     }
                 },
             );
@@ -197,7 +172,7 @@ function Cart() {
             let num = 0;
             let list = [];
             data?.data?.map((e) => {
-                if (e.medicine.active == 1) {
+                if (e.medicine.active === 1) {
                     num += 1;
                     list.push(e);
                 }
@@ -253,7 +228,8 @@ function Cart() {
                                     <img
                                         width={40}
                                         src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/voucher%2Fvoucher.png?alt=media&token=44249f28-5df6-435f-81a5-1f7544564e19"
-                                    ></img>
+                                        alt=""
+                                    />
                                     <p className="flex flex-wrap text-[14px] text-[#1250dc]">
                                         <span className="mr-1 font-semibold">Khuyến mại </span>
                                         <span>dành riêng cho bạn</span>
@@ -275,7 +251,7 @@ function Cart() {
                                             },
                                             (err) => {
                                                 console.log(err);
-                                                navigate('/server_error');
+                                                navigate('server-error');
                                             },
                                         );
                                     }}
@@ -349,6 +325,7 @@ function Cart() {
                                                                     width="30"
                                                                     height="30"
                                                                     className="transparent"
+                                                                    alt="1"
                                                                 />
                                                             </span>
                                                             <span className="mx-2 text-[14px]">
@@ -364,7 +341,7 @@ function Cart() {
 
                                 <div>
                                     {data?.data?.map((e, i) => {
-                                        return e?.medicine?.active == 0 ? (
+                                        return e?.medicine?.active === 0 ? (
                                             <div key={i}>
                                                 <CartItem
                                                     key={i}
@@ -403,12 +380,12 @@ function Cart() {
                                     })}
                                 </div>
                             </div>
-                            <div className="my-3 my-5 sm:w-[700px]">
+                            <div className="my-5 sm:w-[700px]">
                                 <h2 className="text-[18px] font-[500] tracking-[.0025em] text-[#020b27]">
                                     Sản phẩm bán chạy nhất
                                 </h2>
                                 <Slider {...settings} className="relative m-0 p-0">
-                                    {bestMedicinesInHistory?.map((e, i) => {
+                                    {bestSell?.map((e, i) => {
                                         const price = e?.priceWithUnit?.[0]?.price;
                                         return (
                                             <div key={i} className="">

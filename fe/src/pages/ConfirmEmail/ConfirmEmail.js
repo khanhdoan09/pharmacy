@@ -86,7 +86,7 @@ function ConfirmEmail() {
                 {successfullyConfirm ? (
                     <div className="">
                         <p>Xác nhận thành công</p>
-                        <NavLink to="/signIn" className="cursor-pointer text-emerald-500 text-xl">
+                        <NavLink to="/sign-in" className="cursor-pointer text-emerald-500 text-xl">
                             Quay về trang đăng nhập
                         </NavLink>
                     </div>

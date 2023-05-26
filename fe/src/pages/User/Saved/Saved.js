@@ -26,7 +26,7 @@ function Saved() {
                         return (
                             <div className="max-w-full" key={saved?.id}>
                                 <ProductAds
-                                    img="ád"
+                                    id={saved?.id}
                                     to={`/detail/slug=${saved?.medicine?.slug}`}
                                     label={saved?.medicine?.specification}
                                     title={saved?.medicine?.name}
