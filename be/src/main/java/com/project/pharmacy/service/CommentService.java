@@ -7,6 +7,7 @@ import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.repository.CommentRepository;
 import com.project.pharmacy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class CommentService {
         commentRepository.save(comment);
 
     }
-
+    @Cacheable("commentCache")
     public List<Comment> findCommentsByMedicineId(int medicineId) throws CustomException {
         List<Comment> comments = commentRepository.findCommentsByMedicineId(medicineId);
         if (comments.size() == 0) {

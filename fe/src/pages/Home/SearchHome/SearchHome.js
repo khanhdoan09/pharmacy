@@ -208,21 +208,24 @@ function SearchHome() {
                     </div>
                     {resultSearch?.length !== 0 && keyword.length !== 0 ? (
                         <div className="results absolute left-0 w-full rounded-lg bg-[#ffffff] shadow-2xl">
-                            {resultSearch?.slice(0, 5)?.map((e) => (
-                                <ResultSearchItem
-                                    key={e.id}
-                                    to={`detail/slug=${e.slug}`}
-                                    img=""
-                                    name={e.name}
-                                    title={e.category}
-                                    oldPrice={e.price}
-                                    newPrice={e.price}
-                                    unit="Hộp"
-                                    onClick={() => {
-                                        setKeyword('');
-                                    }}
-                                />
-                            ))}
+                            {resultSearch?.slice(0, 5)?.map((e) => {
+                                const price = e?.priceWithUnit?.[0]?.price;
+                                return (
+                                    <ResultSearchItem
+                                    id={e?.id}
+                                        key={e?.id}
+                                        to={`detail/slug=${e?.slug}`}
+                                        name={e?.name}
+                                        title={e?.category}
+                                        newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
+                                oldPrice={`${convertNumberToPrice(price)}đ`}
+                                        unit={e?.category}
+                                        onClick={() => {
+                                            setKeyword('');
+                                        }}
+                                    />
+                                );
+                            })}
 
                             {resultSearch?.length > 0 && (
                                 <NavLink

@@ -25,14 +25,14 @@ function ItemCartHeader(props) {
             },
             (err) => {
                 if (err?.status === 403 || err?.status === 401) {
-                    navigate('/signIn');
+                    navigate('/sign-in');
                 } else if (err?.status === 404) {
                     medicineInCartRef.current.remove();
                     props.setTotalMedicine(props.totalMedicine - 1);
                     dispatch(addMedicinesToCart({ medicines: cart?.filter((e) => e?.id !== id) }));
                 } else {
                     console.log(err);
-                    navigate('/server_error');
+                    navigate('server-error');
                 }
             },
         );

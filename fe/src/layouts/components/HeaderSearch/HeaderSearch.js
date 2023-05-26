@@ -73,7 +73,7 @@ function HeaderSearch() {
             .catch((err) => {
                 console.log('Lỗi đăng xuất google');
                 console.log(err?.code);
-                navigate('/server_error');
+                navigate('server-error');
             });
     };
 
@@ -90,7 +90,7 @@ function HeaderSearch() {
     function handleSignOutWithMicrosoft() {
         instance
             .logoutPopup({
-                postLogoutPopupUri: '/signIn',
+                postLogoutPopupUri: '/sign-in',
             })
             .then(
                 () => {
@@ -101,7 +101,7 @@ function HeaderSearch() {
                     logOut();
                 },
                 (err) => {
-                    navigate('/server_error');
+                    navigate('server-error');
                 },
             );
     }
@@ -324,21 +324,21 @@ function HeaderSearch() {
                                                 switch (user?.account) {
                                                     case 'Microsoft':
                                                         handleSignOutWithMicrosoft();
-                                                        navigate('/signIn');
+                                                        navigate('/sign-in');
                                                         break;
                                                     case 'Google':
                                                         handleSignOutWithGoogleFirebase();
-                                                        navigate('/signIn');
+                                                        navigate('/sign-in');
                                                         break;
                                                     case 'Normal':
                                                         handleSignOutWithNormal();
-                                                        navigate('/signIn');
+                                                        navigate('/sign-in');
                                                         break;
                                                     default:
                                                         dispatch(removeMedicinesFromCart());
                                                         setCookie('accessToken', null);
                                                         setCookie('accountType', null);
-                                                        navigate('/signIn');
+                                                        navigate('/sign-in');
                                                         logOut();
                                                 }
                                             }}
@@ -538,7 +538,7 @@ function HeaderSearch() {
                                                             toogleLock();
                                                         }}
                                                     >
-                                                        <NavLink to="/signIn">Đăng nhập</NavLink>
+                                                        <NavLink to="/sign-in">Đăng nhập</NavLink>
                                                     </button>
                                                     <button
                                                         className="ml-2 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 px-3 font-medium text-[#fff]"
@@ -546,7 +546,7 @@ function HeaderSearch() {
                                                             toogleLock();
                                                         }}
                                                     >
-                                                        <NavLink to="/signUp">Đăng ký</NavLink>
+                                                        <NavLink to="/sign-up">Đăng ký</NavLink>
                                                     </button>
                                                 </div>
                                             </div>
@@ -680,7 +680,7 @@ function HeaderSearch() {
                                                         }
                                                     }}
                                                 >
-                                                    <NavLink to="/signUp">Đăng xuất</NavLink>
+                                                    <NavLink to="/sign-up">Đăng xuất</NavLink>
                                                 </button>
                                             </div>
                                         </div>
@@ -792,7 +792,7 @@ function HeaderSearch() {
                     )}
                 </div>
                 <NavLink to="/" className="center">
-                    <img src="https://nhathuoclongchau.com.vn/frontend_v3/images/longchau-logo.svg" alt="img-logo" />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/logo%2Flogo_front_big_c58fec2dc9.svg?alt=media&token=829a536a-047e-4264-ab9a-f277904a0c7a" alt="img-logo" />
                 </NavLink>
                 <NavLink
                     to="/cart"

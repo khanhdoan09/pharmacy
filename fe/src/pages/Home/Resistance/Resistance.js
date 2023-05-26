@@ -89,7 +89,7 @@ function Resistance() {
                 <Slider {...settings2}>
                     {medicines
                         ?.slice(0, 10)
-                        ?.sort((a, b) => a.saleNumber - b.saleNumber)
+                        ?.sort((a, b) => b.saleNumber - a.saleNumber)
                         ?.map((medicine, index) => {
                             const price = medicine?.priceWithUnit?.[0]?.price;
                             return (

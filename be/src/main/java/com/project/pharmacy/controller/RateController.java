@@ -38,8 +38,7 @@ public class RateController {
 
     @PostMapping("/saveRate")
     public ResponseHandler saveRate(@RequestBody RateRequest rateRequest) throws CustomException {
-        CryptoUtils cryptoUtils = new CryptoUtils();
-        User user = userService.findByEmail(cryptoUtils.decrypted(rateRequest.getUserEmail()));
+        User user = userService.findByEmail(rateRequest.getUserEmail());
         Medicine medicine = medicineService.findById(rateRequest.getMedicineId());
         if (user == null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "Can't save rate because user null");
@@ -50,7 +49,7 @@ public class RateController {
         rate.setUser(user);
         rate.setMedicine(medicine);
         rate.setStar(rateRequest.getStar());
-        rate.setContent(cryptoUtils.decrypted(rateRequest.getContent()));
+        rate.setContent(rateRequest.getContent());
         rateService.saveRate(rate);
 
         ResponseHandler responseHandler = new ResponseHandler("Save rate successfully", HttpStatus.OK.value(), null);

@@ -5,6 +5,7 @@ import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.repository.UserRepository;
 import com.project.pharmacy.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,9 +37,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
 
+    @Cacheable("userCache")
     public User findById(int id) throws CustomException {
         Optional<User> user = userRepository.findById(id);
         return user.map(u -> {
@@ -57,7 +57,8 @@ public class UserService implements UserDetailsService {
                                   String avatar) {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        User user = new User(name, email, password, phoneNumber,  dateFormat.format(cal.getTime()), methodLogin, avatar, "client");
+        User user = new User(name, email, password, phoneNumber, dateFormat.format(cal.getTime()), methodLogin,
+                             avatar, "client");
         user.setRewardPoint(50);
         userRepository.save(user);
     }
@@ -119,15 +120,15 @@ public class UserService implements UserDetailsService {
             user.get().setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user.get());
             return user.get();
-        }
-        else {
+        } else {
             throw new CustomException(HttpStatus.NOT_FOUND, "Incorrect password");
         }
     }
 
     public User findByEmail(String email) throws CustomException {
         Optional<User> user = userRepository.findByEmail(email);
-        return user.map(u -> u).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Can't found user by email = " + email));
+        return user.map(u -> u).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Can't found user by " +
+                "email = " + email));
     }
 
     public User updateInformation(String email, String name, String phone) throws CustomException {
@@ -142,7 +143,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateRewardPoint(User user, int newRewardPoint) {
-        user.setRewardPoint(user.getRewardPoint() +  newRewardPoint);
+        user.setRewardPoint(user.getRewardPoint() + newRewardPoint);
         userRepository.save(user);
     }
 
@@ -153,12 +154,12 @@ public class UserService implements UserDetailsService {
 
     public UserDetails getUserByEmail(String email) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByEmail(email);
-        return user.map(u -> new CustomUserDetails(u)).orElseThrow(() -> new UsernameNotFoundException("not found by " + email));
+        return user.map(u -> new CustomUserDetails(u)).orElseThrow(() -> new UsernameNotFoundException("not found by "
+                                                                                                               + email));
     }
 
     public String decryptedPasswordFromClient(String password) {
-        try
-        {
+        try {
             String key = "1234567812345678";
             String iv = "1234567812345678";
 
@@ -173,14 +174,13 @@ public class UserService implements UserDetailsService {
             byte[] original = cipher.doFinal(encrypted1);
             String originalString = new String(original);
             return originalString.trim();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Optional<User> existsByEmail(String email)  {
+    public Optional<User> existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
@@ -212,7 +212,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void activeCode(String email, String codeActiveValue) throws CustomException {
-        Optional<User> user =  userRepository.findByEmail(email);
+        Optional<User> user = userRepository.findByEmail(email);
         if (!user.isPresent()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "email doesn't exist");
         }
@@ -224,16 +224,15 @@ public class UserService implements UserDetailsService {
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
         LocalDateTime codeActiveTime = LocalDateTime.parse(user.get().getCodeActiveTime(), formatter);
-        if(!checkValidityPeriodOfActiveCode(codeActiveTime)) {
+        if (!checkValidityPeriodOfActiveCode(codeActiveTime)) {
             throw new CustomException(HttpStatus.GONE, "code active cannot use anymore");
-        }
-        else {
+        } else {
             user.get().setActive(true);
             userRepository.save(user.get());
         }
     }
 
-    private boolean checkValidityPeriodOfActiveCode(LocalDateTime codeActiveTime ) throws CustomException {
+    private boolean checkValidityPeriodOfActiveCode(LocalDateTime codeActiveTime) throws CustomException {
         LocalDateTime now = LocalDateTime.now();
 
         if (now.getYear() == codeActiveTime.getYear()
@@ -242,13 +241,11 @@ public class UserService implements UserDetailsService {
         ) {
             if (now.getHour() == codeActiveTime.getHour()) {
                 return now.getMinute() - codeActiveTime.getMinute() <= 5 ? true : false;
-            }
-            else {
+            } else {
                 return now.getHour() * 60 + now.getMinute() - codeActiveTime.getMinute()
                         * 60 + codeActiveTime.getMinute() <= 5 ? true : false;
             }
-        }
-        else {
+        } else {
             return false;
         }
     }

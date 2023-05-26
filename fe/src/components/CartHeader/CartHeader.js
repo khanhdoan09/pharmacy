@@ -35,12 +35,12 @@ function CartHeader() {
                     getNewAccessToken();
                 } else if (err?.status === 403) {
                     console.log(err);
-                    navigate('/signIn');
+                    navigate('/sign-in');
                 } else if (err?.status === 404) {
                     console.log('cart is empty');
                 } else {
                     console.log(err);
-                    navigate('/server_error');
+                    navigate('server-error');
                 }
             },
         );

@@ -281,7 +281,7 @@ function ResetPassword() {
                                             Đổi Mật Khẩu Thành Công
                                         </h2>
                                         <NavLink
-                                            to="/signIn"
+                                            to="/sign-in"
                                             className="select-none rounded-md bg-blue-500 px-4 py-2 text-center text-white transition-colors duration-200 hover:bg-blue-600"
                                         >
                                             Quay về trang đăng nhập
@@ -316,10 +316,15 @@ function ResetPassword() {
                                     await userService
                                         .findUserByEmail(email)
                                         .then((response) => {
-                                            setAlert('');
-                                            setIsOpenOtp(true);
-                                            setTimeLeft(60);
-                                            verifyService.generateCode(email);
+                                            const res = response.data.data;
+                                            if (res.accountType === 'Normal') {
+                                                setAlert('');
+                                                setIsOpenOtp(true);
+                                                setTimeLeft(60);
+                                                verifyService.generateCode(email);
+                                            }else{
+                                                setAlert('Bạn có thể dùng tài khoản liên kết để đăng nhập');
+                                            }
                                         })
                                         .catch((error) => {
                                             setAlert('Không tìm thầy tài khoản phù hợp với email');
@@ -350,7 +355,7 @@ function ResetPassword() {
                         <p className="text-center">
                             Bạn chưa có tài khoản?
                             <NavLink
-                                to="/signUp"
+                                to="/sign-up"
                                 className="inline-flex items-center space-x-1 font-medium text-indigo-600"
                             >
                                 <span>Đăng Ký Ngay</span>

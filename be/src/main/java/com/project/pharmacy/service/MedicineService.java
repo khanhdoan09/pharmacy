@@ -9,6 +9,7 @@ import com.project.pharmacy.repository.MedicineIngredientRepository;
 import com.project.pharmacy.repository.MedicineRepository;
 import com.project.pharmacy.repository.OrderDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class MedicineService {
     public List<Medicine> getMedicines() {
         return medicineRepository.findAll();
     }
-
+    @Cacheable("productCache")
     public Medicine findById(int id) throws CustomException {
         Optional<Medicine> medicine = medicineRepository.findById(id);
         if (medicine.isPresent()) {

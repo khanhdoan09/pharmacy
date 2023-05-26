@@ -117,7 +117,7 @@ export const registerByForm = async (username, email, encryptedPassword) => {
 
 export const activeCode = async (email, code) => {
     try {
-        const load = await request.post(`/${controller}/activeAccount`, {
+        const load = await request.post(`/${controller}/active-account`, {
             email: email,
             activeCodeValue: code,
         });

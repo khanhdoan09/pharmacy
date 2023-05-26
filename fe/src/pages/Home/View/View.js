@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import Slider from 'react-slick';
-import n1 from '~/assets/img/nav/n1.png';
 import ProductMain from '~/components/ProductMain';
 import { convertNumberToPrice } from '~/utils/currency';
 function View() {
@@ -60,6 +59,7 @@ function View() {
     };
 
     const medicines = useSelector((state) => state.medicine.data);
+    const filterDiscount = medicines.filter((x) => parseInt(x.discount) !== 0);
     return (
         <div className="max-w-full bg-[#edf2f8]">
             <div className="mx-auto my-0 max-w-[1200px] py-8">
@@ -85,18 +85,20 @@ function View() {
                 </div>
 
                 <Slider {...settings3} className="padding-respinsive ">
-                    {medicines
+                    {filterDiscount
                         ?.slice(0, 10)
-                        ?.sort((a, b) => a.discount - b.discount)
+                        ?.sort((a, b) => b.discount - a.discount)
                         .map((medicine, index) => {
                             const price = medicine?.priceWithUnit?.[0]?.price;
                             return (
-                                <div className="!mx-auto !flex h-full !w-11/12 !items-center !justify-center">
+                                <div
+                                    className="!mx-auto !flex h-full !w-11/12 !items-center !justify-center"
+                                    key={index}
+                                >
                                     <ProductMain
                                         id={medicine?.id}
-                                        key={index}
                                         to={`/detail/slug=${medicine?.slug}`}
-                                        label={medicine?.specification}
+                                        label={'Giảm ' + medicine?.discount + '%'}
                                         title={medicine?.name}
                                         newPrice={`${convertNumberToPrice(
                                             price - (price * medicine?.discount) / 100,

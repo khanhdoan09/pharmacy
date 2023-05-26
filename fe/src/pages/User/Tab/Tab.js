@@ -28,14 +28,14 @@ function Tab() {
                     setListOrder(e?.data?.data);
                     setListOrderAll(e?.data?.data);
                 } else if (e?.status === 403) {
-                    navigate('/signIn');
+                    navigate('/sign-in');
                 } else {
                     console.log(e);
-                    navigate('/server_error');
+                    navigate('server-error');
                 }
             },
             (error) => {
-                if (error?.status !== 404) navigate('/server_error');
+                if (error?.status !== 404) navigate('server-error');
             },
         );
     }, []);

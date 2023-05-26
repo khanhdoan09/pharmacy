@@ -1,7 +1,21 @@
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
+import { getImageFromFirebase } from '~/utils/firebase';
 
-function ContentNavModalItem({ to, img, title }) {
+function ContentNavModalItem({ id, to, img, title }) {
+    const [urlAvatar, setUrlAvatar] = useState(null);
+    useEffect(() => {
+        if (id !== undefined) {
+            const imagePromise = getImageFromFirebase('product', `${id}`, `avatar`);
+            imagePromise.then(
+                (urlAvatar) => {
+                    setUrlAvatar(urlAvatar);
+                },
+                (err) => {},
+            );
+        }
+    }, []);
     return (
         <NavLink
             to={to || '/filter'}
@@ -9,7 +23,7 @@ function ContentNavModalItem({ to, img, title }) {
         >
             <picture className="mr-2 h-10 w-10 px-2 py-2 hover:rounded-full">
                 <img
-                    src={img}
+                    src={urlAvatar || 'abc'}
                     alt="navmodal-item-img"
                     onError={({ currentTarget }) => {
                         currentTarget.onerror = null;

@@ -34,7 +34,7 @@ function Footer() {
 
     return (
         <div>
-            <div className="flex flex-wrap justify-center px-2">
+            <div className="flex flex-wrap justify-center  max-w-[1200px] mx-auto">
                 <div className="flex flex-wrap sm:mr-10">
                     <div className="flex flex-col max-sm:w-full sm:mr-10">
                         <div

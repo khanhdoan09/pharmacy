@@ -1,10 +1,8 @@
 package com.project.pharmacy.controller;
 
-import com.google.gson.Gson;
 import com.project.pharmacy.dto.UserDto;
 import com.project.pharmacy.dto.UserInfoJwtDto;
 import com.project.pharmacy.entity.User;
-import com.project.pharmacy.entity.VerificationCode;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.request.ActiveAccountRequest;
 import com.project.pharmacy.request.PasswordRequest;
@@ -16,29 +14,21 @@ import com.project.pharmacy.security.VerifyJwtToken;
 import com.project.pharmacy.service.UserService;
 import com.project.pharmacy.service.VerificationCodeService;
 import com.project.pharmacy.utils.CryptoUtils;
-import com.project.pharmacy.utils.MailUtils;
 import com.project.pharmacy.utils.RandomUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -65,8 +55,7 @@ public class UserController {
     @Autowired
     CryptoUtils cryptoUtils;
 
-    @Autowired
-    MailUtils mailUtils;
+
 
 
     @Operation(description = "find user by id")
