@@ -36,7 +36,7 @@ function Cart() {
     const dispatch = useDispatch();
 
     const medicine = useSelector((state) => state.medicine);
-    const bestSell = medicine.data.slice(0, 10).sort((a, b) => b.saleNumber - a.saleNumber);
+    const bestSell = medicine.data?.slice(0, 10).sort((a, b) => b.saleNumber - a.saleNumber);
 
     useEffect(() => {
         if (user == null) {

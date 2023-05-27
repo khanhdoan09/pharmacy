@@ -7,7 +7,10 @@ const medicineSlice = createSlice({
         setMedicines: (state, action) => {
             return action.payload;
         },
+        setMedicineId: (state, action) => {
+            state.selectedMedicineId = action.payload;
+        },
     },
 });
-export const { setMedicines } = medicineSlice.actions;
+export const { setMedicines, setMedicineId } = medicineSlice.actions;
 export default medicineSlice.reducer;

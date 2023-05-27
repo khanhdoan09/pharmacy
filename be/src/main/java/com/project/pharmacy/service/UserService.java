@@ -38,7 +38,6 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    @Cacheable("userCache")
     public User findById(int id) throws CustomException {
         Optional<User> user = userRepository.findById(id);
         return user.map(u -> {

@@ -26,7 +26,7 @@ public class LikesService {
 
     @Autowired
     UserRepository userRepository;
-    @Cacheable("likesCache")
+
     public Likes findLikeByCommentIdAndUserId(int commentId, String userEmail) throws CustomException {
         User user =
                 userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().get();

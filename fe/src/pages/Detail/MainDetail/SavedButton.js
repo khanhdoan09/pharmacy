@@ -7,17 +7,17 @@ function SavedButton(props) {
     const user = useSelector((state) => state.authentication.login.currentUser);
     const [openModal, setOpenModal] = useState(false);
     const [saved, setSaved] = useState(false);
-
+    const handleMedicineId = useSelector(state => state.medicine.selectedMedicineId);
     useEffect(() => {
         const fetchApi = async () => {
             if (user?.email === undefined) {
             } else {
-                const re = await medicineService.findSavedByEmailAndMedicineId(user?.email, props?.itemId || 1);
+                const re = await medicineService.findSavedByEmailAndMedicineId(user?.email, handleMedicineId || 1);
                 setSaved(re?.data);
             }
         };
         fetchApi();
-    }, [props?.itemId]);
+    }, [handleMedicineId]);
 
     useEffect(() => {
         if (openModal) {
@@ -36,11 +36,11 @@ function SavedButton(props) {
         } else {
             if (saved === false) {
                 setSaved(true);
-                await medicineService.savedMedicine(user?.accessToken, user?.account, user?.email, props.itemId);
+                await medicineService.savedMedicine(user?.accessToken, user?.account, user?.email, handleMedicineId);
                 console.log(saved);
             } else {
                 setSaved(false);
-                await medicineService.unsavedMedicine(user?.accessToken, user?.account, user?.email, props.itemId);
+                await medicineService.unsavedMedicine(user?.accessToken, user?.account, user?.email, handleMedicineId);
                 console.log(saved);
             }
         }

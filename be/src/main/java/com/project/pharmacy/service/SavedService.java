@@ -43,7 +43,6 @@ public class SavedService {
             return saved;
         }
     }
-    @Cacheable("savedCache")
     public List<Saved> findSavedByEmail(String email) throws CustomException {
         User user = userRepository.findByEmail(email).orElse(null);
         List<Saved> savedList =

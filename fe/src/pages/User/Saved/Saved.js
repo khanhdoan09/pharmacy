@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ProductAds from '~/components/ProductAds/ProductAds';
 import * as medicineService from '~/services/medicineService';
-import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
+import { convertNumberToPrice } from '~/utils/currency';
 
 function Saved() {
     const [savedList, setSavedList] = useState([]);
@@ -12,7 +12,9 @@ function Saved() {
     useEffect(() => {
         const fetchApi = async () => {
             const response = await medicineService.findSavedByEmail(user?.email);
+            console.log(user?.email);
             setSavedList(response?.data);
+            console.log(response.data);
         };
         fetchApi();
     }, [user?.email]);

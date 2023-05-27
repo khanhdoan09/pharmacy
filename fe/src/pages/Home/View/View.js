@@ -59,7 +59,7 @@ function View() {
     };
 
     const medicines = useSelector((state) => state.medicine.data);
-    const filterDiscount = medicines.filter((x) => parseInt(x.discount) !== 0);
+    const filterDiscount = medicines?.filter((x) => parseInt(x.discount) !== 0);
     return (
         <div className="max-w-full bg-[#edf2f8]">
             <div className="mx-auto my-0 max-w-[1200px] py-8">

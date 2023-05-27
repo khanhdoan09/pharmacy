@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class RateService {
     @Autowired
     RateRepository rateRepository;
-    @Cacheable("rateCache")
     public List<Rate> findRateByMedicineId(int medicineId) throws CustomException {
         List<Rate> rates =
                 rateRepository.findAll().stream().filter(rate -> rate.getMedicine().getId() == medicineId).collect(Collectors.toList());

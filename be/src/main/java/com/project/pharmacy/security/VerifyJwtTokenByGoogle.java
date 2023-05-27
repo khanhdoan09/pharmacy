@@ -43,6 +43,7 @@ public class VerifyJwtTokenByGoogle implements VerifyJwtToken {
 
     @Override
     public User getUser() {
+        System.out.println(jsonObject);
         CryptoUtils cryptoUtils = new CryptoUtils();
         String name = jsonObject.getString("name");
         String email = jsonObject.getString("email");

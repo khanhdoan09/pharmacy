@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
+import { setMedicineId } from '~/redux/medicineSlice';
 import { getImageFromFirebase } from '~/utils/firebase';
-import { randomText } from '~/utils/randomUtils';
 
 function ProductSeller({ id, to, img, name, newPrice, unit, oldPrice, backgroundColor, px, py, borderRadius }) {
     const [urlAvatar, setUrlAvatar] = useState(null);
+    const dispatch = useDispatch();
     useEffect(() => {
         if (id !== undefined) {
             const imagePromise = getImageFromFirebase('product', `${id}`, `avatar`);
@@ -19,7 +21,7 @@ function ProductSeller({ id, to, img, name, newPrice, unit, oldPrice, background
     }, []);
 
     const handleClick = (medicineId) => {
-        localStorage.setItem('medicineId', randomText(8) + id);
+        dispatch(setMedicineId(medicineId))
     };
 
     return (

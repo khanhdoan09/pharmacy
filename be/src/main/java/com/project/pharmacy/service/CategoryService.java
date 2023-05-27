@@ -26,7 +26,6 @@ public class CategoryService {
     public List<CategoryDetail> getCategoryDetails() {
         return categoryDetailRepository.findAll();
     }
-    @Cacheable("categoryCache")
     public List<Category> findByIdField(int field) throws CustomException {
         List<Category> categories = categoryRepository.findByField(field);
         if (categories.size() == 0) {

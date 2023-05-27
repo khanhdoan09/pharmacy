@@ -60,7 +60,7 @@ function CategoryDetail() {
     function handleCountrySelection(event) {
         const selectedCountry = event.target.value;
         if (selectedCountries.includes(selectedCountry)) {
-            setSelectedCountries(selectedCountries.filter((country) => country !== selectedCountry));
+            setSelectedCountries(selectedCountries?.filter((country) => country !== selectedCountry));
         } else {
             setSelectedCountries([...selectedCountries, selectedCountry]);
         }
