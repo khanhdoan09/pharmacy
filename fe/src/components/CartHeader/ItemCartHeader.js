@@ -29,7 +29,8 @@ function ItemCartHeader(props) {
                 } else if (err?.status === 404) {
                     medicineInCartRef.current.remove();
                     props.setTotalMedicine(props.totalMedicine - 1);
-                    dispatch(addMedicinesToCart({ medicines: cart?.filter((e) => e?.id !== id) }));
+                    console.log(cart);
+                    dispatch(addMedicinesToCart({ medicines: cart?.medicines?.filter((e) => e?.id !== id) }));
                 } else {
                     console.log(err);
                     navigate('server-error');
@@ -37,8 +38,8 @@ function ItemCartHeader(props) {
             },
         );
     }
-    
-    useEffect(() => {      
+
+    useEffect(() => {
         const imagePromise = getImageFromFirebase('product', props?.medicine?.id, 'avatar');
         imagePromise.then((url) => {
             setImage(url);

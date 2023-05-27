@@ -103,7 +103,7 @@ function CartItem({
                     }
                 },
             );
-        }, 1000);
+        }, 500);
     }
 
     function updateQuantity(quantity) {
@@ -135,7 +135,7 @@ function CartItem({
                         }
                         arr.push(t);
                     });
-                    dispatch(addMedicinesToCart({ medicines: arr }));                    
+                    dispatch(addMedicinesToCart({ medicines: arr }));
                 },
                 (err) => {
                     const statusCode = err?.status;
