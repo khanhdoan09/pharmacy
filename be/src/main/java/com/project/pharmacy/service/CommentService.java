@@ -42,7 +42,6 @@ public class CommentService {
         commentRepository.save(comment);
 
     }
-    @Cacheable("commentCache")
     public List<Comment> findCommentsByMedicineId(int medicineId) throws CustomException {
         List<Comment> comments = commentRepository.findCommentsByMedicineId(medicineId);
         if (comments.size() == 0) {

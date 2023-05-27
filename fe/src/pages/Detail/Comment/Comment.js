@@ -15,7 +15,7 @@ function Comment(props) {
     const [alertContentComment, setAlertContentComment] = useState('');
 
     const [responseCommentContent, setResponseCommentContent] = useState('');
-    const handleMedicineId = localStorage.getItem('medicineId').match(/\d+/)[0];
+    const handleMedicineId = useSelector(state => state.medicine.selectedMedicineId);
 
     const handlePostComment = async () => {
         if (user?.email === undefined) {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import * as commentService from '~/services/commentService';
 import * as medicineService from '~/services/medicineService';
 import * as rateService from '~/services/rateService';
@@ -15,8 +16,8 @@ function Detail() {
     const [commentByMedicineId, setCommentByMedicineId] = useState([]);
     const [dataReview, setDataReview] = useState();
     const [imageList, setImageList] = useState([]);
+    const handleMedicineId = useSelector(state => state.medicine.selectedMedicineId);
 
-    const handleMedicineId = localStorage.getItem("medicineId").match(/\d+/)[0]
     useEffect(() => {
         const fetchApi = async () => {
             const resultFindMedicineDetailByMedicineId = await medicineService.findMedicineDetailByMedicineId(
@@ -27,6 +28,7 @@ function Detail() {
             setDataIngredient(resultIngredient.data);
         };
         fetchApi();
+        console.log(handleMedicineId);
     }, [handleMedicineId]);
 
     useEffect(() => {

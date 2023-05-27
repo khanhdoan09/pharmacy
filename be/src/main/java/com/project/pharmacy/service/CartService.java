@@ -35,7 +35,6 @@ public class CartService {
 
     @Autowired
     private UnitService unitService;
-    @Cacheable("cartCache")
     public List<Cart> findMedicinesInCart(String email) throws CustomException {
         if (email == null || email.isEmpty()) {
             throw new CustomException(HttpStatus.BAD_REQUEST, "parameter must be valid");

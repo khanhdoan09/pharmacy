@@ -196,6 +196,7 @@ public class MedicineController {
         Type listType = new TypeToken<List<SaveDto>>() {
         }.getType();
         List<Saved> savedList01 = savedService.findSavedByEmail(email);
+        System.out.println(savedList01);
         List<SaveDto> savedList = mapper.map(savedList01, listType);
         ResponseHandler responseHandler = new ResponseHandler("Successfully find saved by email " +
                                                                       "medicine",

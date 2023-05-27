@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import * as userService from '~/services/userServices';
 import * as verifyService from '~/services/verifyService';
@@ -53,9 +53,9 @@ function ResetPassword() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (password.length < 6) {
-            setErrorPassword('Mật khẩu cần có ít nhất 6 ký tự');
+        const regex = new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*d).{8,}$/);
+        if (!regex.test(password)) {
+            setErrorPassword('Mật khẩu không đúng định dạng');
         } else if (password !== confirmPassword) {
             setErrorPassword('Mật khẩu không khớp');
         } else {
@@ -209,30 +209,30 @@ function ResetPassword() {
                                     <div className="p-6">
                                         <div>
                                             <form className="mb-4">
-                                                <p
-                                                    htmlFor="rating"
-                                                    className=" mb-2 block text-center font-medium text-slate-700"
-                                                >
-                                                    Mật khẩu có ít nhất 6 ký tự và tối đa 16 ký tự
-                                                </p>
-
+                                                <ul className="ml-6 mb-2 list-disc text-[14px] font-medium text-slate-700">
+                                                    <li>Ít nhất một chữ cái viết hoa</li>
+                                                    <li>Ít nhất một chữ cái viết thường</li>
+                                                    <li>Ít nhất một chữ số</li>
+                                                    <li>Độ dài tối thiểu là 8 ký tự</li>
+                                                </ul>
                                                 <label htmlFor="password">
                                                     <p className=" font-medium text-slate-700">Mật khẩu mới</p>
                                                     <input
                                                         id="password"
                                                         name="password"
-                                                        type="text"
+                                                        type="password"
                                                         className="mb-2 w-full rounded-lg border border-slate-200 py-3 px-3 hover:shadow focus:border-blue-500 focus:outline-none"
                                                         placeholder="Nhập mật khẩu mới"
                                                         onChange={(e) => setPassword(e.target.value)}
                                                     />
                                                 </label>
+
                                                 <label htmlFor="confirm-password">
                                                     <p className="font-medium text-slate-700">Nhập lại mật khẩu mới</p>
                                                     <input
                                                         id="confirm-password"
                                                         name="confirm-password"
-                                                        type="text"
+                                                        type="password"
                                                         className="w-full rounded-lg border border-slate-200 py-3 px-3 hover:shadow focus:border-blue-500 focus:outline-none"
                                                         placeholder="Nhập lại mật khẩu mới"
                                                         onChange={(e) => {
@@ -322,7 +322,7 @@ function ResetPassword() {
                                                 setIsOpenOtp(true);
                                                 setTimeLeft(60);
                                                 verifyService.generateCode(email);
-                                            }else{
+                                            } else {
                                                 setAlert('Bạn có thể dùng tài khoản liên kết để đăng nhập');
                                             }
                                         })

@@ -96,7 +96,7 @@ function Tab() {
                         toggleTab(4);
                         console.log(listOrderCancel.length);
                         if (listOrderCancel.length === 0) {
-                            const tmp = listOrder.filter((e) => e?.status === 'cancel');
+                            const tmp = listOrder?.filter((e) => e?.status === 'cancel');
                             console.log(tmp);
                             setListOrderCancel(tmp);
                         } else {

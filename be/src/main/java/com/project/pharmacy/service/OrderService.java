@@ -21,7 +21,7 @@ public class OrderService {
         Orders newOrder = orderRepository.save(order);
         return newOrder.getId();
     }
-    @Cacheable("orderCache")
+
     public List<Orders> getOrderByEmail(String email) throws CustomException {
         List<Orders> orders =
                 orderRepository.findAll().stream().filter(o -> o.getUser().getEmail().equals(email)).collect(Collectors.toList());
