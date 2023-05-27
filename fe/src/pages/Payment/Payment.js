@@ -47,26 +47,28 @@ function Payment() {
     useEffect(() => {
         if (user == null) {
             navigate('/sign-in');
+        } else {
+            let totalPriceTmp = 0;
+            let totalPriceWithDiscountTmp = 0;
+            let tmpTotalPriceByVoucher = 0;
+            cart?.medicines?.forEach((e) => {
+                totalPriceTmp = e?.quantity * e?.unit?.price + totalPriceTmp;
+                totalPriceWithDiscountTmp +=
+                    (e?.unit?.price - (e?.unit?.price * e?.medicine?.discount) / 100) * e?.quantity;
+            });
+            voucher?.items?.forEach((e) => {
+                tmpTotalPriceByVoucher += e?.discount;
+            });
+            setTotalPriceByVoucher((totalPriceWithDiscountTmp * tmpTotalPriceByVoucher) / 100);
+            setTotalPrice(totalPriceTmp);
+            setTotalPriceWithDiscount(totalPriceWithDiscountTmp);
+
+            setMoneySaved(
+                totalPriceTmp -
+                    (totalPriceWithDiscountTmp + (totalPriceWithDiscountTmp * tmpTotalPriceByVoucher) / 100),
+            );
+            getCurrentExchangeRate().then((e) => setExchangeRate(e));
         }
-        let totalPriceTmp = 0;
-        let totalPriceWithDiscountTmp = 0;
-        let tmpTotalPriceByVoucher = 0;
-        cart?.medicines?.forEach((e) => {
-            totalPriceTmp = e?.quantity * e?.unit?.price + totalPriceTmp;
-            totalPriceWithDiscountTmp +=
-                (e?.unit?.price - (e?.unit?.price * e?.medicine?.discount) / 100) * e?.quantity;
-        });
-        voucher?.items?.forEach((e) => {
-            tmpTotalPriceByVoucher += e?.discount;
-        });
-        setTotalPriceByVoucher((totalPriceWithDiscountTmp * tmpTotalPriceByVoucher) / 100);
-        setTotalPrice(totalPriceTmp);
-        setTotalPriceWithDiscount(totalPriceWithDiscountTmp);
-        setMoneySaved(
-            totalPrice -
-                (totalPrice - totalPriceWithDiscount + (totalPriceWithDiscountTmp * tmpTotalPriceByVoucher) / 100),
-        );
-        getCurrentExchangeRate().then((e) => setExchangeRate(e));
     }, []);
     const dispatch = useDispatch();
 

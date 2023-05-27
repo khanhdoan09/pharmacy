@@ -116,6 +116,13 @@ function HeaderSearch() {
     const backgroundImage =
         'url("https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/header%2Ft%E1%BA%A3i%20xu%E1%BB%91ng.png?alt=media&token=d2b42b7e-12e5-440f-9932-e156b6751b66")';
 
+    function signOutAccount() {
+        setCookie('accessToken', null);
+        setCookie('accountType', null);
+        navigate('/sign-in');
+        dispatch(removeMedicinesFromCart());
+    }
+
     return (
         <div className="wrapper h-20 bg-cover bg-center" style={{ backgroundImage }}>
             <div className="padding-responsive m-auto h-20 max-w-[1200px] items-center justify-between cs:hidden xs:hidden sm:hidden md:hidden lg:flex xl:flex 2xl:flex ">
@@ -324,21 +331,19 @@ function HeaderSearch() {
                                                 switch (user?.account) {
                                                     case 'Microsoft':
                                                         handleSignOutWithMicrosoft();
-                                                        navigate('/sign-in');
+                                                        signOutAccount();
                                                         break;
                                                     case 'Google':
                                                         handleSignOutWithGoogleFirebase();
-                                                        navigate('/sign-in');
+                                                        signOutAccount();
                                                         break;
                                                     case 'Normal':
                                                         handleSignOutWithNormal();
-                                                        navigate('/sign-in');
+                                                        signOutAccount();
                                                         break;
                                                     default:
                                                         dispatch(removeMedicinesFromCart());
-                                                        setCookie('accessToken', null);
-                                                        setCookie('accountType', null);
-                                                        navigate('/sign-in');
+                                                        signOutAccount();
                                                         logOut();
                                                 }
                                             }}
@@ -792,7 +797,10 @@ function HeaderSearch() {
                     )}
                 </div>
                 <NavLink to="/" className="center">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/logo%2Flogo_front_big_c58fec2dc9.svg?alt=media&token=829a536a-047e-4264-ab9a-f277904a0c7a" alt="img-logo" />
+                    <img
+                        src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/logo%2Flogo_front_big_c58fec2dc9.svg?alt=media&token=829a536a-047e-4264-ab9a-f277904a0c7a"
+                        alt="img-logo"
+                    />
                 </NavLink>
                 <NavLink
                     to="/cart"

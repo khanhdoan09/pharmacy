@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import useAcquireAccessToken from '~/hooks/useAcquireAcessToken';
-import { addMedicinesToCart, unShowCartInHeader } from '~/redux/cartSlice';
+import { addMedicinesToCart, removeMedicinesFromCart, unShowCartInHeader } from '~/redux/cartSlice';
 import { getAllMedicinesInCart } from '~/services/cartServices';
 import ItemCartHeader from './ItemCartHeader';
 
@@ -11,7 +11,7 @@ function CartHeader() {
     const user = useSelector((state) => state.authentication.login.currentUser);
     const [totalMedicine, setTotalMedicine] = useState(0);
     const [showCart, setShowCart] = useState(false);
-    const [medicineInCart, setMedicineInCart] = useState(cart?.medicines);
+    const [medicineInCart, setMedicineInCart] = useState([]);
     const navigate = useNavigate();
     const getNewAccessToken = useAcquireAccessToken();
     const dispatch = useDispatch();
@@ -28,16 +28,18 @@ function CartHeader() {
                 if (e.status == 200) {
                     setTotalMedicine(e?.data?.data?.length ? e?.data?.data?.length : 0);
                     dispatch(addMedicinesToCart({ medicines: e?.data?.data }));
+                    setMedicineInCart(e?.data?.data);
                 }
             },
             (err) => {
                 if (err?.status === 401) {
                     getNewAccessToken();
                 } else if (err?.status === 403) {
-                    console.log(err);
                     navigate('/sign-in');
                 } else if (err?.status === 404) {
+                    dispatch(removeMedicinesFromCart());
                     console.log('cart is empty');
+                    setMedicineInCart([]);
                 } else {
                     console.log(err);
                     navigate('server-error');
@@ -47,6 +49,7 @@ function CartHeader() {
     }, []);
 
     useEffect(() => {
+        console.log(cart);
         // dispatch(removeMedicinesFromCart());
         setMedicineInCart(cart?.medicines);
         setTotalMedicine(cart?.medicines?.length ? cart?.medicines?.length : 0);
@@ -89,7 +92,9 @@ function CartHeader() {
                                 })}
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-[12px] font-bold text-[#657384]">{totalMedicine || 'Chưa có'} sản phẩm</span>
+                                <span className="text-[12px] font-bold text-[#657384]">
+                                    {totalMedicine || 'Chưa có'} sản phẩm
+                                </span>
                                 <a
                                     href="/cart"
                                     className="h-[36px] rounded-lg bg-[#306de4] py-[8px] px-[12px] text-[0.875rem] font-[500]"
