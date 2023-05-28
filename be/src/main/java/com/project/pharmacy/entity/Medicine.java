@@ -39,15 +39,20 @@ public class Medicine {
     @OneToOne
     @JoinColumn(name = "brand", insertable = false, updatable = false)
     private Brand brandDetail;
+
     @OneToOne
     @JoinColumn(name = "producer", insertable = false, updatable = false)
     private Producer producerDetail;
+
     @OneToOne
     @JoinColumn(name = "categoryDetailId", insertable = false, updatable = false)
     private CategoryDetail categoryDetail;
-    @OneToMany(mappedBy = "medicineId", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "medicine", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<MedicineIngredient> ingredient;
-    @OneToMany(mappedBy = "medicineId", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "medicine", cascade = CascadeType.ALL)
     private List<Unit> priceWithUnit;
 
 
@@ -56,5 +61,18 @@ public class Medicine {
     @ToString.Exclude
     @JsonBackReference
     private Set<OrderDetail> medicine;
+
+    @OneToMany(mappedBy = "medicine",cascade =  CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "medicine",cascade =  CascadeType.ALL)
+    @JsonManagedReference
+    private List<Rate> rates;
+
+    @OneToMany(mappedBy = "medicine",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Saved> savedList;
+
 
 }

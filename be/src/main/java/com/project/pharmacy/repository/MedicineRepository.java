@@ -20,29 +20,20 @@ public interface MedicineRepository extends JpaRepository<Medicine, Integer> {
     Page<Medicine> findMedicinesByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     @Query(value = "SELECT m FROM Medicine m JOIN CategoryDetail cd on m.categoryDetailId = cd.id\n" +
-            "JOIN Category c ON cd.categoryId = c.id\n" +
-            "JOIN Field f ON c.field = f.id\n" +
-            "WHERE f.id = :fieldId ORDER BY m.saleNumber DESC")
+            "WHERE cd.category.fieldOfCategory.id = :fieldId ORDER BY m.saleNumber DESC")
     List<Medicine> bestSellerByFieldId(@Param("fieldId") int fieldId);
 
-    @Query(value = "SELECT m FROM Medicine m JOIN CategoryDetail cd on m.categoryDetailId = cd.id\n" +
-            "JOIN Category c ON cd.categoryId = c.id\n" +
-            "WHERE c.id = :categoryId ORDER BY m.saleNumber DESC")
-    List<Medicine> bestSellerByCategoryId(@Param("categoryId") int categoryId);
-    @Query(value = "SELECT m FROM Medicine m JOIN CategoryDetail cd on m.categoryDetailId = cd.id\n" +
-            "JOIN Category c ON cd.categoryId = c.id\n" +
-            "WHERE c.id = :categoryId ORDER BY m.saleNumber DESC")
-    List<Medicine> findMedicinesOrderBy(@Param("categoryId") int categoryId);
-    @Query(value = "SELECT m FROM Medicine m JOIN CategoryDetail cd on m.categoryDetailId = cd.id\n" +
-            "JOIN Category c ON cd.categoryId = c.id\n" +
+    @Query(nativeQuery = true, value = "SELECT m FROM Medicine m JOIN CategoryDetail cd on m.categoryDetailId = cd" +
             "WHERE cd.id = :categoryDetailId")
     List<Medicine> findMedicineByCategoryDetailId(@Param("categoryDetailId") int categoryDetailId);
 
     @Query(value = "SELECT m FROM Medicine m JOIN CategoryDetail cd on m.categoryDetailId = cd.id\n" +
-            "JOIN Category c ON cd.categoryId = c.id\n" +
-            "JOIN Field f ON c.field = f.id\n" +
-            "WHERE f.slug = :slugField and c.slug = :slugCategory")
+            "WHERE cd.category.fieldOfCategory.slug = :slugField and cd.category.slug = :slugCategory")
     List<Medicine> findBySlugFieldAndSlugCategory(String slugField, String slugCategory);
+
+    @Query(value = "SELECT m FROM Medicine m JOIN CategoryDetail cd on m.categoryDetailId = cd.id\n" +
+            "WHERE cd.category.fieldOfCategory.slug = :slugField and cd.category.slug = :slugCategory")
+    Page<Medicine> findBySlugFieldAndSlugCategoryWithPage(String slugField, String slugCategory, Pageable pageable);
 
 
 }

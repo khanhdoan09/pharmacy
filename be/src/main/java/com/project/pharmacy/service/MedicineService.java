@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ public class MedicineService {
     public List<Medicine> getMedicines() {
         return medicineRepository.findAll();
     }
+
     @Cacheable("productCache")
     public Medicine findById(int id) throws CustomException {
         Optional<Medicine> medicine = medicineRepository.findById(id);
@@ -53,6 +55,20 @@ public class MedicineService {
         return medicines;
     }
 
+    public Page<Medicine> findBySlugFieldAndSlugCategoryWithPage(String slugField,
+                                                                 String slugCategory,
+                                                                 int page,
+                                                                 int pageSize) throws CustomException {
+        Page<Medicine> medicines = medicineRepository.findBySlugFieldAndSlugCategoryWithPage(
+                slugField,
+                slugCategory,
+                PageRequest.of(page, pageSize));
+        if (medicines.getContent().size() == 0) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't findBySlugFieldAndSlugCategoryWithPage");
+        }
+        return medicines;
+    }
+
     public List<Medicine> bestSellerBySlugField(int fieldId) throws CustomException {
         List<Medicine> medicines = medicineRepository.bestSellerByFieldId(fieldId);
         if (medicines.size() == 0) {
@@ -61,15 +77,7 @@ public class MedicineService {
         return medicines;
     }
 
-    public List<Medicine> bestSellerByCategoryId(int categoryId) throws CustomException {
-        List<Medicine> medicines = medicineRepository.bestSellerByCategoryId(categoryId);
-        if (medicines.size() == 0) {
-            throw new CustomException(
-                    HttpStatus.NOT_FOUND,
-                    "Can't find bestSellerByCategoryId with category id is " + categoryId);
-        }
-        return medicines;
-    }
+
 
 
     public List<Medicine> findMedicineByCategoryDetailId(int categoryDetailId) throws CustomException {
@@ -142,7 +150,6 @@ public class MedicineService {
         }
         return medicines;
     }
-
 
 
 }

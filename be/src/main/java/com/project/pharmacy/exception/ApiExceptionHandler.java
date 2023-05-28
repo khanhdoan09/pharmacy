@@ -14,7 +14,6 @@ public class ApiExceptionHandler {
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @Hidden
-    // to validate entities
     public String handleBindException(BindException e) {
         System.out.println(123);
         return e.getBindingResult().hasErrors() ?

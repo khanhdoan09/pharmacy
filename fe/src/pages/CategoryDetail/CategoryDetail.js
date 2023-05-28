@@ -92,7 +92,7 @@ function CategoryDetail() {
         if (selectedCountries.length > 0 && !selectedCountries.includes(product.country)) {
             return false;
         }
-        if (selectedIngredients.length > 0 && !selectedIngredients.some((ingredient) => inc.includes(ingredient))) {
+        if (selectedIngredients.length > 0 && !selectedIngredients?.some((ingredient) => inc.includes(ingredient))) {
             return false;
         }
         if (selectedSuppliers.length > 0 && !selectedSuppliers.includes(product.producerDetail.name)) {

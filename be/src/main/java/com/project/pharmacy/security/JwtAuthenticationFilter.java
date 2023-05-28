@@ -34,9 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private PasswordEncoder passwordEncoder;
 
     private Set<String> urls = new HashSet<>(Arrays.asList(
-//            "/**"
             "/api/v1/cart/**",
-//            "api/v1/auth/**",
             "/api/v1/order/**",
             "/api/v1/postComment",
             "/api/v1/responseComment",
@@ -48,8 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         String token = userService.getAccessTokenFromRequest(request);
         if (token != null) {
             try {
@@ -85,9 +83,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-//        return urls.stream()
-//                .anyMatch(p -> pathMatcher.match(p, request.getServletPath()));
-        return urls.stream()
-                .noneMatch(p -> pathMatcher.match(p, request.getServletPath()));
+        return urls.stream().noneMatch(p -> pathMatcher.match(p, request.getServletPath()));
     }
 }

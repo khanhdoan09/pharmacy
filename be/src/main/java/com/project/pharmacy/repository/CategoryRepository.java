@@ -11,7 +11,7 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     List<Category> findByField(int field);
-    @Query(value = "SELECT c FROM Category c JOIN Field f ON c.field = f.id WHERE f.slug=:slugField")
+    @Query(value = "SELECT c FROM Category c WHERE c.fieldOfCategory.slug=:slugField")
     List<Category> findCategoriesBySlugField(@Param("slugField") String slugField);
 
 

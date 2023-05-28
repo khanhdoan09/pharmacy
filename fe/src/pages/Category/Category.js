@@ -1,3 +1,4 @@
+import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -7,7 +8,6 @@ import NavModalList from '../Filter/NavModalList';
 import BranchPharmacy from '../Home/BranchPharmacy';
 import View from '../Home/View';
 import FamousProducts from './FamousProducts/FamousProducts';
-import Slider from 'rc-slider';
 
 function Category() {
     const { field, category } = useParams();
@@ -92,7 +92,7 @@ function Category() {
         if (selectedCountries.length > 0 && !selectedCountries.includes(product.country)) {
             return false;
         }
-        if (selectedIngredients.length > 0 && !selectedIngredients.some((ingredient) => inc.includes(ingredient))) {
+        if (selectedIngredients.length > 0 && !selectedIngredients?.some((ingredient) => inc.includes(ingredient))) {
             return false;
         }
         if (selectedSuppliers.length > 0 && !selectedSuppliers.includes(product.producerDetail.name)) {

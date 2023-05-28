@@ -1,30 +1,29 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Breadcrumb from '~/components/Breadcrumb';
 import * as categoryService from '~/services/categoryService';
-import * as medicineService from '~/services/medicineService';
 import BranchPharmacy from '../Home/BranchPharmacy';
 import View from '../Home/View';
-import FamousProducts from './FamousProducts';
 import FilterCategories from './FilterCategories';
-import { FilterBrand, FilterDosage, FilterDrugs, FilterObject, FilterPrice } from './FilterList';
-import BestSeller from './BestSeller/BestSeller';
 
 function Filter() {
     const [categories, setCategories] = useState([]);
     const [categoriesRoot, setCategoriesRoot] = useState([]);
+    const[categoriesSlug, setCategoriSlug] = useState([]);
     const { slug } = useParams();
 
     useEffect(() => {
         const fetchApi = async () => {
             const getCategories = await categoryService.getCategories();
+            const getCategoriesByFieldSlug = await categoryService.getCategoriesByFieldSlug(slug.split('=')[1])
+            setCategoriSlug(getCategoriesByFieldSlug?.data)
             setCategoriesRoot(getCategories?.data);
+
         };
         fetchApi();
     }, []);
 
    
-    const filterCategory = categoriesRoot?.filter((c) => c.fieldOfCategory.slug === slug.split('=')[1]);
+    const filterCategory = categoriesRoot?.filter((c) => c.fieldOfCategory?.slug === slug.split('=')[1]);
     
     //     infinite: true,
     //     speed: 500,
@@ -79,7 +78,7 @@ function Filter() {
                 {/* <div className=" grid gap-4 cs:grid-cols-1 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5"> */}
                     {/* <div className="xs:col-span-2 sm:col-span-2 md:col-span-2 lg:col-span-4 xl:col-span-4 2xl:col-span-4"> */}
                         {/* list category */}
-                        <FilterCategories categories={filterCategory} />
+                        <FilterCategories categories={filterCategory} categoriesSlug={categoriesSlug}/>
                     {/* </div> */}
                 {/* </div> */}
             </div>

@@ -69,6 +69,21 @@ public class MedicineController {
         return responseHandler;
     }
 
+    @GetMapping("/findBySlugFieldAndSlugCategoryWithPage/{slugField}/{slugCategory}/{page}/{pageSize}")
+    public ResponseHandler findBySlugFieldAndSlugCategoryWithPage(@PathVariable("slugField") String slugField,
+                                                                  @PathVariable("slugCategory") String slugCategory,
+                                                                  @PathVariable("page") int page,
+                                                                  @PathVariable("pageSize") int pageSize) throws CustomException {
+        Page<Medicine> medicines = medicineService.findBySlugFieldAndSlugCategoryWithPage(
+                slugField,
+                slugCategory,
+                page,
+                pageSize);
+        ResponseHandler responseHandler = new ResponseHandler("Successfully findBySlugFieldAndSlugCategoryWithPage",
+                                                              HttpStatus.OK.value(), medicines);
+        return responseHandler;
+    }
+
     @GetMapping("/bestSellerByFieldId/{fieldId}")
     public ResponseHandler<List<Medicine>> bestSellerBySlugField(@PathVariable("fieldId") int fieldId) throws CustomException {
 
@@ -76,18 +91,6 @@ public class MedicineController {
 
         ResponseHandler<List<Medicine>> responseHandler = new ResponseHandler<List<Medicine>>(
                 "Successfully best seller by field id",
-                HttpStatus.OK.value(),
-                medicines);
-        return responseHandler;
-    }
-
-    @GetMapping("/bestSellerByCategoryId/{categoryId}")
-    public ResponseHandler<List<Medicine>> bestSellerByCategoryId(@PathVariable("categoryId") int categoryId) throws CustomException {
-
-        List<Medicine> medicines = medicineService.bestSellerByCategoryId(categoryId);
-
-        ResponseHandler<List<Medicine>> responseHandler = new ResponseHandler<List<Medicine>>(
-                "Successfully bestSellerByCategoryId",
                 HttpStatus.OK.value(),
                 medicines);
         return responseHandler;

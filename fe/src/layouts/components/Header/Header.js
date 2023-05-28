@@ -203,7 +203,7 @@ function Header() {
                             {isHovering && !user && (
                                 <div className="fucn-user animate-deBottomMobile absolute top-11 right-0 z-10 w-60 rounded-lg border border-[#ccc] bg-[#ffffff]">
                                     <NavLink
-                                        to="/signin"
+                                        to="/sign-in"
                                         className="transition-basic flex items-center  rounded-t-lg px-2 py-2 text-[#333] hover:bg-[#edf2f8] "
                                     >
                                         <svg

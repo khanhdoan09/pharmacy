@@ -1,8 +1,6 @@
 package com.project.pharmacy.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -12,29 +10,28 @@ import java.util.List;
 
 @Entity
 @Table(name = "category")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Category {
 
     @Id
-    @Column(unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "field")
     private int field;
+    @Column(name = "category")
     private String category;
     private String image;
     private String slug;
 
-    @OneToMany(targetEntity = CategoryDetail.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "categoryId", referencedColumnName = "id")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<CategoryDetail> categoryDetails;
 
     @ManyToOne
     @JoinColumn(name = "field", insertable = false, updatable = false)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
+    @JsonManagedReference
     private Field fieldOfCategory;
-
-
 }

@@ -77,17 +77,17 @@ function Search() {
                     const price = e?.priceWithUnit?.[0]?.price;
                     return (
                         <SearchProduct
-                            key={e.id}
-                            id={e.id}
-                            to={`/detail/slug=${e.slug}`}
+                            key={e?.id}
+                            id={e?.id}
+                            to={`/detail/slug=${e?.slug}`}
                             label={e.specification}
                             img="a"
-                            title={e.name}
+                            title={e?.name}
                             newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
                             oldPrice={`${convertNumberToPrice(price)}đ`}
-                            unit={e.category}
-                            dosage={e.itemForm}
-                            country={e.country}
+                            unit={e?.category}
+                            dosage={e?.itemForm}
+                            country={e?.country}
                         />
                     );
                 })}

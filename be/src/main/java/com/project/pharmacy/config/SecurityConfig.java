@@ -60,11 +60,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-//    @Override
-//    public void configure(WebSecurity webSecurity) throws Exception {
-//        webSecurity.ignoring().antMatchers("/api/**");
-//    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -73,7 +68,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         "/api/v1/cart/**",
-//                             "api/v1/auth/**",
                         "/api/v1/order/**",
                         "/api/v1/postComment",
                         "/api/v1/responseComment",

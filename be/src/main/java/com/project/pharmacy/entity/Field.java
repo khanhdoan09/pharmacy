@@ -1,5 +1,8 @@
 package com.project.pharmacy.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,9 +10,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "field")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Field {
     @Id
     @Column(unique = true, nullable = false)
@@ -18,8 +22,7 @@ public class Field {
     private String name;
     private String slug;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
+    @OneToMany(mappedBy = "fieldOfCategory", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Category> categories;
 }

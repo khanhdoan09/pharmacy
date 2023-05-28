@@ -15,7 +15,7 @@ function Navigation() {
     const [categories, setCategories] = useState([]);
     const [categoriesRoot, setCategoriesRoot] = useState([]);
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -23,8 +23,8 @@ function Navigation() {
             const getCategories = await categoryService.getCategories();
             setFields(resultAllField);
             setCategoriesRoot(getCategories?.data);
-            dispatch(fieldList(resultAllField));
-            dispatch(categoryList(getCategories));
+            // dispatch(fieldList(resultAllField));
+            // dispatch(categoryList(getCategories));
         };
         fetchApi();
     }, []);
@@ -43,7 +43,6 @@ function Navigation() {
                         onMouseEnter={() => {
                             setIsHovering(true);
                             setValueFieldHover(e.id);
-                            // setCategoryId(1);
                         }}
                         onMouseLeave={() => {
                             setIsHovering(false);
@@ -51,7 +50,7 @@ function Navigation() {
                         key={index}
                         className='grow'
                     >
-                        <NavItem to={`/filter/slug=${e.slug}`} >
+                        <NavItem to={`/filter/slug=${e?.slug}`} >
                             <p className="text-xs font-bold uppercase">{e?.name}</p>
                             {isHovering && valueFieldHover === e?.id ? (
                                 <svg
@@ -107,9 +106,8 @@ function Navigation() {
                 >
                     <NavModal
                         fields={fields}
-                        categories={categories} // danh sach loc theo field id
-                        // categoryId={categoryId}
-                        categoryIdFilter={categoryIdFilter} // categoryID dau tien
+                        categories={categories} 
+                        categoryIdFilter={categoryIdFilter} 
                     />
                 </div>
             )}
