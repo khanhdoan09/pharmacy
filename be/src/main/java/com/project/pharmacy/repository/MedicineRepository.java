@@ -23,8 +23,7 @@ public interface MedicineRepository extends JpaRepository<Medicine, Integer> {
             "WHERE cd.category.fieldOfCategory.id = :fieldId ORDER BY m.saleNumber DESC")
     List<Medicine> bestSellerByFieldId(@Param("fieldId") int fieldId);
 
-    @Query(nativeQuery = true, value = "SELECT m FROM Medicine m JOIN CategoryDetail cd on m.categoryDetailId = cd" +
-            "WHERE cd.id = :categoryDetailId")
+    @Query(value = "SELECT m FROM Medicine m WHERE m.categoryDetail.id = :categoryDetailId")
     List<Medicine> findMedicineByCategoryDetailId(@Param("categoryDetailId") int categoryDetailId);
 
     @Query(value = "SELECT m FROM Medicine m JOIN CategoryDetail cd on m.categoryDetailId = cd.id\n" +

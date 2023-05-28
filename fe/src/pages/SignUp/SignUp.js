@@ -353,7 +353,7 @@ function SignUp() {
                             <Slider {...settings} className="rounded-xl">
                                 <div className="rounded-xl outline-none">
                                     <img
-                                        src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/signup%2Ffemale-doctor-hospital-with-stethoscope.jpg?alt=media&token=e6188aa6-4135-483a-8cb4-fe853a884862  "
+                                        src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/signup%2Ffemale-doctor-hospital-with-stethoscope.jpg?alt=media&token=e6188aa6-4135-483a-8cb4-fe853a884862"
                                         alt="img"
                                         className="h-[700px] w-full rounded-xl object-cover object-center"
                                         onError={({ currentTarget }) => {
@@ -365,7 +365,7 @@ function SignUp() {
 
                                 <div className="rounded-xl outline-none">
                                     <img
-                                        src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/signup%2Fsuccessful-doctor-working-office.jpg?alt=media&token=ef37c520-93dd-4f8c-acda-e3844a860e89"
+                                        src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/signup%2Fpediatrician-showing-prescription.jpg?alt=media&token=0a988367-8eae-4ba3-95a0-8ff9e41c29ec"
                                         alt="img"
                                         className="h-[700px] w-full rounded-xl object-cover"
                                         onError={({ currentTarget }) => {
@@ -376,7 +376,7 @@ function SignUp() {
                                 </div>
                                 <div className="rounded-xl outline-none">
                                     <img
-                                        src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/signup%2Fyoung-beautiful-successful-female-doctor-with-stethoscope-isolated.jpg?alt=media&token=c2c31c54-e5f0-4568-9147-f93bbc98152d"
+                                        src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/signup%2Fsuccessful-doctor-working-office.jpg?alt=media&token=ab35a5fa-99f0-46dd-ad17-6fd25ba5f58c"
                                         alt="img"
                                         className="h-[700px] w-full rounded-xl object-cover object-center"
                                         onError={({ currentTarget }) => {

@@ -40,7 +40,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    @JsonBackReference
+//    @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "comment",cascade =  CascadeType.ALL)

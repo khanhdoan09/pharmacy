@@ -12,9 +12,12 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "user")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,7 +66,7 @@ public class User {
     private Set<Orders> orders;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    @JsonManagedReference
+//    @JsonManagedReference
     @JsonIgnore
     private List<Comment> comments;
 
@@ -73,9 +76,9 @@ public class User {
     private List<Likes> likes;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    @JsonManagedReference
+//    @JsonManagedReference
     @JsonIgnore
-    private List<Rate> rates;
+    private List<Rate> rateList;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonManagedReference
