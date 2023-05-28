@@ -186,9 +186,9 @@ function Cart() {
 
     function handleSubmit() {
         dispatch(addMedicinesToCart({ medicines: cartChecked, listVoucher: chooseListVoucher }));
-        window.location.href = '/order'; // dung cai nay thi lay update state cua redux
+        // window.location.href = '/order'; // dung cai nay thi lay update state cua redux
         dispatch(addItemsToVoucher({ items: chooseListVoucher }));
-        // navigate('/order');
+        navigate('/order');
     }
 
     return (

@@ -32,7 +32,7 @@ function CartItem({
     const [active, setActive] = useState(data?.medicine?.active == 1);
     const [units, setUnits] = useState({});
     const [currentUnit, setCurrentUnit] = useState(data?.unit);
-    const [listMedicinesUnchecked, setListMedicinesUnchecked] = useState({});
+    const [listMedicinesUnchecked, setListMedicinesUnchecked] = useState([]);
     const navigate = useNavigate();
     const medicineInCartRef = useRef({});
     const user = useSelector((state) => state.authentication.login.currentUser);
@@ -224,9 +224,15 @@ function CartItem({
         } else {
             setChecklist(checklist + 1);
             let tmp = cartChecked;
-            listMedicinesUnchecked.forEach((e) => {
+            listMedicinesUnchecked?.forEach((e) => {
                 tmp.unshift(e);
             });
+            listMedicinesUnchecked.push(data);
+            let flag = true;
+            tmp?.forEach((e) => (e?.id === data?.id ? (flag = false) : null));
+            if (flag) {
+                tmp.push(data);
+            }
             setCartChecked(tmp);
         }
         setCheck(!check);

@@ -51,6 +51,8 @@ public class RateController {
         rate.setMedicine(medicine);
         rate.setStar(rateRequest.getStar());
         rate.setContent(rateRequest.getContent());
+        rate.setUserId(user.getId());
+        rate.setMedicineId(medicine.getId());
         rateService.saveRate(rate);
 
         ResponseHandler responseHandler = new ResponseHandler("Save rate successfully", HttpStatus.OK.value(), null);
