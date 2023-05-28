@@ -19,15 +19,6 @@ export const bestSellerByFieldId = async (fieldId) => {
     }
 };
 
-export const bestSellerByCategoryId = async (categoryId) => {
-    try {
-        const res = await request.get(`bestSellerByCategoryId/${categoryId}`);
-        return res?.data;
-    } catch (error) {
-        console.log(error?.response?.data);
-    }
-};
-
 export const findMedicineByCategoryDetailId = async (categoryDetailId) => {
     try {
         const res = await request.get(`findMedicineByCategoryDetailId/${categoryDetailId}`);
@@ -84,6 +75,16 @@ export const findMedicinesRelated = async (categoryDetailId) => {
 export const findBySlugFieldAndSlugCategory = async (slugField, slugCategory) => {
     try {
         const res = await request.get(`findBySlugFieldAndSlugCategory/${slugField}/${slugCategory}`);
+        return res?.data;
+    } catch (error) {
+        console.log(error?.response?.data); // delete when deploy
+    }
+};
+export const findBySlugFieldAndSlugCategoryWithPage = async (slugField, slugCategory, page, pageSize) => {
+    try {
+        const res = await request.get(
+            `findBySlugFieldAndSlugCategoryWithPage/${slugField}/${slugCategory}/${page}/${pageSize}`,
+        );
         return res?.data;
     } catch (error) {
         console.log(error?.response?.data); // delete when deploy

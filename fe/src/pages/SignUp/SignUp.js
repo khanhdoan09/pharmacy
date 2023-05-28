@@ -116,7 +116,7 @@ function SignUp() {
                                 </Animation>
                                 <div className="my-3">
                                     <label htmlFor="name" className="py-1 font-bold text-[#016cc9] ">
-                                        Họ và tên
+                                        Tên tài khoản
                                     </label>
                                     <input
                                         autoComplete="off"

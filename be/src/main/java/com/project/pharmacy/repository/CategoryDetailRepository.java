@@ -11,7 +11,7 @@ public interface CategoryDetailRepository extends JpaRepository<CategoryDetail, 
 
     List<CategoryDetail> findCategoryDetailByCategoryId(int categoryId);
 
-    @Query(value="select cd from CategoryDetail cd join Category c on cd.categoryId = c.id where c.slug = :slugCategory")
+    @Query(value="select cd from CategoryDetail cd where cd.category.slug = :slugCategory")
     List<CategoryDetail> findCategoryDetailBySlugCategory(@Param("slugCategory")String slugCategory);
 
 

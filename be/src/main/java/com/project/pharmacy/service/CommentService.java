@@ -34,11 +34,8 @@ public class CommentService {
         Calendar cal = Calendar.getInstance();
         User user =
                 userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().orElse(null);
-        List<Likes> likes = new ArrayList<>();
 
-
-        Comment comment = new Comment(0, user.getId(), medicineId, content, 0, dateFormat.format(cal.getTime()), 0,
-                                      user, likes);
+        Comment comment = new Comment(0,user.getId(),medicineId,content,0,dateFormat.format(cal.getTime()),0);
         commentRepository.save(comment);
 
     }
@@ -63,10 +60,7 @@ public class CommentService {
             case "client":
                 throw new CustomException(HttpStatus.UNAUTHORIZED, "You do not have permission to use this function");
             case "staff":
-                List<Likes> likes = new ArrayList<>();
-                Comment comment = new Comment(0, user.getId(), medicineId, content, commentId,
-                                              dateFormat.format(cal.getTime()), 0,
-                                              user, likes);
+                Comment comment = new Comment(0,user.getId(),medicineId,content,commentId,dateFormat.format(cal.getTime()),0);
                 commentRepository.save(comment);
                 break;
             case "admin":

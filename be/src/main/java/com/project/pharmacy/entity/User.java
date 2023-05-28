@@ -39,7 +39,6 @@ public class User {
     private String codeActiveValue;
     private String codeActiveTime;
 
-    // for save a new user
     public User(String name, String email, String password, String phoneNumber, String createDate, String accountType
             , String avatar, String role) {
         this.name = name;
@@ -56,12 +55,25 @@ public class User {
         this.codeActiveTime = null;
     }
 
-    ////////////
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonManagedReference
     private Set<Orders> orders;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comments;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Likes> likes;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Rate> rates;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Saved> savedList;
 }

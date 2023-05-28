@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import ProductMain from '~/components/ProductMain';
-import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
+import { convertNumberToPrice } from '~/utils/currency';
 
 function FamousProducts(props) {
     const [sortOrder, setSortOrder] = useState('ascending');
-    const [visibleProducts, setVisibleProducts] = useState(4);
+    const [visibleProducts, setVisibleProducts] = useState(8);
 
     function handleSortOrderChange(event) {
         setSortOrder(event.target.value);
@@ -75,18 +75,18 @@ function FamousProducts(props) {
                 <button
                     className="mx-auto mt-4 flex h-8 items-center rounded-2xl  border border-[#d8e0e8] px-4 transition-all hover:bg-[#718198] hover:text-[#fff]"
                     onClick={() => {
-                        setVisibleProducts((visibleProducts) => visibleProducts + 1);
+                        setVisibleProducts((visibleProducts) => visibleProducts + 8);
                     }}
                 >
                     Xem thêm
                 </button>
             ) : null}
-            {visibleProducts > 4 ? (
+            {visibleProducts > 8 ? (
                 <button
                     className="mx-auto mt-4 flex h-8 items-center rounded-2xl  border border-[#d8e0e8] px-4 transition-all hover:bg-[#718198] hover:text-[#fff]"
                     onClick={() => {
                         if (visibleProducts < 8) {
-                            setVisibleProducts(4);
+                            setVisibleProducts(8);
                         } else {
                             setVisibleProducts(visibleProducts - 8);
                         }

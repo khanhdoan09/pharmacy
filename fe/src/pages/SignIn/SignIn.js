@@ -152,14 +152,6 @@ function SignIn() {
         const accountType = cookies.accountType;
         const accessToken = cookies.accessToken;
         if (accountType && accessToken) {
-            // handleLoginWithAccessToken(accessToken, accountType).then(
-            //     () => {
-            //         navigate('/');
-            //     },
-            //     (e) => {
-            //         console.log('cannot login with cookie');
-            //     },
-            // );
         }
     }, []);
 

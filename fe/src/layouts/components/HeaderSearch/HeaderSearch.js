@@ -180,15 +180,15 @@ function HeaderSearch() {
                                 const price = e?.priceWithUnit?.[0]?.price;
                                 return (
                                     <ResultSearchItem
-                                        key={e.id}
-                                        id={e.id}
-                                        to={`/detail/slug=${e.slug}`}
+                                        key={e?.id}
+                                        id={e?.id}
+                                        to={`/detail/slug=${e?.slug}`}
                                         img="https://cdn.nhathuoclongchau.scom.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-s7608-6226_large.jpg"
-                                        name={e.name}
-                                        title={e.category}
+                                        name={e?.name}
+                                        title={e?.category}
                                         newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
                                         oldPrice={`${convertNumberToPrice(price)}đ`}
-                                        unit={e.category}
+                                        unit={e?.category}
                                         onClick={() => {
                                             setKeyword('');
                                         }}
@@ -250,7 +250,7 @@ function HeaderSearch() {
 
                 <div className="right flex  text-white">
                     {!user ? (
-                        <NavLink to="/signin" className="track mr-3 flex items-center">
+                        <NavLink to="/sign-in" className="track mr-3 flex items-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"

@@ -15,18 +15,20 @@ public class Rate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-//    @Column(name = "medicine_id")
-//    private int medicineId;
-//    @Column(name = "user_id")
-//    private int userId;
+    @Column(name = "medicine_id")
+    private int medicineId;
+    @Column(name = "user_id")
+    private int userId;
     private int star;
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JsonBackReference
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "medicine_id")
+    @JoinColumn(name = "medicine_id", insertable = false, updatable = false)
+    @JsonBackReference
     private Medicine medicine;
 }

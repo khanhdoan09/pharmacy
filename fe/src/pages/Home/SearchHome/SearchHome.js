@@ -89,15 +89,15 @@ function SearchHome() {
                                 const price = e?.priceWithUnit?.[0]?.price;
                                 return (
                                     <ResultSearchItem
-                                        key={e.id}
-                                        to={`detail/slug=${e.slug}`}
+                                        key={e?.id}
+                                        to={`detail/slug=${e?.slug}`}
                                         id={e?.id}
                                         img="https://cdn.nhathuoclongchau.scom.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2022/03/00033518-vita-gummies-vitamin-d3-1000iu-120v-s7608-6226_large.jpg"
-                                        name={e.name}
-                                        title={e.category}
+                                        name={e?.name}
+                                        title={e?.category}
                                         newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
                                         oldPrice={`${convertNumberToPrice(price)}đ`}
-                                        unit="Hộp"
+                                        unit={e?.category}
                                         onClick={() => {
                                             setKeyword('');
                                         }}

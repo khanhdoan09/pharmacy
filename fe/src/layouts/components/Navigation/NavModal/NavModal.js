@@ -4,7 +4,6 @@ import ProductSeller from '~/components/ProductSeller';
 import { convertNumberToPrice } from '~/utils/currency';
 import ContentNavModalItem from './ContentNavModalItem';
 import NavModalItem from './NavModalItem';
-import { getImageFromFirebase, getImageList, getImageURL } from '~/utils/firebase';
 function NavModal(props) {
     const [categoryId, setCategoryId] = useState();
     const [categoryDetails, setCategoryDetails] = useState([]);
@@ -22,7 +21,7 @@ function NavModal(props) {
         setBestSell(filterBestSell);
         const filteredCategory = props?.categories?.filter((category) => {
             const categoryDetails = category.categoryDetails;
-            return categoryDetails.some((i) => i?.categoryId === categoryId);
+            return categoryDetails?.some((i) => i?.categoryId === categoryId);
         });
         setCategoryDetails(filteredCategory[0]);
     }, [categoryId]);
@@ -38,7 +37,7 @@ function NavModal(props) {
                     <NavModalItem
                         key={e.id}
                         id={e?.id}
-                        to={`/filter/field=${e.fieldOfCategory.slug}/category=${e.slug}`}
+                        to={`/filter/field=${e.fieldOfCategory?.slug}/category=${e.slug}`}
                         title={e.category}
                         onMouseOver={() => {
                             setCategoryId(e.id);
@@ -91,7 +90,7 @@ function NavModal(props) {
                     </div>
                     <div className="grid grid-cols-5 gap-2">
                         {bestSell?.slice(0, 5)?.map((e) => {
-                             const price = e?.priceWithUnit?.[0]?.price;
+                            const price = e?.priceWithUnit?.[0]?.price;
                             return (
                                 <div className=" px-1" key={e.id}>
                                     <ProductSeller
@@ -101,7 +100,7 @@ function NavModal(props) {
                                         name={e?.name}
                                         unit={e?.category}
                                         newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
-                                oldPrice={`${convertNumberToPrice(price)}đ`}
+                                        oldPrice={`${convertNumberToPrice(price)}đ`}
                                     />
                                 </div>
                             );

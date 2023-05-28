@@ -29,13 +29,14 @@ public class LikesService {
 
     public Likes findLikeByCommentIdAndUserId(int commentId, String userEmail) throws CustomException {
         User user =
-                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().get();
-        Likes like = likeRepository.findLikeByCommentIdAndUserId(commentId, user.getId());
-//        if (like == null) {
-//            throw new CustomException(HttpStatus.NOT_FOUND, "Can't find like by commentId = " + commentId + " and " +
-//                    "userId = " + userId);
-//        }
-        return like;
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().orElse(null);
+
+        if (user != null) {
+            Likes like = likeRepository.findLikeByCommentIdAndUserId(commentId, user.getId());
+            return like;
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't findLikeByCommentIdAndUserId");
+        }
     }
 
     public void addLike(int commentId, String userEmail) throws CustomException {
@@ -43,7 +44,7 @@ public class LikesService {
         Calendar cal = Calendar.getInstance();
         Comment comment = commentRepository.findCommentById(commentId);
         User user =
-                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().get();
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().orElse(null);
         if (user == null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "You need register account to use like comments function");
         } else if (comment == null) {
@@ -61,9 +62,11 @@ public class LikesService {
 
     public void unLikeComment(int commentId, String userEmail) throws CustomException {
         User user =
-                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().get();
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().orElse(null);
         Likes like = likeRepository.findLikeByCommentIdAndUserId(commentId, user.getId());
-        if (like == null) {
+        if (user == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't find user");
+        } else if (like == null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "Can't find like by commentId = " + commentId + " and " +
                     "userId = " +
                     user.getId());
