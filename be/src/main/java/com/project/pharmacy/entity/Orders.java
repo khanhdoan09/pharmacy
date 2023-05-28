@@ -1,6 +1,7 @@
 package com.project.pharmacy.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Orders {
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST})
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonManagedReference
     private Collection<OrderDetail> orderDetail;
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")

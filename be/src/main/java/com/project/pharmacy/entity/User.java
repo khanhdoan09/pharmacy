@@ -59,21 +59,26 @@ public class User {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonManagedReference
+    @JsonIgnore
     private Set<Orders> orders;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonManagedReference
+    @JsonIgnore
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonManagedReference
+    @JsonIgnore
     private List<Likes> likes;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonManagedReference
+    @JsonIgnore
     private List<Rate> rates;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonManagedReference
+    @JsonIgnore
     private List<Saved> savedList;
 }

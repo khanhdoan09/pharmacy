@@ -1,6 +1,7 @@
 package com.project.pharmacy.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,5 +34,6 @@ public class OrderDetail {
     @JoinColumn(name = "medicine_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonManagedReference
     private Medicine medicine;
 }
