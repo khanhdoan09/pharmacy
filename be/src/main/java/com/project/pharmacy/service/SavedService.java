@@ -43,14 +43,19 @@ public class SavedService {
             return saved;
         }
     }
+
     public List<Saved> findSavedByEmail(String email) throws CustomException {
         User user = userRepository.findByEmail(email).orElse(null);
-        List<Saved> savedList =
-                savedRepository.findAll().stream().filter(x -> x.getUser().getId() == user.getId()).collect(Collectors.toList());
-        if (savedList.size() == 0) {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Can't find save by email = " + email);
+        if (user == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't find user");
+        } else {
+            List<Saved> savedList =
+                    savedRepository.findAll().stream().filter(x -> x.getUser().getId() == user.getId()).collect(Collectors.toList());
+            if (savedList.size() == 0) {
+                throw new CustomException(HttpStatus.NOT_FOUND, "Can't find save by email = " + email);
+            }
+            return savedList;
         }
-        return savedList;
     }
 
     public void saveNewSaved(String email, int medicineId) throws CustomException {
@@ -69,7 +74,7 @@ public class SavedService {
             } else {
                 DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 Calendar cal = Calendar.getInstance();
-                Saved newSave = new Saved(0L, LocalDateTime.now(), user, medicine);
+                Saved newSave = new Saved(0L, user.getId(), medicine.getId(), LocalDateTime.now());
                 savedRepository.save(newSave);
             }
         }

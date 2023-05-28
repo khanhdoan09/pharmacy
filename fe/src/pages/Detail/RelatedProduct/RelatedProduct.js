@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Slider from 'react-slick';
 import ProductMain from '~/components/ProductMain';
 import { findMedicineByCategoryDetailId } from '~/services/medicineService';
 import { convertNumberToPrice } from '~/utils/currency';
@@ -9,7 +8,7 @@ function RelatedProduct({ categoryDetailId, medicineId }) {
     useEffect(() => {
         if (categoryDetailId !== undefined) {
             findMedicineByCategoryDetailId(categoryDetailId).then((e) => {
-                setMedicinesRelated(e?.data?.filter((e) => e?.id != medicineId));
+                setMedicinesRelated(e?.data?.filter((e) => e?.id !== medicineId));
             });
         }
     }, [categoryDetailId]);

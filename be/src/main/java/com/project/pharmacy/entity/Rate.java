@@ -1,6 +1,7 @@
 package com.project.pharmacy.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class Rate {
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    @JsonBackReference
+    @JsonManagedReference
     private User user;
 
     @ManyToOne

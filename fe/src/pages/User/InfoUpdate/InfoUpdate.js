@@ -154,7 +154,7 @@ function InfoUpdate() {
                             </div>
                             <div className="mb-2 flex flex-col">
                                 <label htmlFor="name" className="text-base">
-                                    Họ và tên
+                                    Tên tài khoản
                                 </label>
                                 <input
                                     name="name"
@@ -167,7 +167,7 @@ function InfoUpdate() {
                                     }
                                     onChange={formik.handleChange}
                                     value={formik.values.name || dataInfoUser?.name}
-                                    placeholder="ví dụ: lê minh chánh"
+                                    placeholder="Nhập tên tài khoản của bạn"
                                 />
                                 {formik.touched.name && formik.errors.name ? (
                                     <span className="flex items-center text-sm font-bold text-[#ff4742]">

@@ -259,7 +259,7 @@ function SignIn() {
                             className="absolute -top-20 right-0 -z-10 w-[300px] object-cover object-center cs:hidden xs:block sm:block md:block lg:block xl:block 2xl:block"
                         >
                             <img
-                                src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/signup%2Fyoung-beautiful-successful-female-doctor-with-stethoscope-isolated.jpg?alt=media&token=c2c31c54-e5f0-4568-9147-f93bbc98152d"
+                                src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/signup%2Fyoung-beautiful-successful-female-doctor-with-stethoscope-isolated.jpg?alt=media&token=b1983893-eac0-4a50-973f-456af64302b9"
                                 alt="doctor"
                             />
                         </Animation>
