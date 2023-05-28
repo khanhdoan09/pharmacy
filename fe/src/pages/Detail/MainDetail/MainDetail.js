@@ -33,45 +33,47 @@ function MainDetail(props) {
     };
 
     function handleAddNewMedicineIntoCart() {
+        console.log(user);
         if (user == null) {
             navigate('/sign-in');
+        } else {
+            addNewMedicineInCart(
+                props?.detail?.medicineId,
+                toggleState ? toggleState : props?.detail?.medicine?.priceWithUnit?.[0]?.id,
+                quantity,
+                user?.email,
+                user?.accessToken,
+                user?.account,
+            ).then(
+                (e) => {
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: 'smooth',
+                    });
+                    const load = getAllMedicinesInCart(user?.accessToken, user?.account, user?.email);
+                    load.then(
+                        (e) => {
+                            if (e.status === 200) {
+                                dispatch(addMedicinesToCartAndShowCartInHeader({ medicines: e?.data?.data }));
+                            }
+                        },
+                        (err) => {
+                            if (err?.status === 403) {
+                                navigate('/sign-in');
+                            } else {
+                                console.log(err);
+                                navigate('server-error');
+                            }
+                        },
+                    );
+                },
+                (err) => {
+                    console.log(err);
+                    navigate('server-error');
+                },
+            );
         }
-        addNewMedicineInCart(
-            props?.detail?.medicineId,
-            toggleState ? toggleState : props?.detail?.medicine?.priceWithUnit?.[0]?.id,
-            quantity,
-            user?.email,
-            user?.accessToken,
-            user?.account,
-        ).then(
-            (e) => {
-                window.scrollTo({
-                    top: 0,
-                    left: 0,
-                    behavior: 'smooth',
-                });
-                const load = getAllMedicinesInCart(user?.accessToken, user?.account, user?.email);
-                load.then(
-                    (e) => {
-                        if (e.status === 200) {
-                            dispatch(addMedicinesToCartAndShowCartInHeader({ medicines: e?.data?.data }));
-                        }
-                    },
-                    (err) => {
-                        if (err?.status === 403) {
-                            navigate('/sign-in');
-                        } else {
-                            console.log(err);
-                            navigate('server-error');
-                        }
-                    },
-                );
-            },
-            (err) => {
-                console.log(err);
-                navigate('server-error');
-            },
-        );
     }
     return (
         <div className="main-detail !grid gap-6 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 ">
@@ -85,9 +87,7 @@ function MainDetail(props) {
                     </p>
                     <h3 className="text-[28px] font-bold text-[#072d94]">{props?.detail?.medicine?.name}</h3>
                     <div className="flex items-center justify-between">
-                        <span className="text-[#b6c0d7]">
-                            Mã sản phẩm: ({localStorage.getItem("medicineId")})
-                        </span>
+                        <span className="text-[#b6c0d7]">Mã sản phẩm: ({localStorage.getItem('medicineId')})</span>
                         <div className="text-sm">
                             <span className="cursor-pointer border-r border-[#bb91a5] px-2 hover:underline">
                                 {props?.dataReview?.length || 0} đánh giá
