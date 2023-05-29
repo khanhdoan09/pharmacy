@@ -21,8 +21,7 @@ function ProductAds({ id, to, label, img, title, newPrice, oldPrice, unit }) {
     }, []);
 
     const handleClick = (medicineId) => {
-        dispatch(setMedicineId(medicineId))
-
+        dispatch(setMedicineId(medicineId));
     };
     return (
         <div

@@ -80,6 +80,16 @@ export const findUserByEmail = async (email) => {
         return Promise.reject(error?.response?.data);
     }
 };
+
+export const findUserId = async (id) => {
+    try {
+        const load = await request.get(`/${controller}/findUser/${id}`);
+        return load;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
 export const updateInformation = async (accessToken, accountType, email, name, phone) => {
     try {
         const load = await request.put(

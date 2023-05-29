@@ -25,7 +25,7 @@ public class Rate {
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    @JsonManagedReference
+    @JsonBackReference
     private User user;
 
     @ManyToOne

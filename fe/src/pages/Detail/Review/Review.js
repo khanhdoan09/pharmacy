@@ -20,10 +20,12 @@ function Review(props) {
                 <div className="grid gap-4 border-b border-[#d8e0e8] py-4 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3">
                     <div className="flex flex-col items-center justify-center">
                         <p className="mb-1 text-base">Đánh Giá Trung Bình</p>
-                        <h1 className="mb-1 text-[44px] font-bold text-[#1d48ba]">{isNaN(average.toFixed(1))? 5 : average.toFixed(1)}/5</h1>
+                        <h1 className="mb-1 text-[44px] font-bold text-[#1d48ba]">
+                            {isNaN(average.toFixed(1)) ? 5 : average.toFixed(1)}/5
+                        </h1>
                         <div className="flex items-center">
                             <Rating
-                                initialRating={isNaN(average.toFixed(1))? 5 : average.toFixed(0)}
+                                initialRating={isNaN(average.toFixed(1)) ? 5 : average.toFixed(0)}
                                 readonly
                                 emptySymbol="far fa-star text-gray-400"
                                 fullSymbol="fas fa-star text-yellow-400"
@@ -53,7 +55,7 @@ function Review(props) {
                                     style={{ width: handleSumStar(5) / 100 + '%' || 1 + '%' }}
                                 ></div>
                             </div>
-                            <span className="text-[#718198]">{handleSumStar(5)|| 0}</span>
+                            <span className="text-[#718198]">{handleSumStar(5) || 0}</span>
                         </div>
                         <div className="mb-1 flex items-center">
                             <span className="mr-1 text-base">4</span>
@@ -75,7 +77,7 @@ function Review(props) {
                                     style={{ width: handleSumStar(4) / 100 + '%' || 1 + '%' }}
                                 ></div>
                             </div>
-                            <span className="text-[#718198]"> {handleSumStar(4)|| 0}</span>
+                            <span className="text-[#718198]"> {handleSumStar(4) || 0}</span>
                         </div>
                         <div className="mb-1 flex items-center">
                             <span className="mr-1 text-base">3</span>
@@ -97,7 +99,7 @@ function Review(props) {
                                     style={{ width: handleSumStar(3) / 100 + '%' || 1 + '%' }}
                                 ></div>
                             </div>
-                            <span className="text-[#718198]"> {handleSumStar(3)|| 0}</span>
+                            <span className="text-[#718198]"> {handleSumStar(3) || 0}</span>
                         </div>
                         <div className="mb-1 flex items-center">
                             <span className="mr-1 text-base">2</span>
@@ -119,7 +121,7 @@ function Review(props) {
                                     style={{ width: handleSumStar(2) / 100 + '%' || 1 + '%' }}
                                 ></div>
                             </div>
-                            <span className="text-[#718198]"> {handleSumStar(2)|| 0}</span>
+                            <span className="text-[#718198]"> {handleSumStar(2) || 0}</span>
                         </div>
                         <div className="mb-1 flex items-center">
                             <span className="mr-1 text-base">1</span>
@@ -146,7 +148,7 @@ function Review(props) {
                     </div>
                     <div className="my-auto flex flex-col items-center">
                         <p className="mb-2">Bạn đã dùng sản phẩm này?</p>
-                       {/* <NavLink to="/user">
+                        {/* <NavLink to="/user">
                             <button className="rounded-3xl bg-[#1d48ba] px-8 text-base leading-9 text-[#fff]">
                                 GỬI ĐÁNH GIÁ
                             </button>
@@ -156,12 +158,12 @@ function Review(props) {
                 {props?.dataReview?.map((e) => (
                     <div className="px-4 py-3" key={e?.id}>
                         <ReviewItem
+                            id={e?.userId}
                             avatar={e?.user?.name?.slice(0, 1).toUpperCase()}
                             name={e?.user?.name}
                             // time="1 tuần trước"
                             content={e?.content}
                         >
-                          
                             <div className="flex items-center">
                                 <Rating
                                     initialRating={e?.star}

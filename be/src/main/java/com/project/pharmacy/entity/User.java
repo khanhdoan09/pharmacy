@@ -1,23 +1,21 @@
 package com.project.pharmacy.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,26 +60,22 @@ public class User {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonManagedReference
-    @JsonIgnore
     private Set<Orders> orders;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-//    @JsonManagedReference
-    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    @JsonBackReference
+    @JsonManagedReference
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
-    @JsonIgnore
     private List<Likes> likes;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-//    @JsonManagedReference
-    @JsonIgnore
-    private List<Rate> rateList;
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @JsonManagedReference
+    private Collection<Rate> rates;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonManagedReference
-    @JsonIgnore
     private List<Saved> savedList;
 }

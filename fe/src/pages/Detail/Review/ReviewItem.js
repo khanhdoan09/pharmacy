@@ -1,13 +1,23 @@
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { findUserId } from '~/services/userServices';
 
-function ReviewItem({ avatar, name, time, content, children }) {
+function ReviewItem({ avatar, name, time, content, children, id }) {
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        findUserId(id).then((e) => {
+            setUser(e?.data?.data);
+        });
+    }, []);
     return (
         <div className="review-item flex">
-            <p className="w-12 h-12  bg-[#a39c9c] text-[#fff] rounded-full flex items-center justify-center mr-2">
-                {avatar}
+            <p className="mr-2 flex  h-12 w-12 items-center justify-center rounded-full bg-[#a39c9c] text-[#fff]">
+                {user?.email?.split('@')[0]?.substring(0, 1)?.toUpperCase()}
             </p>
             <div className="flex flex-col">
                 <div className="flex items-center">
-                    <span className="mr-4 font-bold">{name}</span>
+                    <span className="mr-4 font-bold">{user?.email?.split('@')[0]}</span>
                     <span>{time}</span>
                 </div>
                 {/* <div className="flex items-center ">
