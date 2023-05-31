@@ -70,13 +70,13 @@ function Order() {
 
     const formik = useFormik({
         initialValues: {
-            name: '',
-            phoneNumber: '',
+            name: 'Khanh',
+            phoneNumber: '0707342530',
             city: '',
             district: '',
             ward: '',
-            detailAddress: '',
-            message: '',
+            detailAddress: 'tl 43',
+            message: 'gui gap',
         },
         validate,
         onSubmit: (values) => {

@@ -26,9 +26,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -202,7 +204,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "email exists"),
     })
     @PostMapping("/registerWithForm")
-    public ResponseHandler registerWithForm(@RequestBody User userData) throws CustomException {
+    public ResponseHandler registerWithForm(@Valid @RequestBody User userData) throws CustomException {
         Optional<User> user = userService.getByUserEmail(userData.getEmail());
         if (user.isPresent()) {
             if (user.get().isActive()) {

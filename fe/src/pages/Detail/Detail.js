@@ -16,8 +16,9 @@ function Detail() {
     const [commentByMedicineId, setCommentByMedicineId] = useState([]);
     const [dataReview, setDataReview] = useState();
     const [imageList, setImageList] = useState([]);
-    const handleMedicineId = useSelector(state => state.medicine.selectedMedicineId);
+    const handleMedicineId = useSelector((state) => state.medicine.selectedMedicineId);
 
+    // get info medicine
     useEffect(() => {
         const fetchApi = async () => {
             const resultFindMedicineDetailByMedicineId = await medicineService.findMedicineDetailByMedicineId(
@@ -31,14 +32,7 @@ function Detail() {
         console.log(handleMedicineId);
     }, [handleMedicineId]);
 
-    useEffect(() => {
-        const intervalId = setInterval(async () => {
-            const resultAllComments = await commentService.findCommentsByMedicineId(handleMedicineId);
-            setCommentByMedicineId(resultAllComments?.data);
-        }, 5000);
-        return () => clearInterval(intervalId);
-    }, [handleMedicineId, commentByMedicineId?.length]);
-
+    // get image
     useEffect(() => {
         const fetchApi = async () => {
             const re = await rateService.findRateByMedicineId(handleMedicineId);
@@ -50,6 +44,14 @@ function Detail() {
         };
         fetchApi();
     }, [handleMedicineId]);
+
+    useEffect(() => {
+        const intervalId = setInterval(async () => {
+            const resultAllComments = await commentService.findCommentsByMedicineId(handleMedicineId);
+            setCommentByMedicineId(resultAllComments?.data);
+        }, 5000);
+        return () => clearInterval(intervalId);
+    }, [handleMedicineId, commentByMedicineId?.length]);
 
     return (
         <div className=" max-w-full ">
