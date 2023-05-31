@@ -14,13 +14,10 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    // Đoạn JWT_SECRET này là bí mật, chỉ có phía server biết
     private final String JWT_SECRET = "lodaaaaaa";
 
-    //Thời gian có hiệu lực của chuỗi jwt
     private final long JWT_EXPIRATION = 604800000L;
 
-    // Tạo ra jwt từ thông tin user
     public String generateToken(String email, String name, String avatar,String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
