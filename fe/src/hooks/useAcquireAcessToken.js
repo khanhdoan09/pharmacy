@@ -1,11 +1,9 @@
-import { loginWithAccessToken, registerWithAccessToken } from '~/services/userServices';
-import { InteractionRequiredAuthError, InteractionStatus } from '@azure/msal-browser';
+import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '~/redux/authSlice';
-import { useCookies } from 'react-cookie';
+import { loginWithAccessToken } from '~/services/userServices';
 
 const useAcquireAccessToken = () => {
     const { instance, accounts } = useMsal();

@@ -2,9 +2,9 @@ import request from '~/utils/request';
 
 const controller = 'cart';
 
-export const getAllMedicinesInCart = async (token, account) => {
+export const getAllMedicinesInCart = async (token, account, email) => {
     try {
-        const load = await request.get(`/${controller}/get/2`, {
+        const load = await request.get(`/${controller}/get/${email}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 AccountType: account,
@@ -66,10 +66,10 @@ export const updateUnitMedicineInCart = async (cartId, unitId, token, account) =
     }
 };
 
-export const addNewMedicineInCart = async (medicineId, unitId, quantity, accessToken, accountType) => {
+export const addNewMedicineInCart = async (medicineId, unitId, quantity, email, accessToken, accountType) => {
     try {
         const payload = {
-            userId: 2,
+            userEmail: email,
             medicineId: medicineId,
             unitId: unitId,
             quantity: quantity,

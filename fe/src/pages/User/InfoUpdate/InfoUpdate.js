@@ -1,21 +1,33 @@
 import { Form, Formik, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import * as Yup from 'yup';
-import useBodyScrollLock from '~/hooks/useBodyScrollLock';
+import { loginSuccess } from '~/redux/authSlice';
 import { findUserByEmail, updateInformation } from '~/services/userServices';
-const sign = require('jwt-encode');
+
 function InfoUpdate() {
+    const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
-    const [lock, toggle] = useBodyScrollLock();
     const user = useSelector((state) => state.authentication.login.currentUser);
     const [dataInfoUser, setDataInfoUser] = useState();
+    const [phoneNumber, setPhoneNumber] = useState();
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    useEffect(() => {
+        if (showModal) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
+    }, [showModal]);
+
     useEffect(() => {
         const fetchApi = async () => {
-            const result = await findUserByEmail(user?.email)
+            await findUserByEmail(user?.email)
                 .then((response) => {
                     setDataInfoUser(response.data.data);
+                    setPhoneNumber(response?.data?.data?.phoneNumber);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -31,18 +43,32 @@ function InfoUpdate() {
             phone: '',
             birthday: '',
         },
-        validationSchema: Yup.object({
-            name: Yup.string().required('Thông tin bắt buộc').min(4, 'Tên quá ngắn').max(16, 'Tên quá dài'),
-            phone: Yup.string().required('Thông tin bắt buộc'),
-            birthday: Yup.string(),
+        validationSchema: Yup.object().shape({
+            name: Yup.string()
+                .required('Thông tin bắt buộc')
+                .matches(/^[A-Za-zs'-]+$/, 'Tên không đúng định dạng'),
+            phone: Yup.string()
+                .required('Thông tin bắt buộc')
+                .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'Số điện thoại không đúng định dạng'),
+            birthday: Yup.string().required('Thông tin bắt buộc'),
         }),
         onSubmit: (values) => {
             updateInformation(user?.accessToken, user?.account, user?.email, values.name, values.phone)
                 .then((response) => {
                     if (response?.data !== null) {
                         notifySuccess('Thay đổi thông tin thành công');
-                        toggle();
                         setShowModal(!showModal);
+                        setPhoneNumber(values.phone);
+                        dispatch(
+                            loginSuccess({
+                                id: user?.id,
+                                username: values.name,
+                                email: user?.email,
+                                accessToken: user?.accessToken,
+                                account: 'Normal',
+                                role: user?.role,
+                            }),
+                        );
                     }
                 })
                 .catch((err) => {
@@ -79,12 +105,11 @@ function InfoUpdate() {
                     />
                 </svg>
             </div>
-            <p className="mt-3 text-xl font-bold text-[#072d94]">{dataInfoUser?.name}</p>
-            <p className="mt-1 text-base text-[#334155]">{dataInfoUser?.phoneNumber}</p>
+            <p className="mt-3 text-xl font-bold text-[#072d94]">{user?.username}</p>
+            <p className="mt-1 text-base text-[#334155]">{phoneNumber}</p>
             <button
                 className="mt-1 flex items-center rounded-xl border border-[#d8e0e8] bg-transparent px-4 py-1 leading-6 text-[#52637a] hover:bg-[#718198] hover:text-[#fff]"
                 onClick={() => {
-                    toggle();
                     setShowModal(!showModal);
                 }}
             >
@@ -119,7 +144,6 @@ function InfoUpdate() {
                         <div
                             className="overlay fixed inset-0 h-screen w-screen bg-[#020202] opacity-25"
                             onClick={() => {
-                                toggle();
                                 setShowModal(!showModal);
                             }}
                         ></div>
@@ -130,7 +154,7 @@ function InfoUpdate() {
                             </div>
                             <div className="mb-2 flex flex-col">
                                 <label htmlFor="name" className="text-base">
-                                    Họ và tên
+                                    Tên tài khoản
                                 </label>
                                 <input
                                     name="name"
@@ -143,7 +167,7 @@ function InfoUpdate() {
                                     }
                                     onChange={formik.handleChange}
                                     value={formik.values.name || dataInfoUser?.name}
-                                    placeholder="ví dụ: lê minh chánh"
+                                    placeholder="Nhập tên tài khoản của bạn"
                                 />
                                 {formik.touched.name && formik.errors.name ? (
                                     <span className="flex items-center text-sm font-bold text-[#ff4742]">
@@ -182,6 +206,7 @@ function InfoUpdate() {
                                     name="birthday"
                                     id="birthday"
                                     type="date"
+                                    max={currentDate}
                                     className={
                                         formik.touched.birthday && formik.errors.birthday
                                             ? 'mb-1 h-10 rounded-md border border-[#ff4742] px-4 py-1 outline-0'

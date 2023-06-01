@@ -1,54 +1,60 @@
-import { useSelector } from 'react-redux';
-import ItemCartHeader from './ItemCartHeader';
 import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink, useNavigate } from 'react-router-dom';
 import useAcquireAccessToken from '~/hooks/useAcquireAcessToken';
+import { addMedicinesToCart, removeMedicinesFromCart, unShowCartInHeader } from '~/redux/cartSlice';
 import { getAllMedicinesInCart } from '~/services/cartServices';
-import { useDispatch } from 'react-redux';
-import { addMedicinesToCart, unShowCartInHeader } from '~/redux/cartSlice';
+import ItemCartHeader from './ItemCartHeader';
 
 function CartHeader() {
     const cart = useSelector((state) => state.cart.medicines);
     const user = useSelector((state) => state.authentication.login.currentUser);
     const [totalMedicine, setTotalMedicine] = useState(0);
     const [showCart, setShowCart] = useState(false);
-    const [medicineInCart, setMedicineInCart] = useState(cart?.medicines);
+    const [medicineInCart, setMedicineInCart] = useState([]);
     const navigate = useNavigate();
     const getNewAccessToken = useAcquireAccessToken();
     const dispatch = useDispatch();
     const isShowCart = useSelector((state) => state.cart?.showCart);
 
     useEffect(() => {
+        if (!user) {
+            return;
+        }
         dispatch(unShowCartInHeader());
-        const load = getAllMedicinesInCart(user?.accessToken, user?.account);
+        const load = getAllMedicinesInCart(user?.accessToken, user?.account, user?.email);
         load.then(
             (e) => {
                 if (e.status == 200) {
-                    setTotalMedicine(e?.data?.data?.length);
+                    setTotalMedicine(e?.data?.data?.length ? e?.data?.data?.length : 0);
                     dispatch(addMedicinesToCart({ medicines: e?.data?.data }));
+                    setMedicineInCart(e?.data?.data);
                 }
             },
             (err) => {
                 if (err?.status === 401) {
                     getNewAccessToken();
                 } else if (err?.status === 403) {
-                    navigate('/signIn');
+                    navigate('/sign-in');
                 } else if (err?.status === 404) {
+                    dispatch(removeMedicinesFromCart());
+                    console.log('cart is empty');
+                    setMedicineInCart([]);
                 } else {
                     console.log(err);
-                    navigate('/server_error');
+                    navigate('server-error');
                 }
             },
         );
     }, []);
 
     useEffect(() => {
-        console.log(123);
-        setMedicineInCart(cart.medicines);
-        setTotalMedicine(cart.medicines?.length);
+        console.log(cart);
+        // dispatch(removeMedicinesFromCart());
+        setMedicineInCart(cart?.medicines);
+        setTotalMedicine(cart?.medicines?.length ? cart?.medicines?.length : 0);
         setShowCart(isShowCart);
-    }, [useSelector((state) => state.cart)]);
+    }, [cart]);
 
     return (
         <div
@@ -76,7 +82,7 @@ function CartHeader() {
                                             key={i}
                                             medicine={e?.medicine}
                                             unit={e?.unit}
-                                            quantity={e?.quantity}
+                                            quantity={e.quantity}
                                             id={e?.id}
                                             setTotalMedicine={setTotalMedicine}
                                             totalMedicine={totalMedicine}
@@ -86,7 +92,9 @@ function CartHeader() {
                                 })}
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-[12px] font-bold text-[#657384]">{totalMedicine} sản phẩm</span>
+                                <span className="text-[12px] font-bold text-[#657384]">
+                                    {totalMedicine || 'Chưa có'} sản phẩm
+                                </span>
                                 <a
                                     href="/cart"
                                     className="h-[36px] rounded-lg bg-[#306de4] py-[8px] px-[12px] text-[0.875rem] font-[500]"

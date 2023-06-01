@@ -2,26 +2,51 @@ import request from '~/utils/request';
 
 const controller = 'order';
 
-export const addNewOrder = async (newOrder, listOrderDetail) => {
+export const addNewOrder = async (token, account, newOrder, listOrderDetail) => {
+    console.log(token);
+    console.log(account);
     try {
-        let payload = {
-            order: newOrder,
-            list: listOrderDetail,
-        };
-
         const load = await request.post(
             `/${controller}/add`,
             {
-                payload,
+                order: newOrder,
+                list: listOrderDetail,
             },
-            // {
-            //     headers: {
-            //         Authorization: `Bearer ${token}`,
-            //         Account: account,
-            //         AddNew: 'false',
-            //     },
-            // },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    AccountType: account,
+                },
+            },
         );
+        return load;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
+export const getOrderByUserId = async (accessToken, accountType, email) => {
+    try {
+        const load = await request.get(`/${controller}/get/${email}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                AccountType: accountType,
+            },
+        });
+        return load;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
+export const getRewardPointById = async (accessToken, accountType, email) => {
+    try {
+        const load = await request.get(`/${controller}/getRewardPoint/${email}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                AccountType: accountType,
+            },
+        });
         return load;
     } catch (error) {
         return Promise.reject(error?.response?.data);

@@ -1,12 +1,37 @@
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
+import { setMedicineId } from '~/redux/medicineSlice';
+import { getImageFromFirebase } from '~/utils/firebase';
 
-function ProductSeller({ to, img, name, newPrice, unit, oldPrice, backgroundColor, px, py, borderRadius }) {
+function ProductSeller({ id, to, img, name, newPrice, unit, oldPrice, backgroundColor, px, py, borderRadius }) {
+    const [urlAvatar, setUrlAvatar] = useState(null);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if (id !== undefined) {
+            const imagePromise = getImageFromFirebase('product', `${id}`, `avatar`);
+            imagePromise.then(
+                (urlAvatar) => {
+                    setUrlAvatar(urlAvatar);
+                },
+                (err) => {},
+            );
+        }
+    }, []);
+
+    const handleClick = (medicineId) => {
+        dispatch(setMedicineId(medicineId))
+    };
+
     return (
-        <div className={`product ${backgroundColor + ' ' + px + ' ' + py + ' ' + borderRadius}`}>
+        <div
+            className={`product ${backgroundColor + ' ' + px + ' ' + py + ' ' + borderRadius}`}
+            onClick={() => handleClick(id)}
+        >
             <NavLink to={to || ''} className="flex justify-center">
                 <img
-                    src={img}
+                    src={urlAvatar}
                     alt="product-img"
                     className="h-[157px] w-[155px] rounded-md border border-[#d8e0e8] bg-[#fff] object-cover px-2 py-2 transition-all ease-linear hover:border-[#072d94]"
                     onError={({ currentTarget }) => {

@@ -1,5 +1,7 @@
+import { useSelector } from 'react-redux';
 import Slider from 'react-slick';
 import ProductAds from '~/components/ProductAds';
+import { convertNumberToPrice } from '~/utils/currency';
 
 function Resistance() {
     const settings2 = {
@@ -57,6 +59,7 @@ function Resistance() {
             },
         ],
     };
+    const medicines = useSelector((state) => state.medicine.data);
     return (
         <div className="max-w-full bg-[#4e70d0]">
             <div className="mx-auto my-0 max-w-[1200px] py-8">
@@ -64,119 +67,44 @@ function Resistance() {
                     <div className="flex max-w-full flex-[0_0_100%] items-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
                             viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="mr-2 h-6 w-6 text-[#fff]"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="mr-1 h-6 w-6 rounded-full bg-white px-1 py-1 text-red-500"
                         >
                             <path
-                                fillRule="evenodd"
-                                d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                clipRule="evenodd"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
                             />
                         </svg>
+
                         <h3 className="px-1  text-[20px] font-bold capitalize text-[#fff] line-clamp-1">
-                            Sản Phẩm Tăng Sức Đề Kháng
+                            Sản Phẩm Bán Chạy Nhất
                         </h3>
                     </div>
                 </div>
 
                 <Slider {...settings2}>
-                    <ProductAds
-                        label="chai"
-                        img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2018/11/00008138-xisat-kid-75ml-8547-5bf4_large.JPG"
-                        title="Nước biển sâu sạch thông mũi dành cho trẻ em Xisat (75ml)"
-                        newPrice="30.000đ"
-                        oldPrice=""
-                        unit="Chai"
-                    />
-                    <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
-                        oldPrice=""
-                        unit="Hộp"
-                    />
-                    <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
-                        oldPrice=""
-                        unit="Hộp"
-                    />
-                    <ProductAds
-                        label="chai"
-                        img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2018/11/00008138-xisat-kid-75ml-8547-5bf4_large.JPG"
-                        title="Nước biển sâu sạch thông mũi dành cho trẻ em Xisat (75ml)"
-                        newPrice="30.000đ"
-                        oldPrice=""
-                        unit="Chai"
-                    />
-                    <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
-                        oldPrice=""
-                        unit="Hộp"
-                    />
-                    <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
-                        oldPrice=""
-                        unit="Hộp"
-                    />
-                    <ProductAds
-                        label="chai"
-                        img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2018/11/00008138-xisat-kid-75ml-8547-5bf4_large.JPG"
-                        title="Nước biển sâu sạch thông mũi dành cho trẻ em Xisat (75ml)"
-                        newPrice="30.000đ"
-                        oldPrice=""
-                        unit="Chai"
-                    />
-                    <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
-                        oldPrice=""
-                        unit="Hộp"
-                    />
-                    <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
-                        oldPrice=""
-                        unit="Hộp"
-                    />
-                    <ProductAds
-                        label="chai"
-                        img="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2018/11/00008138-xisat-kid-75ml-8547-5bf4_large.JPG"
-                        title="Nước biển sâu sạch thông mũi dành cho trẻ em Xisat (75ml)"
-                        newPrice="30.000đ"
-                        oldPrice=""
-                        unit="Chai"
-                    />
-                    <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
-                        oldPrice=""
-                        unit="Hộp"
-                    />
-                    <ProductAds
-                        label="1 Hộp x 60 Viên"
-                        img=" https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/600x600/filters:quality(90):fill(white)/nhathuoclongchau.com.vn/images/product/2021/12/00032942-b-complex-vitamin-royal-care-60v-5253-61c0_large.jpg"
-                        title="Viên uống B Complex Vitamin Royal Care giảm mệt mỏi, căng thẳng (60 viên)"
-                        newPrice="139.000đ"
-                        oldPrice=""
-                        unit="Hộp"
-                    />
+                    {medicines
+                        ?.slice(0, 10)
+                        ?.sort((a, b) => b.saleNumber - a.saleNumber)
+                        ?.map((medicine, index) => {
+                            const price = medicine?.priceWithUnit?.[0]?.price;
+                            return (
+                                <ProductAds
+                                    id={medicine?.id}
+                                    key={index}
+                                    to={`/detail/slug=${medicine?.slug}`}
+                                    label={medicine?.specification}
+                                    title={medicine?.name}
+                                    newPrice={`${convertNumberToPrice(price - (price * medicine?.discount) / 100)}đ`}
+                                    oldPrice={`${convertNumberToPrice(price)}đ`}
+                                    unit={medicine?.category}
+                                />
+                            );
+                        })}
                 </Slider>
             </div>
         </div>

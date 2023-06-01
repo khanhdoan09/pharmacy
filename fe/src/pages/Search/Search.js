@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import SearchProduct from './SearchProduct';
+import useDebounce from '~/hooks/useDebounce';
 import * as searchService from '~/services/searchServices';
+import SearchProduct from './SearchProduct';
+import { convertNumberToPrice } from '~/utils/currency';
 
 function Search() {
     const { keyword, page } = useParams();
@@ -10,24 +12,24 @@ function Search() {
     const navigate = useNavigate();
 
     const [resultSearch, setResultSearch] = useState([]);
-    const [pageSize] = useState(3); // total product appear one page
+    const [pageSize] = useState(10); // total product appear one page
     const [totalProduct, setTotalProduct] = useState(1); // total result product search
     const [numberPage, setNumberPage] = useState([]);
     const totalPage = [];
+    const debouncedSearchTerm = useDebounce(keywordFromUrl, 800);
     useEffect(() => {
+        const fetchApi = async () => {
+            const result = await searchService.search(keywordFromUrl, pageValue, pageSize);
+            setResultSearch(result?.data?.content);
+            setTotalProduct(result?.data?.totalElements);
+
+            for (let index = 0; index < result?.data?.totalPages; index++) {
+                totalPage.push(index);
+            }
+            setNumberPage(totalPage);
+        };
         fetchApi();
-    }, [keywordFromUrl, pageValue]);
-
-    const fetchApi = async () => {
-        const result = await searchService.search(keywordFromUrl, pageValue, pageSize);
-        setResultSearch(result?.data?.content);
-        setTotalProduct(result?.data?.totalElements);
-
-        for (let index = 0; index < result?.data?.totalPages; index++) {
-            totalPage.push(index);
-        }
-        setNumberPage(totalPage);
-    };
+    }, [debouncedSearchTerm, pageValue]);
 
     const prevPage = () => {
         const currentPage = parseInt(pageValue) === 0 ? 0 : parseInt(pageValue) - 1;
@@ -71,20 +73,24 @@ function Search() {
             )}
 
             <div className="mb-8 grid gap-4 transition-all cs:px-4 xs:grid-cols-2 xs:px-4 sm:grid-cols-2 sm:px-4 md:grid-cols-3 md:px-2 lg:grid-cols-4 lg:px-2 xl:grid-cols-4 xl:px-1 2xl:grid-cols-5 2xl:px-1">
-                {resultSearch?.map((e) => (
-                    <SearchProduct
-                        key={e.id}
-                        to=""
-                        label={e.specification}
-                        img="a"
-                        title={e.name}
-                        oldPrice={`${e.discount !== 0 ? `${e.price.toString().replace(',', '.')}đ` : ''}`}
-                        newPrice={e.price}
-                        unit="Hộp"
-                        dosage={e.itemForm}
-                        country={e.country}
-                    />
-                ))}
+                {resultSearch?.map((e) => {
+                    const price = e?.priceWithUnit?.[0]?.price;
+                    return (
+                        <SearchProduct
+                            key={e?.id}
+                            id={e?.id}
+                            to={`/detail/slug=${e?.slug}`}
+                            label={e.specification}
+                            img="a"
+                            title={e?.name}
+                            newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
+                            oldPrice={`${convertNumberToPrice(price)}đ`}
+                            unit={e?.category}
+                            dosage={e?.itemForm}
+                            country={e?.country}
+                        />
+                    );
+                })}
             </div>
             <div className="flex items-center justify-center">
                 {resultSearch?.length > 0 ? (

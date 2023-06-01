@@ -3,11 +3,13 @@ package com.project.pharmacy.controller;
 import com.project.pharmacy.entity.Cart;
 import com.project.pharmacy.entity.Medicine;
 import com.project.pharmacy.entity.Unit;
+import com.project.pharmacy.entity.User;
 import com.project.pharmacy.exception.CustomException;
 import com.project.pharmacy.response.ResponseHandler;
 import com.project.pharmacy.service.CartService;
 import com.project.pharmacy.service.MedicineService;
 import com.project.pharmacy.service.UnitService;
+import com.project.pharmacy.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,6 +40,9 @@ public class CartController {
     private UnitService unitService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private ModelMapper mapper;
 
     @Operation(description = "add new medicine to cart")
@@ -55,13 +60,13 @@ public class CartController {
     public ResponseHandler addNewMedicineToCart(
             @RequestBody String data) throws CustomException {
         JSONObject json = new JSONObject(data);
-        int userId = Integer.valueOf(json.get("userId").toString());
+        String email = json.get("userEmail").toString();
         int medicineId = Integer.valueOf(json.get("medicineId").toString());
         int unitId = Integer.valueOf(json.get("unitId").toString());
         int quantity = Integer.valueOf(json.get("quantity").toString());
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
-        Optional<Cart> checkCartExisted = cartService.findByMedicineIdAndUserId(medicineId, userId);
+        Optional<Cart> checkCartExisted = cartService.findByMedicineIdAndUserId(medicineId, email);
         Unit unit = unitService.findUnitById(unitId);
         if (checkCartExisted.isPresent()) {
             Cart cartExisted = checkCartExisted.get();
@@ -71,7 +76,8 @@ public class CartController {
             cartService.updateCart(cartExisted);
         }
         else {
-            Cart newMedicineInCart = new Cart(userId, medicineService.findById(medicineId), quantity, date.format(cal.getTime()).toString(), "", unit);
+            User user = userService.findByEmail(email);
+            Cart newMedicineInCart = new Cart(user, medicineService.findById(medicineId), quantity, date.format(cal.getTime()).toString(), "", unit);
             cartService.addNewMedicineToCart(newMedicineInCart);
         }
 //        cartService.checkMedicineQuantityForSale(medicine, 1);
@@ -87,9 +93,9 @@ public class CartController {
             @ApiResponse(responseCode = "404", description = "no medicine was found in cart by user id",
                     content = @Content(schema = @Schema(implementation = ResponseHandler.class)))
     })
-    @GetMapping("/get/{userId}")
-    public ResponseHandler<List<Cart>> findMedicinesByUserId(@PathVariable int userId) throws CustomException {
-        List<Cart> carts = cartService.findMedicinesInCart(userId);
+    @GetMapping("/get/{email}")
+    public ResponseHandler<List<Cart>> findMedicinesByUserId(@PathVariable String email) throws CustomException {
+        List<Cart> carts = cartService.findMedicinesInCart(email);
         ResponseHandler<List<Cart>> responseHandler = new ResponseHandler<List<Cart>>("server successfully get " +
                                                                                               "medicines in cart by " + "user id", 200, carts);
         return responseHandler;

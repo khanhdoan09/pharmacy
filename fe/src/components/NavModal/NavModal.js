@@ -14,6 +14,8 @@ function NavModal() {
     const handleHover = (e) => {
         setNameNavHover(e.target.innerText);
     };
+
+ 
     return (
         <div className="wrapper-navmodal flex flex-wrap shadow-lg ">
             <div className="w-3/12 bg-[#fff] ">

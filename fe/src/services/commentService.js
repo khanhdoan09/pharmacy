@@ -1,62 +1,93 @@
+import { encrypt } from '~/utils/cryptoUtils';
 import request from '~/utils/request';
 
 export const findAllComments = async () => {
     try {
         const res = await request.get(`findAllComments`);
         return res?.data;
-    } catch (error) {
-        console.log(error?.response);
-    }
+    } catch (error) {}
 };
 
-export const findCommentsByMedicineIdOrderByCreateDate = async (medicineId) => {
+export const findCommentsByMedicineId = async (medicineId) => {
     try {
-        const res = await request.get(`findCommentsByMedicineIdOrderByCreateDate/${medicineId}`);
+        const res = await request.get(`findCommentsByMedicineId/${medicineId}`);
         return res?.data;
-    } catch (error) {
-        console.log(error?.response);
-    }
+    } catch (error) {}
 };
-export const postComment = async (userId, medicineId, content) => {
+export const postComment = async (accessToken, accountType, userEmail, medicineId, content) => {
     try {
-        const res = await request.post(`postComment/${userId}/${medicineId}/${content}`);
+        const res = await request.post(
+            `postComment`,
+            {
+                email: encrypt(userEmail),
+                medicineId,
+                content: encrypt(content),
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    AccountType: accountType,
+                },
+            },
+        );
         return res?.data;
-    } catch (error) {
-        console.log(error?.response);
-    }
-};
-
-export const responseComment = async (userId, commentId, medicineId, content) => {
-    try {
-        const res = await request.post(`responseComment/${userId}/${commentId}/${medicineId}/${content}`);
-        return res?.data;
-    } catch (error) {
-        console.log(error?.response);
-    }
-};
-
-export const findLikeByCommentIdAndUserId = async (commentId, userId) => {
-    try {
-        const res = await request.get(`findLikeByCommentIdAndUserId/${commentId}/${userId}`);
-        return res?.data;
-    } catch (error) {
-        // console.log(error?.response?.data);
-    }
+    } catch (error) {}
 };
 
-export const likeComment = async (commentId, userId) => {
+export const responseComment = async (accessToken, accountType, userEmail, commentId, medicineId, content) => {
     try {
-        const res = await request.post(`addLike/${commentId}/${userId}`);
+        const res = await request.post(
+            `responseComment`,
+            {
+                email: encrypt(userEmail),
+                commentId: encrypt(commentId),
+                medicineId: encrypt(medicineId),
+                content: encrypt(content),
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    AccountType: accountType,
+                },
+            },
+        );
         return res?.data;
-    } catch (error) {
-        // console.log(error?.response?.data);
-    }
+    } catch (error) {}
 };
-export const unLikeComment = async (commentId, userId) => {
+
+export const findLikeByCommentIdAndUserId = async (commentId, userEmail) => {
     try {
-        const res = await request.delete(`unLikeComment/${commentId}/${userId}`);
+        const res = await request.get(`findLikeByCommentIdAndUserId/${commentId}/${userEmail}`);
         return res?.data;
-    } catch (error) {
-        // console.log(error?.response?.data);
-    }
+    } catch (error) {}
+};
+
+export const likeComment = async (accessToken, accountType, commentId, userEmail) => {
+    try {
+        const res = await request.post(
+            `addLike`,
+            {
+                commentId,
+                email: encrypt(userEmail),
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    AccountType: accountType,
+                },
+            },
+        );
+        return res?.data;
+    } catch (error) {}
+};
+export const unLikeComment = async (accessToken, accountType, commentId, userEmail) => {
+    try {
+        const res = await request.delete(`unLikeComment/${commentId}/${userEmail}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                AccountType: accountType,
+            },
+        });
+        return res?.data;
+    } catch (error) {}
 };

@@ -1,7 +1,7 @@
-import Header from '~/layouts/components/Header';
-import Footer from '~/layouts/components/Footer';
-import Navigation from '~/layouts/components/Navigation';
 import { useEffect } from 'react';
+import Footer from '~/layouts/components/Footer';
+import Header from '~/layouts/components/Header';
+import Navigation from '~/layouts/components/Navigation';
 
 function DefaultLayout({ children }) {
     useEffect(() => {

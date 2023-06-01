@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 
 function Footer() {
     const [collapseFirstColumn, setCollapseFirstColumn] = useState(false);
@@ -24,23 +25,27 @@ function Footer() {
     });
 
     function createLink(text, link) {
-        return <a className="text-xs leading-7 text-blue-800/100 cursor-pointer">{text}</a>;
+        return (
+            <NavLink to="/" className="cursor-pointer text-xs leading-7 text-blue-800/100">
+                {text}
+            </NavLink>
+        );
     }
 
     return (
         <div>
-            <div className="flex flex-wrap justify-center px-2">
+            <div className="flex flex-wrap justify-center  max-w-[1200px] mx-auto">
                 <div className="flex flex-wrap sm:mr-10">
-                    <div className="flex flex-col sm:mr-10 max-sm:w-full">
+                    <div className="flex flex-col max-sm:w-full sm:mr-10">
                         <div
-                            className="flex justify-between items-center"
+                            className="flex items-center justify-between"
                             onClick={() =>
                                 window.innerWidth < 640 ? setCollapseFirstColumn(!collapseFirstColumn) : null
                             }
                         >
                             <h6 className="text-xs font-bold">VỀ CHÚNG TÔI</h6>
                             <span
-                                className={`max-sm:block hidden duration-500 ${
+                                className={`hidden duration-500 max-sm:block ${
                                     collapseFirstColumn ? 'rotate-0' : 'rotate-180'
                                 }`}
                             >
@@ -61,16 +66,16 @@ function Footer() {
                             {createLink('Tra cứu đơn hàng')}
                         </div>
                     </div>
-                    <div className="flex flex-col sm:mr-10 max-sm:w-full">
+                    <div className="flex flex-col max-sm:w-full sm:mr-10">
                         <div
-                            className="flex justify-between items-center"
+                            className="flex items-center justify-between"
                             onClick={() =>
                                 window.innerWidth < 640 ? setCollapseSecondColumn(!collapseSecondColumn) : null
                             }
                         >
                             <h6 className="text-xs font-bold">DANH MỤC</h6>
                             <span
-                                className={`max-sm:block hidden duration-500 ${
+                                className={`hidden duration-500 max-sm:block ${
                                     collapseSecondColumn ? 'rotate-0' : 'rotate-180'
                                 }`}
                             >
@@ -89,14 +94,14 @@ function Footer() {
                     </div>
                     <div className="flex flex-col max-sm:w-full sm:mr-10">
                         <div
-                            className="flex justify-between items-center"
+                            className="flex items-center justify-between"
                             onClick={() =>
                                 window.innerWidth < 640 ? setCollapseThirdColumn(!collapseThirdColumn) : null
                             }
                         >
                             <h6 className="text-xs font-bold">THỰC PHẨM CHỨC NĂNG</h6>
                             <span
-                                className={`max-sm:block hidden duration-500 ${
+                                className={`hidden duration-500 max-sm:block ${
                                     collapseThirdColumn ? 'rotate-0' : 'rotate-180'
                                 }`}
                             >
@@ -120,32 +125,34 @@ function Footer() {
                     <div className="flex flex-wrap">
                         <div className="mr-5">
                             <h6 className="text-xs">Tư vấn mua hàng (Miễn Phí)</h6>
-                            <span className="text-xl text-blue-900 font-bold">1800 8296</span>
-                            <span className="text-sm text-blue-900 font-bold">- Nhánh 1</span>
+                            <span className="text-xl font-bold text-blue-900">1800 8296</span>
+                            <span className="text-sm font-bold text-blue-900">- Nhánh 1</span>
                         </div>
                         <div>
                             <h6 className="text-xs">Góp ý, khiếu nại (8h00-22h00)</h6>
-                            <span className="text-xl text-blue-900 font-bold">1800 8296</span>
-                            <span className="text-sm text-blue-900 font-bold">- Nhánh 2</span>
+                            <span className="text-xl font-bold text-blue-900">1800 8296</span>
+                            <span className="text-sm font-bold text-blue-900">- Nhánh 2</span>
                         </div>
                     </div>
-                    <div className="flex items-center justify-end mt-5">
+                    <div className="mt-5 flex items-center justify-end">
                         <h6 className="text-xs font-bold">KẾT NỐI VỚI CHÚNG TÔI</h6>
                         <img
                             className="mx-2 cursor-pointer"
                             width={20}
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/icon-facebook.png"
-                        ></img>
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/social%2FFacebook_b2899fc1dd.svg?alt=media&token=fcff2705-9ed6-4ce7-a952-be30ed0384ea"
+                            alt="facebook"
+                        />
                         <img
                             className="cursor-pointer"
                             width={20}
-                            src="https://nhathuoclongchau.com.vn/frontend_v3/images/icon-zalo.png"
-                        ></img>
+                            src="https://firebasestorage.googleapis.com/v0/b/pharmacy-969d7.appspot.com/o/social%2FZalo_8aa1fbb719.svg?alt=media&token=d8f33d08-2087-4663-b43c-81c88525ab99"
+                            alt="zalo"
+                        />
                     </div>
                 </div>
             </div>
             <div>
-                <h6 className="text-center text-sm sm:px-24 border-t-2 py-2 mt-5">
+                <h6 className="mt-5 border-t-2 py-2 text-center text-sm sm:px-24">
                     © 2000 - 3000 Công ty Cổ Phần Dược Phẩm NLU Nông Lâm Số ĐKKD 0315275368 cấp ngày 06/02/2023 Địa chỉ:
                     Khu Phố 6, Thủ Đức, Thành phố Hồ Chí Minh. Số điện thoại: (028)78965423 - Email:
                     sale@nhathuocnonglam.com - Người quản lý nội dung: Nguyễn Văn A

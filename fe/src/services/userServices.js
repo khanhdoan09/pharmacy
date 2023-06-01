@@ -1,4 +1,5 @@
 import request from '~/utils/request';
+import { encrypt } from '~/utils/cryptoUtils';
 
 const controller = 'auth';
 
@@ -38,13 +39,11 @@ export const registerWithAccessToken = async (accessToken, accountType) => {
         return Promise.reject(error?.response?.data);
     }
 };
-export const loginNormal = async (accessToken, accountType) => {
+export const loginNormal = async (email, encryptedPassword) => {
     try {
-        const load = await request.get(`/${controller}/loginNormal`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                AccountType: accountType,
-            },
+        const load = await request.post(`/${controller}/loginNormal`, {
+            email: email,
+            password: encryptedPassword,
         });
         return load.data;
     } catch (error) {
@@ -56,9 +55,9 @@ export const changePassword = async (accessToken, accountType, email, oldPasswor
         const load = await request.put(
             `/${controller}/changePassword`,
             {
-                email,
-                oldPassword,
-                newPassword,
+                email: encrypt(email),
+                oldPassword: encrypt(oldPassword),
+                newPassword: encrypt(newPassword),
             },
             {
                 headers: {
@@ -75,20 +74,30 @@ export const changePassword = async (accessToken, accountType, email, oldPasswor
 
 export const findUserByEmail = async (email) => {
     try {
-        const load = await request.get(`/${controller}/findUserByEmail/${email}`);
+        const load = await request.get(`/${controller}/findUserByEmail/${encrypt(email)}`);
         return load;
     } catch (error) {
         return Promise.reject(error?.response?.data);
     }
 };
+
+export const findUserId = async (id) => {
+    try {
+        const load = await request.get(`/${controller}/findUser/${id}`);
+        return load;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
 export const updateInformation = async (accessToken, accountType, email, name, phone) => {
     try {
         const load = await request.put(
             `/${controller}/updateInformation`,
             {
-                email,
-                name,
-                phoneNumber: phone,
+                email: encrypt(email),
+                name: encrypt(name),
+                phoneNumber: encrypt(phone),
             },
             {
                 headers: {
@@ -98,6 +107,43 @@ export const updateInformation = async (accessToken, accountType, email, name, p
             },
         );
         return load;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
+export const registerByForm = async (username, email, encryptedPassword) => {
+    try {
+        const load = await request.post(`/${controller}/registerWithForm`, {
+            name: username,
+            email: email,
+            password: encryptedPassword,
+        });
+        return load.data;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
+export const activeCode = async (email, code) => {
+    try {
+        const load = await request.post(`/${controller}/activeAccount`, {
+            email: email,
+            activeCodeValue: code,
+        });
+        return load.data;
+    } catch (error) {
+        return Promise.reject(error?.response?.data);
+    }
+};
+
+export const sendActiveCodeAgain = async (email) => {
+    alert(email);
+    try {
+        const load = await request.post(`/${controller}/sendActiveCodeAgain`, {
+            email,
+        });
+        return load.data;
     } catch (error) {
         return Promise.reject(error?.response?.data);
     }

@@ -8,6 +8,7 @@ import com.project.pharmacy.repository.CommentRepository;
 import com.project.pharmacy.repository.LikesRepository;
 import com.project.pharmacy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -26,43 +27,49 @@ public class LikesService {
     @Autowired
     UserRepository userRepository;
 
-    public Likes findLikeByCommentIdAndUserId(int commentId, int userId) throws CustomException {
-        Likes like = likeRepository.findLikeByCommentIdAndUserId(commentId, userId);
-//        if (like == null) {
-//            throw new CustomException(HttpStatus.NOT_FOUND, "Can't find like by commentId = " + commentId + " and " +
-//                    "userId = " + userId);
-//        } else {
-//            return like;
-//        }
-        return like;
+    public Likes findLikeByCommentIdAndUserId(int commentId, String userEmail) throws CustomException {
+        User user =
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().orElse(null);
+
+        if (user != null) {
+            Likes like = likeRepository.findLikeByCommentIdAndUserId(commentId, user.getId());
+            return like;
+        } else {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't findLikeByCommentIdAndUserId");
+        }
     }
 
-    public void addLike(int commentId, int userId) throws CustomException {
+    public void addLike(int commentId, String userEmail) throws CustomException {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         Comment comment = commentRepository.findCommentById(commentId);
-        User user = userRepository.findUserById(userId);
+        User user =
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().orElse(null);
         if (user == null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "You need register account to use like comments function");
         } else if (comment == null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "Can't find comment by id = " + commentId);
         } else {
-            Likes liked = likeRepository.findLikeByCommentIdAndUserId(commentId, userId);
+            Likes liked = likeRepository.findLikeByCommentIdAndUserId(commentId, user.getId());
             if (liked != null) {
                 throw new CustomException(HttpStatus.CONFLICT, "You already like this comment");
             } else {
-                Likes like = new Likes(0, commentId, dateFormat.format(cal.getTime()), userId);
+                Likes like = new Likes(0, commentId, dateFormat.format(cal.getTime()), user.getId());
                 likeRepository.save(like);
             }
         }
     }
 
-    public void unLikeComment(int commentId, int userId) throws CustomException {
-        Likes like = likeRepository.findLikeByCommentIdAndUserId(commentId, userId);
-        if (like == null) {
+    public void unLikeComment(int commentId, String userEmail) throws CustomException {
+        User user =
+                userRepository.findAll().stream().filter(u -> u.getEmail().equals(userEmail.trim())).findFirst().orElse(null);
+        Likes like = likeRepository.findLikeByCommentIdAndUserId(commentId, user.getId());
+        if (user == null) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Can't find user");
+        } else if (like == null) {
             throw new CustomException(HttpStatus.NOT_FOUND, "Can't find like by commentId = " + commentId + " and " +
                     "userId = " +
-                    userId);
+                    user.getId());
         } else {
             likeRepository.delete(like);
         }

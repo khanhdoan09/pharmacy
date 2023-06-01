@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as commentService from '~/services/commentService';
 import CommentItem from './CommentItem';
+import LikeButton from './LikeButton';
 import Reply from './Reply';
-import { logOut } from '~/services/userServices';
 
 function Comment(props) {
     const [isOpen, setIsOpen] = useState(false);
@@ -13,109 +14,62 @@ function Comment(props) {
     const [contentComment, setContentComment] = useState('');
     const [alertContentComment, setAlertContentComment] = useState('');
 
-    const [commentByMedicineId, setCommentByMedicineId] = useState([]);
     const [responseCommentContent, setResponseCommentContent] = useState('');
-    const [medicineId, setMedicineId] = useState(1);
-
-    useEffect(() => {
-        const fetchApi = async () => {
-            const resultAllCommentss = await commentService.findCommentsByMedicineIdOrderByCreateDate(medicineId);
-            setCommentByMedicineId(resultAllCommentss.data);
-        };
-        fetchApi();
-    }, [medicineId]);
+    const handleMedicineId = useSelector((state) => state.medicine.selectedMedicineId);
 
     const handlePostComment = async () => {
-        if (contentComment.length < 3 || contentComment === undefined) {
-            setAlertContentComment('Mời bạn nhập bình luận. Tối thiểu 3 ký tự!');
+        if (user?.email === undefined) {
+            setOpenModal(true);
+        } else if (contentComment.length < 3) {
+            setAlertContentComment('Vui lòng nhập ít nhất 3 ký tự');
         } else {
-            await commentService.postComment(2, 1, contentComment);
+            await commentService.postComment(
+                user?.accessToken,
+                user?.account,
+                user?.email,
+                handleMedicineId,
+                contentComment,
+            );
             setAlertContentComment('');
             setContentComment('');
-            notifySuccessComment();
+            notifySuccess('Bình luận thành công.');
         }
     };
 
-    const handleLikeComment = async (commentId) => {
-        const result = await commentService.likeComment(commentId, 2);
-        notifySuccessLikeComment(result?.message);
-    };
-    const handleUnLikeComment = async (commentId) => {
-        const result = await commentService.unLikeComment(commentId, 2);
-        notifySuccessUnLikeComment(result?.message);
-    };
-
-    const handleFindLikeByCommentIdAndUserId = async (commentId, userId) => {
-        return await commentService.findLikeByCommentIdAndUserId(commentId, 2).then((result) => result.data);
-    };
-
     const handleLoadReplyComment = (array) => {
-        const comments = [];
-        // for (let comment of array) {
-        //     //duyệt all phần tử
-        //     if (comment.replyId) {
-        //         // check phần tử có replyId
-        //         const index = comments.findIndex((i) => i.id === 23);
-        //         console.log(index);
-
-        //         // comments[index].abc.push(comment);
-        //         // console.log(comment.id);
-        //     } else {
-        //         // console.log('gốc' + comment.id);
-        //         comments.push({ ...comment, responses: [] });
-        //     }
-        // }
-
-        // return comments;
         const re = {};
-        for (let comment of array) {
-            if (comment.replyId !== 0) {
-                if (re[comment.replyId] === undefined) {
-                    re[comment.replyId] = { reply: [comment], comment: {} };
+        if (props?.commentByMedicineId !== undefined) {
+            for (let comment of array) {
+                if (comment.replyId !== 0) {
+                    if (re[comment.replyId] === undefined) {
+                        re[comment.replyId] = { reply: [comment], comment: {} };
+                    } else {
+                        re[comment.replyId]?.reply?.push(comment);
+                    }
                 } else {
-                    re[comment.replyId]?.reply?.push(comment);
-                }
-            } else {
-                if (re[comment.id] === undefined) {
-                    re[comment.id] = { reply: [], comment: comment };
-                } else {
-                    re[comment.id].comment = comment;
+                    if (re[comment.id] === undefined) {
+                        re[comment.id] = { reply: [], comment: comment };
+                    } else {
+                        re[comment.id].comment = comment;
+                    }
                 }
             }
         }
         return Object.values(re);
     };
 
-    const handleComments = handleLoadReplyComment(commentByMedicineId);
-    const handleSaveReponseComment = (userId, commentId, medicineId, content) => {
-        return commentService.responseComment(userId, commentId, medicineId, content);
+    const handleComments = handleLoadReplyComment(props?.commentByMedicineId);
+    const handleSaveReponseComment = (userEmail, commentId, medicineId, content) => {
+        if (user?.role.toLowerCase() === 'client') {
+            notifyWarning('Tài khoản của bạn không có quyền sử dụng chức năng này.');
+        } else {
+            commentService.responseComment(user?.accessToken, user?.account, userEmail, commentId, medicineId, content);
+            setIsOpen(false);
+            notifySuccess('Phản hồi thành công');
+        }
     };
 
-    const notifySuccessComment = () => {
-        toast.success('Bình luận thành công.', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-        });
-    };
-    const notifySuccessLikeComment = (msg) => {
-        toast.success(msg, {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-        });
-    };
-    const notifySuccessUnLikeComment = (msg) => {
+    const notifySuccess = (msg) => {
         toast.success(msg, {
             position: 'top-right',
             autoClose: 5000,
@@ -128,8 +82,8 @@ function Comment(props) {
         });
     };
 
-    const notifySuccessResponseComment = () => {
-        toast.success('Phản hồi bình luận thành công.', {
+    const notifyWarning = (msg) => {
+        toast.warning(msg, {
             position: 'top-right',
             autoClose: 5000,
             hideProgressBar: false,
@@ -140,15 +94,60 @@ function Comment(props) {
             theme: 'light',
         });
     };
+
     const [commentId, setCommentId] = useState('');
-    const [slideCount, setSlideCount] = useState(1);
+    const [slideCount, setSlideCount] = useState(5);
+
+    const [openModal, setOpenModal] = useState(false);
+    useEffect(() => {
+        if (openModal) {
+            document.documentElement.classList.add('overflow-hidden');
+        } else {
+            document.documentElement.classList.remove('overflow-hidden');
+        }
+        return () => {
+            document.documentElement.classList.remove('overflow-hidden');
+        };
+    }, [openModal]);
+
     return (
         <div className="comment max-w-full bg-[#edf2f8] px-1 pb-8 ">
             <div className="mx-auto  my-0 max-w-[1200px] rounded-3xl border ">
                 <div className="comment-header rounded-t-lg border-[#d1d5da] bg-[#fff] px-3 py-4">
                     <h3 className="text-[20px] font-bold">Bình luận</h3>
                 </div>
-
+                {openModal && (
+                    <>
+                        <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50">
+                            <div className="relative top-1/2 mx-auto w-full max-w-lg -translate-y-1/2 transform rounded-lg bg-white p-6 shadow-lg">
+                                <div className="mt-5">
+                                    <h2 className="mb-4 text-center text-xl font-semibold">
+                                        Vui lòng đăng nhập để sử dụng tính năng này
+                                    </h2>
+                                    <div className="p-6">
+                                        <div className="flex items-start justify-center">
+                                            <NavLink to="/sign-in">
+                                                <button
+                                                    type="button"
+                                                    className="mr-2 mb-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                                                >
+                                                    Đăng Nhập
+                                                </button>
+                                            </NavLink>
+                                            <button
+                                                onClick={() => setOpenModal(false)}
+                                                type="button"
+                                                className="mr-2 mb-2 rounded-lg bg-gradient-to-r from-red-400 via-red-500 to-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800"
+                                            >
+                                                Thoát
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
                 <div className="comment-form relative mx-4 my-4 mb-4 h-[90px] rounded-lg border border-[#d8e0e8]  bg-[#fff] px-4 py-1">
                     <textarea
                         className="h-full w-full outline-none"
@@ -178,7 +177,6 @@ function Comment(props) {
                         pauseOnHover
                         theme="light"
                     />
-                    <ToastContainer />
                 </div>
                 {alertContentComment && (
                     <div className="mb-4 flex items-center px-4 text-[#ef4444]">
@@ -202,14 +200,15 @@ function Comment(props) {
                 )}
 
                 <div className="comment-detail rounded-b-lg bg-[#fff] px-4 py-4">
-                    {handleComments?.slice(0, slideCount)?.map((e) => {
+                    {handleComments?.slice(0, slideCount)?.map((e, index) => {
                         return (
                             <CommentItem
-                                key={e.comment.id}
-                                avatar={e.comment.user.name.charAt(0).toUpperCase()}
-                                name={e.comment.user.name}
-                                time={e.comment.createDate}
-                                content={e.comment.content}
+                                key={index}
+                                id={e?.comment?.userId}
+                                avatar={e?.comment?.user?.name.charAt(0).toUpperCase() || 'A'}
+                                name={e?.comment?.user?.name}
+                                time={e?.comment?.createDate}
+                                content={e?.comment?.content}
                             >
                                 {isOpen && commentId === e.comment.id && (
                                     <>
@@ -230,15 +229,13 @@ function Comment(props) {
                                                         responseCommentContent !== null
                                                     ) {
                                                         handleSaveReponseComment(
-                                                            3,
+                                                            user?.email,
                                                             commentId,
                                                             e.comment.medicineId,
                                                             responseCommentContent,
                                                         );
-                                                        notifySuccessResponseComment();
-                                                        setIsOpen(false);
                                                     } else {
-                                                        console.log('nội dung phản hồi không phù hợp');
+                                                        notifyWarning('Hệ thống bảo trì');
                                                     }
                                                 }}
                                             >
@@ -251,8 +248,17 @@ function Comment(props) {
                                     <button
                                         className="mr-2 text-sm text-[#1d48ba]"
                                         onClick={() => {
-                                            setIsOpen(true);
-                                            setCommentId(e.comment.id);
+                                            if (user?.email === undefined) {
+                                                setOpenModal(true);
+                                            } else if (user?.role.toLowerCase() === 'client') {
+                                                notifyWarning(
+                                                    'Tài khoản của bạn không có quyền sử dụng chức năng này.',
+                                                );
+                                                setIsOpen(false);
+                                            } else {
+                                                setIsOpen(true);
+                                                setCommentId(e.comment.id);
+                                            }
                                         }}
                                     >
                                         Trả lời
@@ -272,22 +278,9 @@ function Comment(props) {
                                                 d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z"
                                             />
                                         </svg>
-                                        <button
-                                            className="mr-2 text-sm text-[#1d48ba]"
-                                            onClick={() => {
-                                                handleLikeComment(e.comment.id);
-                                            }}
-                                        >
-                                            Thích
-                                        </button>
-                                        <button
-                                            className="mr-2 text-sm text-[#1d48ba]"
-                                            onClick={() => {
-                                                handleUnLikeComment(e.comment.id);
-                                            }}
-                                        >
-                                            Bỏ Thích
-                                        </button>
+                                        <LikeButton itemId={e.comment.id} />
+
+                                        <p className="mr-2 text-sm text-[#1d48ba]">({e?.comment?.likes?.length})</p>
 
                                         <span className="text-sm text-[#1d48ba]">
                                             {e.likes?.length > 0 ? e.likes?.length : ''}
@@ -295,52 +288,37 @@ function Comment(props) {
                                     </div>
                                 </div>
 
-                                {e.reply.map((rep) => (
-                                    <Reply
-                                        key={rep.id}
-                                        name={rep.user.name}
-                                        label={rep.user.role === 'staff' ? 'Quản trị viên' : ''}
-                                        time={rep.createDate}
-                                        content={rep.content}
-                                    >
-                                        <div className="flex items-center">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth={1.5}
-                                                stroke="currentColor"
-                                                className="mr-1 h-4 w-4 text-[#1d48ba]"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z"
-                                                />
-                                            </svg>
-
-                                            <button
-                                                className="mr-2 text-sm text-[#1d48ba]"
-                                                onClick={() => {
-                                                    handleLikeComment(rep.id);
-                                                }}
-                                            >
-                                                Thích
-                                            </button>
-                                            <button
-                                                className="mr-2 text-sm text-[#1d48ba]"
-                                                onClick={() => {
-                                                    handleUnLikeComment(rep.id);
-                                                }}
-                                            >
-                                                Bỏ Thích
-                                            </button>
-                                            <span className="text-sm text-[#1d48ba]">
-                                                {rep.likes?.length > 0 ? rep.likes?.length : ''}
-                                            </span>
-                                        </div>
-                                    </Reply>
-                                ))}
+                                {e?.reply?.map((rep) => {
+                                    return (
+                                        <Reply
+                                            userId={rep?.userId}
+                                            key={rep?.id}
+                                            name={rep?.user?.name}
+                                            label="Quản trị viên"
+                                            time={rep?.createDate}
+                                            content={rep?.content}
+                                        >
+                                            <div className="flex items-center">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    strokeWidth={1.5}
+                                                    stroke="currentColor"
+                                                    className="mr-1 h-4 w-4 text-[#1d48ba]"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 01-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 10.203 4.167 9.75 5 9.75h1.053c.472 0 .745.556.5.96a8.958 8.958 0 00-1.302 4.665c0 1.194.232 2.333.654 3.375z"
+                                                    />
+                                                </svg>
+                                                <LikeButton itemId={rep.id} />
+                                                <p className="mr-2 text-sm text-[#1d48ba]">({rep?.likes?.length})</p>
+                                            </div>
+                                        </Reply>
+                                    );
+                                })}
                             </CommentItem>
                         );
                     })}
@@ -349,7 +327,7 @@ function Comment(props) {
                         <button
                             className="mx-auto mt-8 flex h-8 w-[192px] items-center justify-center rounded-lg border border-[#d8e0e8] hover:bg-[#777272] hover:text-[#fff]"
                             onClick={() => {
-                                setSlideCount((prev) => prev + 1);
+                                setSlideCount((prev) => prev + 5);
                             }}
                         >
                             <p className="mr-1 font-bold"> Xem thêm bình luận</p>

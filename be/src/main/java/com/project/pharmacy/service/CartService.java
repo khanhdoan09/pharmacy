@@ -9,6 +9,7 @@ import com.project.pharmacy.repository.MedicineRepository;
 import com.project.pharmacy.repository.UnitRepository;
 import com.project.pharmacy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -35,11 +36,12 @@ public class CartService {
     @Autowired
     private UnitService unitService;
 
-    public List<Cart> findMedicinesInCart(int userId) throws CustomException {
-        if (userId < 1) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "parameter must be greater than 0");
+//    @Cacheable("cartCache")
+    public List<Cart> findMedicinesInCart(String email) throws CustomException {
+        if (email == null || email.isEmpty()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "parameter must be valid");
         }
-        List<Cart> carts = cartRepository.findByUserId(userId);
+        List<Cart> carts = cartRepository.findByUserEmail(email);
         if (carts.isEmpty()) {
             throw new CustomException(HttpStatus.NOT_FOUND, "no medicine was not found in cart by user id");
         }
@@ -47,26 +49,20 @@ public class CartService {
     }
 
     public void addNewMedicineToCart(Cart cart) throws CustomException {
-        checkValidityIdOfUserIdAndMedicineId(cart.getUserId(), cart.getMedicine().getId());
+        checkValidityUserAndMedicine(cart.getUser().getEmail(), cart.getMedicine());
         cartRepository.save(cart);
     }
 
-    private void checkValidityIdOfUserIdAndMedicineId(int userId, int medicineId) throws CustomException {
-        if (userId < 1 || medicineId < 1) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, "parameters must be greater than 0");
+    private void checkValidityUserAndMedicine(String email, Medicine medicine) throws CustomException {
+        if (email == null || medicine == null) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "bad request");
         }
-        if (!userRepository.findById(userId).isPresent()) {
+        if (!userRepository.findByEmail(email).isPresent()) {
             throw new CustomException(
                     HttpStatus.NOT_FOUND,
                     "server cannot add a medicine to cart because of user id is not found");
         }
-        Optional<Medicine> medicine = medicineRepository.findById(medicineId);
-        if (!medicine.isPresent()) {
-            throw new CustomException(
-                    HttpStatus.NOT_FOUND,
-                    "server cannot add a medicine to cart because of medicine id is not found");
-        }
-        if (medicine.get().getActive() == 0) {
+        if (medicine.getActive() == 0) {
             throw new CustomException(HttpStatus.GONE, "server cannot update this medicine to cart because of this " +
                     "medicine id is not active anymore");
         }
@@ -147,8 +143,8 @@ public class CartService {
         }
     }
 
-    public Optional<Cart> findByMedicineIdAndUserId(int medicineId, int userId) {
-        return cartRepository.findByMedicineIdAndUserId(medicineId, userId);
+    public Optional<Cart> findByMedicineIdAndUserId(int medicineId, String email) {
+        return cartRepository.findByMedicineIdAndEmail(medicineId, email);
     }
 
     public void updateCart(Cart cart) {

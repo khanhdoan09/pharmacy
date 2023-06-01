@@ -31,6 +31,7 @@ public class VerifyJwtTokenByFacebook implements VerifyJwtToken {
                 sb.append(line + "\n");
             JsonObject json = new Gson().fromJson(sb.toString(), JsonObject.class);
             setJsonObject(json);
+            System.out.println(json);
         } catch (IOException e) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, "token is invalid");
         }
@@ -46,9 +47,9 @@ public class VerifyJwtTokenByFacebook implements VerifyJwtToken {
     public User getUser() {
         String name = String.valueOf(jsonObject.get("name"));
         String email =  String.valueOf(jsonObject.get("email"));
-        String password = String.valueOf(jsonObject.get("id"));
+        String password = String.valueOf(jsonObject.get("email"));
         User user = new User(name.substring(1, name.length() - 1), email.substring(1, email.length() - 1),
-                             password.substring(1, password.length() - 1), null, null, null, null, "client");
+                             password.substring(1, password.length() - 1), null, null, "Facebook", null, "client");
         return user;
     }
 }

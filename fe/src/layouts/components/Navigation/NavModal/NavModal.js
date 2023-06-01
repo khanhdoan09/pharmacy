@@ -1,42 +1,47 @@
 import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import n1 from '~/assets/img/nav/n1.png';
-import n2 from '~/assets/img/nav/n2.png';
-import n3 from '~/assets/img/nav/n3.png';
-import n4 from '~/assets/img/nav/n4.png';
-import n5 from '~/assets/img/nav/n5.png';
+import { useSelector } from 'react-redux';
+import ProductSeller from '~/components/ProductSeller';
+import { convertNumberToPrice } from '~/utils/currency';
 import ContentNavModalItem from './ContentNavModalItem';
 import NavModalItem from './NavModalItem';
-
-import ProductSeller from '~/components/ProductSeller';
-import * as categoryDetailService from '~/services/categoryDetailService';
-import * as medicineService from '~/services/medicineService';
-
 function NavModal(props) {
-    const [categoryId, setCategoryId] = useState(1);
-    const [categoryDetailsByCategoryId, setCategoryDetailsByCategoryId] = useState([]);
-    const [bestSellerByCategoryId, setBestSellerByCategoryId] = useState([]);
+    const [categoryId, setCategoryId] = useState();
+    const [categoryDetails, setCategoryDetails] = useState([]);
+    const [bestSell, setBestSell] = useState([]);
+    const [medicinesRoot, setMedicinesRoot] = useState([]);
+
+    const medicine = useSelector((state) => state.medicine);
+    useEffect(() => {
+        setMedicinesRoot(medicine?.data);
+    }, [medicine]);
 
     useEffect(() => {
-        const fetchApi = async () => {
-            const categoriesByFieldId = await categoryDetailService.getCategoryDetailByCategoryId(categoryId);
-            const resultBestSellerByFieldId = await medicineService.bestSellerByFieldId(categoryId);
-            setCategoryDetailsByCategoryId(categoriesByFieldId);
-            setBestSellerByCategoryId(resultBestSellerByFieldId);
-        };
-        fetchApi();
+        const filterProductByCID = medicinesRoot?.filter((m) => m.categoryDetail.categoryId === categoryId);
+        const filterBestSell = filterProductByCID?.slice(0, 5)?.sort((a, b) => b.saleNumber - a.saleNumber);
+        setBestSell(filterBestSell);
+        const filteredCategory = props?.categories?.filter((category) => {
+            const categoryDetails = category.categoryDetails;
+            return categoryDetails?.some((i) => i?.categoryId === categoryId);
+        });
+        setCategoryDetails(filteredCategory[0]);
     }, [categoryId]);
+
+    useEffect(() => {
+        setCategoryDetails(props?.categories[0]);
+    }, [props?.categories]);
 
     return (
         <div className="wrapper-navmodal grid w-[1200px] grid-cols-4  shadow-lg">
-            <div className="col-span-1 bg-[#fff] ">
-                {props?.categoriesByFid?.data?.map((e) => (
+            <div className="col-span-1 bg-[#fff]">
+                {props?.categories?.map((e) => (
                     <NavModalItem
                         key={e.id}
-                        to={`/filter/field=${e.fieldOfCategory.slug}/category=${e.slug}`}
-                        img={e.image + 'á'}
+                        id={e?.id}
+                        to={`/filter/field=${e.fieldOfCategory?.slug}/category=${e.slug}`}
                         title={e.category}
-                        onMouseOver={() => setCategoryId(e.id)}
+                        onMouseOver={() => {
+                            setCategoryId(e.id);
+                        }}
                         onMouseOut={() => {}}
                     />
                 ))}
@@ -45,11 +50,18 @@ function NavModal(props) {
             {/* content nav modal item  */}
             <div className="col-span-3 px-4 py-4 ">
                 <div className="grid grid-cols-4 gap-2 border-b border-[#d8e0e8] ">
-                    {categoryDetailsByCategoryId?.data?.map((e) => (
-                        <div className="px-1" key={e.id}>
-                            <ContentNavModalItem to={e.s} img={e.image + 'a'} title={e.name} />
-                        </div>
-                    ))}
+                    {categoryDetails?.categoryDetails?.map((e) => {
+                        return (
+                            <div className="px-1" key={e.id}>
+                                <ContentNavModalItem
+                                    id={e?.id}
+                                    to={`/filter/field=${categoryDetails?.fieldOfCategory?.slug}/category=${categoryDetails?.slug}/categoryDetail=${e?.slug}`}
+                                    img={e?.image + 'a'}
+                                    title={e?.name}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
                 <div className="pt-3  pb-4">
                     <div className="mb-3 flex flex-wrap">
@@ -77,16 +89,18 @@ function NavModal(props) {
                         </div>
                     </div>
                     <div className="grid grid-cols-5 gap-2">
-                        {bestSellerByCategoryId?.data?.slice(0, 5)?.map((e) => {
+                        {bestSell?.slice(0, 5)?.map((e) => {
+                            const price = e?.priceWithUnit?.[0]?.price;
                             return (
                                 <div className=" px-1" key={e.id}>
                                     <ProductSeller
-                                        to={`/detail/medicineId=${e.id}`}
-                                        img={n5 + 's'}
-                                        name="Viên uống Maca M Male Power Nature's Supplements bổ thận, tráng dương (60 viên)"
-                                        newPrice="627.000đ"
-                                        unit="Hộp"
-                                        oldPrice="660.000đ"
+                                        to={`/detail/slug=${e?.slug}`}
+                                        id={e?.id}
+                                        img={e?.avatar}
+                                        name={e?.name}
+                                        unit={e?.category}
+                                        newPrice={`${convertNumberToPrice(price - (price * e?.discount) / 100)}đ`}
+                                        oldPrice={`${convertNumberToPrice(price)}đ`}
                                     />
                                 </div>
                             );

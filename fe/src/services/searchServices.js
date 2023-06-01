@@ -1,11 +1,10 @@
-import * as request from '~/utils/request';
+import request from '~/utils/request';
 
 export const search = async (keyword, page, pageSize) => {
     try {
         const res = await request.get(`search/${keyword}/${page}/${pageSize}`);
-        return res;
+        return res?.data;
     } catch (error) {
-        console.log('this alert will detlete when deploy (alert search 404)');
-        console.log(error.response.data); // delete when deploy
+        console.log(error); 
     }
 };

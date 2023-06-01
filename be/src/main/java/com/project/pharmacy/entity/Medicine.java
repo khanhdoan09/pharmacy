@@ -1,10 +1,12 @@
 package com.project.pharmacy.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -37,15 +39,40 @@ public class Medicine {
     @OneToOne
     @JoinColumn(name = "brand", insertable = false, updatable = false)
     private Brand brandDetail;
+
     @OneToOne
     @JoinColumn(name = "producer", insertable = false, updatable = false)
     private Producer producerDetail;
+
     @OneToOne
     @JoinColumn(name = "categoryDetailId", insertable = false, updatable = false)
     private CategoryDetail categoryDetail;
-    @OneToMany(mappedBy = "medicineId", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "medicine", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<MedicineIngredient> ingredient;
-    @OneToMany(mappedBy = "medicineId", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "medicine", cascade = CascadeType.ALL)
     private List<Unit> priceWithUnit;
+
+
+    @OneToMany(mappedBy = "medicine")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
+    private Set<OrderDetail> medicine;
+
+    @OneToMany(mappedBy = "medicine",cascade =  CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "medicine",cascade =  CascadeType.ALL)
+    @JsonManagedReference
+    private List<Rate> rates;
+
+    @OneToMany(mappedBy = "medicine",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Saved> savedList;
+
 
 }

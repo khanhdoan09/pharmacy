@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import SliderImageDetail from '../SliderImageDetail';
-import { Animation } from 'react-animate-style';
-import { addNewMedicineInCart, getAllMedicinesInCart } from '~/services/cartServices';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addMedicinesToCart, addMedicinesToCartAndShowCartInHeader } from '~/redux/cartSlice';
+import { addMedicinesToCartAndShowCartInHeader } from '~/redux/cartSlice';
+import { addNewMedicineInCart, getAllMedicinesInCart } from '~/services/cartServices';
+import { convertNumberToPrice } from '~/utils/currency';
+import SliderImageDetail from '../SliderImageDetail';
+import SavedButton from './SavedButton';
 
 function MainDetail(props) {
-    const [toggleState, setToggleState] = useState(1);
+    const [toggleState, setToggleState] = useState(props?.detail?.medicine?.priceWithUnit?.[0]?.id);
     const [quantity, setQuantity] = useState(1);
     const [priceWithUnit, setPriceWithUnit] = useState();
     const [nameUnit, setNameUnit] = useState();
@@ -18,11 +18,7 @@ function MainDetail(props) {
     const dispatch = useDispatch();
 
     const handleIncrementQuantity = (maxQuantity) => {
-        if (quantity === maxQuantity) {
-            setQuantity(maxQuantity);
-        } else {
-            setQuantity((quantity) => quantity + 1);
-        }
+        setQuantity((quantity) => quantity + 1);
     };
     const handleDecrementQuantity = () => {
         if (quantity === 1) {
@@ -37,43 +33,51 @@ function MainDetail(props) {
     };
 
     function handleAddNewMedicineIntoCart() {
+        console.log(user);
         if (user == null) {
-            navigate('/signIn');
+            navigate('/sign-in');
+        } else {
+            addNewMedicineInCart(
+                props?.detail?.medicineId,
+                toggleState ? toggleState : props?.detail?.medicine?.priceWithUnit?.[0]?.id,
+                quantity,
+                user?.email,
+                user?.accessToken,
+                user?.account,
+            ).then(
+                (e) => {
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: 'smooth',
+                    });
+                    const load = getAllMedicinesInCart(user?.accessToken, user?.account, user?.email);
+                    load.then(
+                        (e) => {
+                            if (e.status === 200) {
+                                dispatch(addMedicinesToCartAndShowCartInHeader({ medicines: e?.data?.data }));
+                            }
+                        },
+                        (err) => {
+                            if (err?.status === 403) {
+                                navigate('/sign-in');
+                            } else {
+                                console.log(err);
+                                navigate('server-error');
+                            }
+                        },
+                    );
+                },
+                (err) => {
+                    console.log(err);
+                    navigate('server-error');
+                },
+            );
         }
-        addNewMedicineInCart(props?.detail?.medicineId, toggleState, quantity, user?.accessToken, user?.account).then(
-            (e) => {
-                window.scrollTo({
-                    top: 0,
-                    left: 0,
-                    behavior: 'smooth',
-                });
-                const load = getAllMedicinesInCart(user?.accessToken, user?.account);
-                load.then(
-                    (e) => {
-                        if (e.status == 200) {
-                            dispatch(addMedicinesToCartAndShowCartInHeader({ medicines: e?.data?.data }));
-                        }
-                    },
-                    (err) => {
-                        if (err?.status === 403) {
-                            navigate('/signIn');
-                        } else {
-                            console.log(err);
-                            navigate('/server_error');
-                        }
-                    },
-                );
-            },
-            (err) => {
-                console.log(err);
-                navigate('/server_error');
-            },
-        );
     }
-
     return (
         <div className="main-detail !grid gap-6 xs:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 ">
-            <SliderImageDetail />
+            <SliderImageDetail imageList={props?.imageList} />
 
             <div className="text animate-fadeBottomMobile px-1">
                 <div className="header-text border-b pb-4 ">
@@ -83,13 +87,13 @@ function MainDetail(props) {
                     </p>
                     <h3 className="text-[28px] font-bold text-[#072d94]">{props?.detail?.medicine?.name}</h3>
                     <div className="flex items-center justify-between">
-                        <span className="text-[#b6c0d7]">Mã sản phẩm: ({props?.detail?.id})</span>
+                        <span className="text-[#b6c0d7]">Mã sản phẩm: ({localStorage.getItem('medicineId')})</span>
                         <div className="text-sm">
                             <span className="cursor-pointer border-r border-[#bb91a5] px-2 hover:underline">
-                                {props?.detail?.rateNumber} đánh giá
+                                {props?.dataReview?.length || 0} đánh giá
                             </span>
                             <span className="cursor-pointer px-2 hover:underline">
-                                {props?.detail?.commentNumber} bình luận
+                                {props?.commentByMedicineId?.length || 0} bình luận
                             </span>
                         </div>
                     </div>
@@ -97,9 +101,11 @@ function MainDetail(props) {
                 <div className="center-text pt-4">
                     <div className="price">
                         <h3 className="text-[32px] font-bold">
-                            {priceWithUnit || props?.detail?.medicine?.priceWithUnit[0].price} &#8260;{' '}
+                            {convertNumberToPrice(priceWithUnit) ||
+                                convertNumberToPrice(props?.detail?.medicine?.priceWithUnit[0]?.price)}{' '}
+                            &#8260;
                             <span className="text-2xl font-normal text-[#1e293b]">
-                                {nameUnit || props?.detail?.medicine?.priceWithUnit[0].name}
+                                {nameUnit || props?.detail?.medicine?.priceWithUnit[0]?.name}
                             </span>
                         </h3>
                     </div>
@@ -108,30 +114,30 @@ function MainDetail(props) {
 
                         <div className="select-unit">
                             <div className="unit-item flex flex-wrap items-center">
-                                {props?.detail?.medicine?.priceWithUnit?.map((u) => (
-                                    <div
-                                        key={u.id}
-                                        onClick={() => {
-                                            toggleTab(u.id);
-                                            setNameUnit(u.name);
-                                            setPriceWithUnit(u.price);
-                                            setMaxValue(u.quantity);
-                                            setQuantity(1);
-                                        }}
-                                        className={
-                                            toggleState === u.id
-                                                ? ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1'
-                                                : ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1'
-                                        }
-                                    >
-                                        {/* <img
-                                            src="https://cdn-icons-png.flaticon.com/512/2800/2800607.png"
-                                            className="mr-2 h-5 w-5 select-none object-cover"
-                                            alt=""
-                                        /> */}
-                                        <p className="capitalize">{u.name}</p>
-                                    </div>
-                                ))}
+                                {props?.detail?.medicine?.priceWithUnit?.map((u) => {
+                                    if (maxValue === undefined) {
+                                        setMaxValue(props?.detail?.medicine?.priceWithUnit[0]?.quantity);
+                                    }
+                                    return (
+                                        <div
+                                            key={u.id}
+                                            onClick={() => {
+                                                toggleTab(u.id);
+                                                setNameUnit(u.name);
+                                                setPriceWithUnit(u?.price);
+                                                setMaxValue(u.quantity);
+                                                setQuantity(1);
+                                            }}
+                                            className={
+                                                toggleState === u.id
+                                                    ? ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-transparent bg-[#1d48ba] px-2 py-1 text-sm font-bold text-[#fff] hover:-translate-y-1'
+                                                    : ' transition-basic mr-2 mb-1 flex cursor-pointer items-center rounded-lg border border-[#1d48ba] bg-transparent px-2 py-1 text-sm font-bold hover:-translate-y-1'
+                                            }
+                                        >
+                                            <p className="capitalize">{u.name}</p>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
@@ -210,9 +216,8 @@ function MainDetail(props) {
                         >
                             Chọn mua
                         </button>
-                        <button className="h-[56px] rounded-[100px] bg-[#f59e0b] px-[36px] font-bold uppercase text-[#fff]">
-                            Tìm nhà thuốc
-                        </button>
+
+                        <SavedButton itemId={props?.detail?.medicineId} />
                     </div>
                     <div className="commit mt-4 rounded-2xl border">
                         <div className="commit-header">

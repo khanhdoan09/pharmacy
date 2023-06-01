@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { deleteAMedicineInCart, updateMedicineQuantityInCart, updateUnitMedicineInCart } from '~/services/cartServices';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { addMedicinesToCart } from '~/redux/cartSlice';
+import { deleteAMedicineInCart, updateMedicineQuantityInCart, updateUnitMedicineInCart } from '~/services/cartServices';
+import { getAllUnitsInAMedicine } from '~/services/unitServices';
 import { convertNumberToPrice, convertPriceToNumber } from '~/utils/currency';
 import { getImageFromFirebase } from '~/utils/firebase';
-import { getAllUnitsInAMedicine } from '~/services/unitServices';
-import { useSelector } from 'react-redux';
 
 function CartItem({
     checkAll,
@@ -31,10 +32,12 @@ function CartItem({
     const [active, setActive] = useState(data?.medicine?.active == 1);
     const [units, setUnits] = useState({});
     const [currentUnit, setCurrentUnit] = useState(data?.unit);
-    const [listMedicinesUnchecked, setListMedicinesUnchecked] = useState({});
+    const [listMedicinesUnchecked, setListMedicinesUnchecked] = useState([]);
     const navigate = useNavigate();
     const medicineInCartRef = useRef({});
     const user = useSelector((state) => state.authentication.login.currentUser);
+    let cart = useSelector((state) => state.cart.medicines);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (!active) {
@@ -44,7 +47,7 @@ function CartItem({
     }, [checkAll]);
 
     useEffect(() => {
-        const imagePromise = getImageFromFirebase(`product/${data?.medicine?.id}`, `${data?.medicine?.avatar}`);
+        const imagePromise = getImageFromFirebase('product', data?.medicine?.id, 'avatar');
         imagePromise.then((url) => {
             setImage(url);
             let tmp = cartChecked.map((e) => {
@@ -68,34 +71,39 @@ function CartItem({
             },
             (err) => {
                 console.log(err);
-                navigate('/server_error');
+                navigate('server-error');
             },
         );
     }, []);
 
     function handlerDeleteThisMedicineInCart() {
-        deleteAMedicineInCart(data?.id, user?.accessToken, user?.account).then(
-            () => {
-                medicineInCartRef.current.remove();
-                activeShowLoading();
-                let newPrice =
-                    convertPriceToNumber(data?.unit?.price - (data?.unit?.price * discount) / 100) * quantity;
-                let newTotalPrice = totalPrice - newPrice;
-                setTotalPrice(newTotalPrice);
-                let newPriceWithoutDiscount = convertPriceToNumber(data?.unit?.price) * quantity;
-                let newTotalPriceWithoutDiscount = totalPriceWithoutDiscount - newPriceWithoutDiscount;
-                setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
-                unActiveShowLoading();
-            },
-            (err) => {
-                if (err?.status === 403 || err?.status === 401) {
-                    navigate('/signIn');
-                } else {
-                    console.log(err);
-                    navigate('/server_error');
-                }
-            },
-        );
+        activeShowLoading();
+
+        setTimeout(() => {
+            deleteAMedicineInCart(data?.id, user?.accessToken, user?.account).then(
+                () => {
+                    medicineInCartRef.current.remove();
+                    activeShowLoading();
+                    let newPrice =
+                        convertPriceToNumber(data?.unit?.price - (data?.unit?.price * discount) / 100) * quantity;
+                    let newTotalPrice = totalPrice - newPrice;
+                    setTotalPrice(newTotalPrice);
+                    let newPriceWithoutDiscount = convertPriceToNumber(data?.unit?.price) * quantity;
+                    let newTotalPriceWithoutDiscount = totalPriceWithoutDiscount - newPriceWithoutDiscount;
+                    setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
+                    dispatch(addMedicinesToCart({ medicines: cart?.medicines?.filter((e) => e?.id != data?.id) }));
+                    unActiveShowLoading();
+                },
+                (err) => {
+                    if (err?.status === 403 || err?.status === 401) {
+                        navigate('/sign-in');
+                    } else {
+                        console.log(err);
+                        navigate('server-error');
+                    }
+                },
+            );
+        }, 500);
     }
 
     function updateQuantity(quantity) {
@@ -119,19 +127,29 @@ function CartItem({
                     setQuantity(quantity);
                     setShowLoading(false);
                     unActiveShowLoading();
+                    let arr = [];
+                    cart?.medicines?.forEach((e) => {
+                        let t = { ...e };
+                        if (e?.id === data?.id) {
+                            t.quantity = quantity;
+                        }
+                        arr.push(t);
+                    });
+                    dispatch(addMedicinesToCart({ medicines: arr }));
                 },
                 (err) => {
                     const statusCode = err?.status;
+                    unActiveShowLoading();
                     if (statusCode === 413) {
                         alert('not enough');
                     } else if (statusCode === 410) {
                         alert('not active');
                     } else if (statusCode === 403 || statusCode === 401) {
                         console.log(err);
-                        // navigate('/signIn');
+                        // navigate('/sign-in');
                     } else {
                         console.log(err);
-                        navigate('/server_error');
+                        navigate('server-error');
                     }
                 },
             );
@@ -143,34 +161,44 @@ function CartItem({
             let e = units?.data[i];
             if (e?.level === level) {
                 activeShowLoading();
-                updateUnitMedicineInCart(data?.id, e?.id, user?.accessToken, user?.account).then(
-                    () => {
-                        setCurrentUnit(e);
-                        setPrice((e?.price - (e?.price * discount) / 100) * quantity);
-                        let newPrice = convertPriceToNumber(e?.price - (e?.price * discount) / 100) * quantity;
-                        let newTotalPrice = totalPrice - price + newPrice;
-                        setPrice((e?.price - (e?.price * discount) / 100) * quantity);
-                        setTotalPrice(newTotalPrice);
-                        let newPriceWithoutDiscount = convertPriceToNumber(e?.price) * quantity;
-                        let newTotalPriceWithoutDiscount =
-                            totalPriceWithoutDiscount - priceWithoutDiscount + newPriceWithoutDiscount;
-                        setPriceWithoutDiscount(newPriceWithoutDiscount);
-                        setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
-                        unActiveShowLoading();
-                    },
-                    (err) => {
-                        const statusCode = err?.status;
-                        if (statusCode === 413) {
-                            alert('not enough');
-                        } else if (statusCode === 410) {
-                            alert('not active');
-                        } else if (statusCode === 403 || statusCode === 401) {
-                            navigate('/signIn');
-                        } else {
-                            navigate('/server_error');
-                        }
-                    },
-                );
+                setTimeout(() => {
+                    updateUnitMedicineInCart(data?.id, e?.id, user?.accessToken, user?.account).then(
+                        () => {
+                            setCurrentUnit(e);
+                            setPrice((e?.price - (e?.price * discount) / 100) * quantity);
+                            let newPrice = convertPriceToNumber(e?.price - (e?.price * discount) / 100) * quantity;
+                            let newTotalPrice = totalPrice - price + newPrice;
+                            setPrice((e?.price - (e?.price * discount) / 100) * quantity);
+                            setTotalPrice(newTotalPrice);
+                            let newPriceWithoutDiscount = convertPriceToNumber(e?.price) * quantity;
+                            let newTotalPriceWithoutDiscount =
+                                totalPriceWithoutDiscount - priceWithoutDiscount + newPriceWithoutDiscount;
+                            setPriceWithoutDiscount(newPriceWithoutDiscount);
+                            setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
+                            let arr = [];
+                            cart?.medicines?.forEach((e) => {
+                                let t = { ...e };
+                                arr.push(t);
+                            });
+                            arr[0].unit = e;
+                            dispatch(addMedicinesToCart({ medicines: arr }));
+                            unActiveShowLoading();
+                        },
+                        (err) => {
+                            const statusCode = err?.status;
+                            unActiveShowLoading();
+                            if (statusCode === 413) {
+                                alert('không đủ sản phẩm để bán');
+                            } else if (statusCode === 410) {
+                                alert('sản phẩm không còn được bán');
+                            } else if (statusCode === 403 || statusCode === 401) {
+                                navigate('/sign-in');
+                            } else {
+                                navigate('server-error');
+                            }
+                        },
+                    );
+                }, 1000);
                 break;
             }
         }
@@ -189,16 +217,22 @@ function CartItem({
         setTotalPriceWithoutDiscount(newTotalPriceWithoutDiscount);
         if (check) {
             setChecklist(checklist - 1);
-            const tmpChecked = cartChecked.filter((e) => e?.id !== data?.id);
-            const tmpUnChecked = cartChecked.filter((e) => e?.id === data?.id);
+            const tmpChecked = cartChecked?.filter((e) => e?.id !== data?.id);
+            const tmpUnChecked = cartChecked?.filter((e) => e?.id === data?.id);
             setCartChecked(tmpChecked);
             setListMedicinesUnchecked(tmpUnChecked);
         } else {
             setChecklist(checklist + 1);
             let tmp = cartChecked;
-            listMedicinesUnchecked.forEach((e) => {
+            listMedicinesUnchecked?.forEach((e) => {
                 tmp.unshift(e);
             });
+            listMedicinesUnchecked.push(data);
+            let flag = true;
+            tmp?.forEach((e) => (e?.id === data?.id ? (flag = false) : null));
+            if (flag) {
+                tmp.push(data);
+            }
             setCartChecked(tmp);
         }
         setCheck(!check);
@@ -210,7 +244,7 @@ function CartItem({
     }
 
     function unActiveShowLoading() {
-        document.body.style.overflow = 'block';
+        document.body.style.overflow = 'scroll';
         setShowLoading(false);
     }
 

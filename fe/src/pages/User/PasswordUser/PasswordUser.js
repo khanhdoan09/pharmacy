@@ -25,8 +25,12 @@ function PasswordUser() {
             cpwd: '',
         },
         validationSchema: Yup.object({
-            opwd: Yup.string().required('Thông tin bắt buộc'),
-            pwd: Yup.string().required('Thông tin bắt buộc'),
+            opwd: Yup.string()
+                .required('Thông tin bắt buộc')
+                .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*d).{8,}$/, 'Mật khẩu không đúng định dạng'),
+            pwd: Yup.string()
+                .required('Thông tin bắt buộc')
+                .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*d).{8,}$/, 'Mật khẩu không đúng định dạng'),
             cpwd: Yup.string()
                 .required('Thông tin bắt buộc')
                 .oneOf([Yup.ref('pwd')], 'Xác nhận mật khẩu không đúng.'),
@@ -42,15 +46,15 @@ function PasswordUser() {
                         values.opwd = '';
                         values.pwd = '';
                         values.cpwd = '';
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             dispatch(logoutSuccess(null));
                             setCookie('accessToken', null);
                             setCookie('accountType', null);
-                             logOut().then((response) => {
+                            logOut().then((response) => {
                                 console.log(response);
                             });
                             navigate('/');
-                        },3000)
+                        }, 3000);
                     }
                 })
                 .catch((err) => {

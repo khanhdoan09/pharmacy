@@ -1,7 +1,23 @@
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import placehoder600 from '~/assets/img/nav/placeholder600x600.png';
+import { getImageFromFirebase } from '~/utils/firebase';
 
-function SearchProduct({ to, label, img, title, newPrice, oldPrice, unit, dosage, country }) {
+function SearchProduct({ id, to, label, img, title, newPrice, oldPrice, unit, dosage, country }) {
+    const [urlAvatar, setUrlAvatar] = useState('/static/media/placeholder600x600.8239fe13708c0a4484a8.png');
+    useEffect(() => {
+        if (id !== undefined) {
+            const imagePromise = getImageFromFirebase('product', `${id}`, `avatar`);
+            imagePromise.then(
+                (urlAvatar) => {
+                    setUrlAvatar(urlAvatar);
+                },
+                (err) => {},
+            );
+        }
+    }, []);
+
     return (
         <div className="transition-basic relative mb-4 h-full rounded-md border bg-[#fff] px-3 pt-3  hover:border-[#4f71d0]">
             <NavLink to={to || '/detail'}>
@@ -9,7 +25,7 @@ function SearchProduct({ to, label, img, title, newPrice, oldPrice, unit, dosage
                     <p className="text-xs capitalize">{label}</p>
                 </div>
                 <img
-                    src={img}
+                    src={urlAvatar}
                     alt="main-img"
                     className="mb-3 max-w-full object-cover px-2 py-2"
                     onError={({ currentTarget }) => {
